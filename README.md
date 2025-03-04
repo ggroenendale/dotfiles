@@ -30,3 +30,6 @@ folder above by default.
 cd ~/.dotfiles
 stow .
 ```
+
+> NOTE: stow by default ignores the `/.git` folder. If we want to ignore other files we can create a `.stow-local-ignore`
+> file and make entries similar to .gitignore entries.
