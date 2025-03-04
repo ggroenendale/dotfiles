@@ -1,6 +1,7 @@
 -- Pull in the wezterm API
 local wezterm = require("wezterm")
 local constants = require("constants")
+local mux = wezterm.mux
 
 -- This will hold the configuration.
 local config = wezterm.config_builder()
@@ -26,6 +27,13 @@ config.window_padding = {
 	top = 0,
 	bottom = 0,
 }
+
+-- Always start wezterm in full screen.
+wezterm.on("gui-startup", function(window)
+	local tab, pane, window = mux.spawn_window({})
+	local gui_window = window:gui_window()
+	gui_window:perform_action(wezterm.action.ToggleFullScreen, pane)
+end)
 
 -- config.window_background_image = constants.bg_image
 -- config.window_background_opacity = 0.5
