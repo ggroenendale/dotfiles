@@ -1,4 +1,4 @@
-## Initial Readme for dotfiles repo.
+## Dotfiles Repo.
 
 In order to let gnu stow copy our dotfiles into our home directory, we first need to install gnu stow.
 
