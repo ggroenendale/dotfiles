@@ -12,9 +12,9 @@ return {
 			-- column spacing
 			local padding = 12
 			-- fill lines up to the maximum length with 'fillchar'
-			local fillchar = "-"
+			local fillchar = " "
 			-- columns padding char (for testing)
-			local padchar = "+"
+			local padchar = " "
 
 			--define maximum string length in a table
 			local maxlen = function(str)
@@ -76,35 +76,29 @@ return {
 			return values
 		end
 
-		-- Set header
-		dashboard.section.header.val = {
-			"                                                     ",
-			"  ███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗ ",
-			"  ████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║ ",
-			"  ██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║ ",
-			"  ██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║ ",
-			"  ██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║ ",
-			"  ╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝ ",
-			"                                                     ",
-		}
-		-- TODO For some reason the text here doesn't line up to the column and I don't know why... Maybe if I change the character it draws with I can see
-		--
-		local my_alts = {
-			"󱁐 e   > New File",
-			"󱁐 ee  > Toggle File Explorer",
-			"󱁐 ff󰱼  > Find File",
-			"󱁐 fs  > Find Word",
-			"󱁐 wr󰁯  > Restore Session For Current Directory",
-			"  q   > Quit Neovim",
+		-- TODO: For some reason the text here doesn't line up to the column and I don't know why... Maybe if I change the character it draws with I can see
+		-- It seems to be an issue with the nerdfont symbols. I noticed that the lines that require an extra space have a shorter unicode character.
+		-- In other words this character '󰁯 ' and this character '󰱼' are longer characters of the form 000f006f and 000f0c7c as opposed to f17b for 
+		-- Note for future use we can use the command 'ga' when hovering on a character in normal mode to get its unicode character code
+		local nvim_commands = {
+			"       Neovim Controls",
+			"     --------------------",
+			" 󱁐 e      New File",
+			" 󱁐 ee     Toggle File Explorer",
+			"󱁐 ff   󰱼  Find File",
+			"  󱁐 fs     Find Word",
+			"  󱁐 wr   󰁯  Restore Session in CWD",
+			"      q      Quit Neovim",
 		}
 
-		local my_alts2 = {
-			"e  > New File",
-			"ee > Toggle File Explorer",
-			"ff > Find File",
-			"fs > Find Word",
-			"wr > Restore Session for Current Directory",
-			"q  > Quit Neovim",
+		local wez_commands = {
+			"       Wezterm Commands        ",
+			"     --------------------      ",
+			"󰘶CTRL p    Open Wezterm Command Palette",
+			"󰘶CTRL t    New Wezterm Tab",
+			"󰘶CTRL w    Close Wezterm Tab",
+			" ",
+			" ",
 		}
 
 		local head = {
@@ -127,7 +121,7 @@ return {
 
 		local block1 = {
 			type = "group",
-			val = col({ my_alts2 }, {
+			val = col({ nvim_commands, wez_commands }, {
 				position = "center",
 				hl = { { "Comment", 0, -1 } },
 			}),
