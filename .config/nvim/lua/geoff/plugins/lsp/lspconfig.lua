@@ -80,6 +80,12 @@ return {
 			vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
 		end
 
+		-- Customize the documentation hover window
+		vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
+			border = "rounded", -- other options: "single", "double", "shadow", "none"
+			max_width = 80,
+		})
+
 		mason_lspconfig.setup_handlers({
 			-- default handler for installed servers
 			function(server_name)
@@ -154,6 +160,7 @@ return {
 			end, ]]
 			["pylsp"] = function()
 				lspconfig["pylsp"].setup({
+					capabilities = capabilities,
 					root_dir = function(fname)
 						local root_files = {
 							"pyproject.toml",
@@ -171,9 +178,11 @@ return {
 					settings = {
 						pylsp = {
 							plugins = {
-								jedi = {
-									environment = vim.fn.getcwd() .. "/.venv",
-								}, -- where OS env vars kick in
+								--jedi = {
+								--	environment = vim.fn.getcwd() .. "/.venv",
+								--}, -- where OS env vars kick in
+								jedi_definition = { enabled = true },
+								jedi_hover = { enabled = true },
 								pycodestyle = {
 									enabled = true,
 									ignore = { "E501", "E231" },
@@ -182,7 +191,7 @@ return {
 							},
 						},
 					},
-					cmd = { vim.fn.getcwd() .. "/.venv/bin/python", "-m", "pylsp" },
+					-- cmd = { vim.fn.getcwd() .. "/.venv/bin/python", "-m", "pylsp" },
 					on_init = function(client)
 						-- Get the current working directory
 						local venv_path = vim.fn.getcwd() .. "/.venv"
@@ -204,6 +213,8 @@ return {
 							--client.config.settings.pylsp.plugins.pylsp_flake8 = { enabled = true } -- Enable flake8 linter
 							--client.config.settings.pylsp.plugins.pylsp_pyflakes = { enabled = false } -- Disable pyflakes (redundant with flake8)
 							--client.config.settings.pylsp.plugins.pylsp_pycodestyle = { enabled = false } -- Disable pycodestyle (redundant with flake8)
+						else
+							vim.notify("pylsp could not find .venv")
 						end
 					end,
 				})
