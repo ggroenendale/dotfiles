@@ -101,6 +101,18 @@ return {
 			" ",
 		}
 
+		local editor_commands = {
+			"             Editor Commands         ",
+			"           -------------------       ",
+			"󰘶 K  Open Documentation on Cursor Hover",
+		}
+
+		local git_commands = {
+			"             Git Commands         ",
+			"           -------------------       ",
+			"gl  Open Lazy Git",
+		}
+
 		local head = {
 			type = "text",
 			val = {
@@ -121,7 +133,18 @@ return {
 
 		local block1 = {
 			type = "group",
-			val = col({ nvim_commands, wez_commands }, {
+			val = col({ nvim_commands, editor_commands, wez_commands }, {
+				position = "center",
+				hl = { { "Comment", 0, -1 } },
+			}),
+			opts = {
+				spacing = 0,
+			},
+		}
+
+		local block2 = {
+			type = "group",
+			val = col({ git_commands }, {
 				position = "center",
 				hl = { { "Comment", 0, -1 } },
 			}),
@@ -136,6 +159,8 @@ return {
 				head,
 				{ type = "padding", val = 2 },
 				block1,
+				{ type = "padding", val = 2 },
+				block2,
 				{ type = "padding", val = 2 },
 			},
 		}
