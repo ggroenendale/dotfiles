@@ -110,7 +110,7 @@ return {
 		local git_commands = {
 			"             Git Commands         ",
 			"           -------------------       ",
-			"gl  Open Lazy Git",
+			" 󱁐 gl  Open Lazy Git",
 		}
 
 		local head = {
