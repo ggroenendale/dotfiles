@@ -28,11 +28,13 @@ config.window_padding = {
 	bottom = 0,
 }
 
--- Always start wezterm in full screen.
-wezterm.on("gui-startup", function(window)
-	local tab, pane, window = mux.spawn_window({})
-	local gui_window = window:gui_window()
-	gui_window:perform_action(wezterm.action.ToggleFullScreen, pane)
+-- Always start wezterm with maximized window.
+wezterm.on("gui-startup", function(cmd)
+	local tab, pane, window = mux.spawn_window(cmd or {})
+	local gui_win = window:gui_window()
+
+	-- Use maximize to take up the available space between taskbar and top bar.
+	gui_win:maximize()
 end)
 
 -- config.window_background_image = constants.bg_image
