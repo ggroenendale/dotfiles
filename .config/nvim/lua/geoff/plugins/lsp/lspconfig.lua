@@ -185,7 +185,7 @@ return {
 								jedi_hover = { enabled = true },
 								pycodestyle = {
 									enabled = true,
-									ignore = { "E501", "E231" },
+									ignore = { "E501", "E231", "W391" },
 									maxLineLength = 200,
 								},
 							},
