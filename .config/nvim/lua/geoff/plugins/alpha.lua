@@ -108,9 +108,10 @@ return {
 		}
 
 		local git_commands = {
-			"             Git Commands         ",
-			"           -------------------       ",
-			" 󱁐 gl  Open Lazy Git",
+			"         Git Commands       ",
+			"       ----------------       ",
+			"󱁐 gl   Open Lazy Git   ",
+			"󰘶 P    Push Commits to Remote",
 		}
 
 		local head = {
