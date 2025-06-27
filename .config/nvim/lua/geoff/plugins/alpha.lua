@@ -88,6 +88,7 @@ return {
 			"󱁐 ff   󰱼  Find File",
 			"  󱁐 fs     Find Word",
 			"  󱁐 wr   󰁯  Restore Session in CWD",
+			"󰘶 #        Search Backwards, use :nohl to clear highlights",
 			"      q      Quit Neovim",
 		}
 
