@@ -36,8 +36,10 @@ return {
 				"lemminx",
 				"html",
 				--"html-lsp",
-				"jinja_lsp", -- jinja
+				--"jinja_lsp", -- jinja
 				--"ast_grep",
+				"pylsp",
+				"ruff",
 				"cssls",
 				"somesass_ls",
 				"css_variables",
@@ -57,7 +59,7 @@ return {
 			ensure_installed = {
 				"prettier", -- prettier formatter
 				"stylua", -- lua formatter
-				--"black", --python formatter
+				"black", --python formatter
 				--"pylint", -- python linter
 				"eslint_d", --js linter
 				"debugpy", -- Python Debugger
