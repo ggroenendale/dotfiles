@@ -177,10 +177,12 @@ return {
 					end,
 					settings = {
 						pylsp = {
+							configurationSources = {},
 							plugins = {
-								--jedi = {
-								--	environment = vim.fn.getcwd() .. "/.venv",
-								--}, -- where OS env vars kick in
+								jedi = {
+									enabled = true,
+									environment = vim.fn.getcwd() .. "/.venv/bin/python",
+								}, -- where OS env vars kick in
 								jedi_definition = { enabled = true },
 								jedi_hover = { enabled = true },
 								pycodestyle = {
@@ -188,6 +190,15 @@ return {
 									ignore = { "E501", "E231", "W391" },
 									maxLineLength = 200,
 								},
+								pylint = {
+									enabled = false,
+								},
+								pylsp_mypy = { enabled = false },
+								rope_completion = { enabled = false },
+								yapf = { enabled = false },
+								autopep8 = { enabled = false },
+								flake8 = { enabled = false },
+								pyflakes = { enabled = false },
 							},
 						},
 					},
@@ -201,6 +212,7 @@ return {
 						-- Check if the .venv folder exists
 						if vim.fn.isdirectory(venv_path) == 1 then
 							--print("Im thinking this is a directory")
+							vim.notify(".venv path is:" .. venv_path)
 							vim.fn.setenv("VIRTUAL_ENV", venv_path)
 							vim.g.python3_host_prog = venv_path .. "/bin/python"
 							-- Set the pythonPath to use the virtual environment
