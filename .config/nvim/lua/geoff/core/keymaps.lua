@@ -24,3 +24,12 @@ keymap.set("n", "<leader>tp", "<cmd>tabp<CR>", { desc = "Go to previous tab" }) 
 keymap.set("n", "<leader>tf", "<cmd>tabnew %<CR>", { desc = "Open current buffer in new tab" }) -- open new tab current buffer
 
 -- keymap.set("n", { desc = ""})
+
+-- Jump to definition
+keymap.set("n", "gd", vim.lsp.buf.definition, { desc = "[G]oto [D]efinition" })
+
+-- Jump to type definition
+keymap.set("n", "gD", vim.lsp.buf.type_definition, { desc = "[G]oto [D]efinition (Type)" })
+
+-- Jump to implementation
+keymap.set("n", "gi", vim.lsp.buf.implementation, { desc = "[G]oto [I]mplementation" })
