@@ -139,25 +139,6 @@ return {
 					},
 				})
 			end,
-			--[[ ["basedpyright"] = function()
-				lspconfig["basedpyright"].setup({
-					--on_init = function(client)
-					--	local venv_path = vim.fn.getcwd() .. "/.venv"
-					--	if vim.fn.isdirectory(venv_path) == 1 then
-					--		-- Set the Python path in the LSP settings
-					--		client.config.settings.python3.pythonPath = venv_path .. "/bin/python"
-					--	end
-					--end,
-					capabilities = capabilities,
-					settings = {
-						basedpyright = {
-							analysis = {
-								typeCheckingMode = "strict",
-							},
-						},
-					},
-				})
-			end, ]]
 			["pylsp"] = function()
 				lspconfig["pylsp"].setup({
 					capabilities = capabilities,
