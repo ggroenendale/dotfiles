@@ -71,6 +71,11 @@ return {
 		--		keymap.set("n", "<leader>rs", ":LspRestart<CR>", opts) -- mapping to restart lsp if necessary
 		--	end,
 		--})
+		local on_attach = function(client, bufnr)
+			--vim.bo[bufnr].omnifunc = "v:lua.vim.lsp.omnifunc"
+			--if client.server_capabilities.inlayHintProvider then vim.lsp.inlay_hint.enable(true) end
+			lsp_signature.on_attach({}, bufnr)
+		end
 
 		-- used to enable autocompletion (assign to every lsp server config)
 		local capabilities = cmp_nvim_lsp.default_capabilities()
