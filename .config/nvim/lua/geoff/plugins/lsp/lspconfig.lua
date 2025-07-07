@@ -103,19 +103,6 @@ return {
 				})
 			end,
 			--          client.notify("$/onDidChangeTsOrJsFile", { uri = ctx.match })
-			["lua_ls"] = function()
-				-- configure lua server (with special settings)
-				lspconfig["lua_ls"].setup({
-					capabilities = capabilities,
-					settings = {
-						Lua = {
-							-- make the language server recognize "vim" global
-							diagnostics = {
-								globals = { "vim" },
-							},
-							completion = {
-								callSnippet = "Replace",
-							},
 		-- =====================================================================
 		-- C, CPP, generic Language Server
 		-- =====================================================================
@@ -147,6 +134,32 @@ return {
 				filetypes = { "markdown" },
 			},
 		}
+		-- ======================================================================
+		-- Lua Language Server
+		-- ======================================================================
+		vim.lsp.lua_ls = {
+			-- configure lua server (with special settings)
+			capabilities = capabilities,
+			on_attach = on_attach,
+			on_init = function()
+				if client.workspace_folders then
+					local path = client.workspace_folders[1].name
+					if
+						path ~= vim.fn.stdpath("config")
+						and (vim.loop.fs_stat(path .. "/.luarc.json") or vim.loop.fs_stat(path .. "/.luarc.jsonc"))
+					then
+						return
+					end
+				end
+				client.config.settings.Lua = vim.tbl_deep_extend("force", client.config.settings.Lua, {
+					runtime = {
+						version = "LuaJIT",
+					},
+					workspace = {
+						checkThirdParty = false,
+						library = {
+							vim.env.VIMRUNTIME,
+							"${3rd}/luv/library",
 						},
 					},
 				})
@@ -194,6 +207,11 @@ return {
 								pyflakes = { enabled = false },
 							},
 						},
+			settings = {
+				Lua = {
+					-- make the language server recognize "vim" global
+					diagnostics = {
+						globals = { "vim" },
 					},
 					-- cmd = { vim.fn.getcwd() .. "/.venv/bin/python", "-m", "pylsp" },
 					on_init = function(client)
@@ -201,6 +219,12 @@ return {
 						local venv_path = vim.fn.getcwd() .. "/.venv"
 
 						--print(vim.inspect(venv_path))
+					completion = {
+						callSnippet = "Replace",
+					},
+				},
+			},
+		}
 
 						-- Check if the .venv folder exists
 						if vim.fn.isdirectory(venv_path) == 1 then
