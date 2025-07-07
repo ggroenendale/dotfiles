@@ -7,9 +7,10 @@ local mux = wezterm.mux
 local config = wezterm.config_builder()
 
 -- This is where you actually apply your config choices
+config.enable_wayland = true
 
 -- For example, changing the color scheme:
---config.color_scheme = "AdventureTime"
+config.color_scheme = "AdventureTime"
 
 -- Setup Nerd Font
 config.font = wezterm.font("Mononoki Nerd Font", { weight = "Regular", stretch = "Normal", style = "Normal" })
