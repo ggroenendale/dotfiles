@@ -8,6 +8,9 @@ return {
 	},
 	config = function()
 		require("markview").setup({
+			experimental = {
+				check_rtp_message = false,
+			},
 			markdown = {
 				enable = true,
 				block_quotes = {
