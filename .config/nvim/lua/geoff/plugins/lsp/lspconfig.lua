@@ -103,13 +103,6 @@ return {
 				})
 			end,
 			--          client.notify("$/onDidChangeTsOrJsFile", { uri = ctx.match })
-			["graphql"] = function()
-				-- configure graphql language server
-				lspconfig["graphql"].setup({
-					capabilities = capabilities,
-					filetypes = { "graphql", "gql", "svelte", "typescriptreact", "javascriptreact" },
-				})
-			end,
 			--["emmet_ls"] = function()
 			--  -- configure emmet language server
 			--  lspconfig["emmet_ls"].setup({
@@ -237,6 +230,17 @@ return {
 						end
 					end,
 				})
+		-- =====================================================================
+		-- Graphql Language Server
+		-- =====================================================================
+		vim.lsp.graphql = {
+			capabilities = capabilities,
+			on_attach = on_attach(),
+			settings = {
+				filetypes = { "graphql", "gql", "svelte", "typescriptreact", "javascriptreact" },
+			},
+		}
+
 			end,
 			end,
 		})
