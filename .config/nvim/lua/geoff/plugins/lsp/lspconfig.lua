@@ -131,6 +131,14 @@ return {
 								callSnippet = "Replace",
 							},
 		-- =====================================================================
+		-- C, CPP, generic Language Server
+		-- =====================================================================
+		vim.lsp.ast_grep = {
+			settings = {
+				filetypes = { "c", "cpp", "rust", "go", "java" }, -- Remove Python
+			},
+		}
+
 		-- =====================================================================
 		-- Markdown Language Server
 		-- =====================================================================
@@ -230,10 +238,6 @@ return {
 					end,
 				})
 			end,
-			["ast_grep"] = function()
-				lspconfig["ast_grep"].setup({
-					filetypes = { "c", "cpp", "rust", "go", "java" }, -- Remove Python
-				})
 			end,
 		})
 	end,
