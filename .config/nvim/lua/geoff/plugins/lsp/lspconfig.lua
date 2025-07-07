@@ -164,61 +164,12 @@ return {
 					},
 				})
 			end,
-			["pylsp"] = function()
-				lspconfig["pylsp"].setup({
-					capabilities = capabilities,
-					root_dir = function(fname)
-						local root_files = {
-							"pyproject.toml",
-							"setup.py",
-							"setup.cfg",
-							"requirements.txt",
-							"Pipfile",
-						}
-						local startpath = vim.fn.getcwd() .. "/.venv"
-
-						return util.root_pattern(unpack(root_files))(fname)
-							or vim.fs.dirname(vim.fs.find(".venv", { path = startpath, upward = true })[1])
-							or vim.fn.expand("%:p:h")
-					end,
-					settings = {
-						pylsp = {
-							configurationSources = {},
-							plugins = {
-								jedi = {
-									enabled = true,
-									environment = vim.fn.getcwd() .. "/.venv/bin/python",
-								}, -- where OS env vars kick in
-								jedi_definition = { enabled = true },
-								jedi_hover = { enabled = true },
-								pycodestyle = {
-									enabled = true,
-									ignore = { "E501", "E231", "W391", "W191" },
-									maxLineLength = 200,
-								},
-								pylint = {
-									enabled = false,
-								},
-								pylsp_mypy = { enabled = false },
-								rope_completion = { enabled = false },
-								yapf = { enabled = false },
-								autopep8 = { enabled = false },
-								flake8 = { enabled = false },
-								pyflakes = { enabled = false },
-							},
-						},
 			settings = {
 				Lua = {
 					-- make the language server recognize "vim" global
 					diagnostics = {
 						globals = { "vim" },
 					},
-					-- cmd = { vim.fn.getcwd() .. "/.venv/bin/python", "-m", "pylsp" },
-					on_init = function(client)
-						-- Get the current working directory
-						local venv_path = vim.fn.getcwd() .. "/.venv"
-
-						--print(vim.inspect(venv_path))
 					completion = {
 						callSnippet = "Replace",
 					},
@@ -226,27 +177,6 @@ return {
 			},
 		}
 
-						-- Check if the .venv folder exists
-						if vim.fn.isdirectory(venv_path) == 1 then
-							--print("Im thinking this is a directory")
-							vim.notify(".venv path is:" .. venv_path)
-							vim.fn.setenv("VIRTUAL_ENV", venv_path)
-							vim.g.python3_host_prog = venv_path .. "/bin/python"
-							-- Set the pythonPath to use the virtual environment
-							--client.config.settings.pylsp = client.config.settings.pylsp or {}
-							--client.config.settings.pylsp.plugins = client.config.settings.pylsp.plugins or {}
-							--client.config.settings.pylsp.plugins.pylsp_mypy = client.config.settings.pylsp.plugins.pylsp_mypy	or {}
-							--client.config.settings.pylsp.configurationSources = { "flake8" } -- Example: Use flake8 for linting
-							--client.config.settings.pylsp.plugins.pylsp_mypy.pythonExecutable = venv_path .. "/bin/python"
-							--client.config.settings.pylsp.plugins.pylsp_black = { enabled = true } -- Enable Black formatter
-							--client.config.settings.pylsp.plugins.pylsp_flake8 = { enabled = true } -- Enable flake8 linter
-							--client.config.settings.pylsp.plugins.pylsp_pyflakes = { enabled = false } -- Disable pyflakes (redundant with flake8)
-							--client.config.settings.pylsp.plugins.pylsp_pycodestyle = { enabled = false } -- Disable pycodestyle (redundant with flake8)
-						else
-							vim.notify("pylsp could not find .venv")
-						end
-					end,
-				})
 		-- =====================================================================
 		-- Graphql Language Server
 		-- =====================================================================
@@ -258,8 +188,76 @@ return {
 			},
 		}
 
+		-- =====================================================================
+		-- Python Language Server
+		-- =====================================================================
+		vim.lsp.pylsp = {
+			capabilities = capabilities,
+			root_dir = function(fname)
+				local root_files = {
+					"pyproject.toml",
+					"setup.py",
+					"setup.cfg",
+					"requirements.txt",
+					"Pipfile",
+				}
+				local startpath = vim.fn.getcwd() .. "/.venv"
+				return util.root_pattern(unpack(root_files))(fname)
+					or vim.fs.dirname(vim.fs.find(".venv", { path = startpath, upward = true })[1])
+					or vim.fn.expand("%:p:h")
 			end,
+			settings = {
+				pylsp = {
+					configurationSources = {},
+					plugins = {
+						jedi = {
+							enabled = true,
+							environment = vim.fn.getcwd() .. "/.venv/bin/python",
+						}, -- where OS env vars kick in
+						jedi_definition = { enabled = true },
+						jedi_hover = { enabled = true },
+						pycodestyle = {
+							enabled = true,
+							ignore = { "E501", "E231", "W391", "W191" },
+							maxLineLength = 200,
+						},
+						pylint = {
+							enabled = false,
+						},
+						pylsp_mypy = { enabled = false },
+						rope_completion = { enabled = false },
+						yapf = { enabled = false },
+						autopep8 = { enabled = false },
+						flake8 = { enabled = false },
+						pyflakes = { enabled = false },
+					},
+				},
+			},
+			-- cmd = { vim.fn.getcwd() .. "/.venv/bin/python", "-m", "pylsp" },
+			on_init = function(client)
+				-- Get the current working directory
+				local venv_path = vim.fn.getcwd() .. "/.venv"
+				--print(vim.inspect(venv_path))
+				-- Check if the .venv folder exists
+				if vim.fn.isdirectory(venv_path) == 1 then
+					--print("Im thinking this is a directory")
+					vim.notify(".venv path is:" .. venv_path)
+					vim.fn.setenv("VIRTUAL_ENV", venv_path)
+					vim.g.python3_host_prog = venv_path .. "/bin/python"
+					-- Set the pythonPath to use the virtual environment
+					--client.config.settings.pylsp = client.config.settings.pylsp or {}
+					--client.config.settings.pylsp.plugins = client.config.settings.pylsp.plugins or {}
+					--client.config.settings.pylsp.plugins.pylsp_mypy = client.config.settings.pylsp.plugins.pylsp_mypy	or {}
+					--client.config.settings.pylsp.configurationSources = { "flake8" } -- Example: Use flake8 for linting
+					--client.config.settings.pylsp.plugins.pylsp_mypy.pythonExecutable = venv_path .. "/bin/python"
+					--client.config.settings.pylsp.plugins.pylsp_black = { enabled = true } -- Enable Black formatter
+					--client.config.settings.pylsp.plugins.pylsp_flake8 = { enabled = true } -- Enable flake8 linter
+					--client.config.settings.pylsp.plugins.pylsp_pyflakes = { enabled = false } -- Disable pyflakes (redundant with flake8)
+					--client.config.settings.pylsp.plugins.pylsp_pycodestyle = { enabled = false } -- Disable pycodestyle (redundant with flake8)
+				else
+					vim.notify("pylsp could not find .venv")
+				end
 			end,
-		})
+		}
 	end,
 }
