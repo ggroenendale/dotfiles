@@ -15,6 +15,7 @@ return {
 		local util = require("lspconfig.util")
 
 		local lsp_signature = require("lsp_signature")
+
 		-- import mason_lspconfig plugin
 		local mason_lspconfig = require("mason-lspconfig")
 
@@ -95,14 +96,6 @@ return {
 			max_width = 80,
 		})
 
-		mason_lspconfig.setup_handlers({
-			-- default handler for installed servers
-			function(server_name)
-				lspconfig[server_name].setup({
-					capabilities = capabilities,
-				})
-			end,
-			--          client.notify("$/onDidChangeTsOrJsFile", { uri = ctx.match })
 		-- =====================================================================
 		-- C, CPP, generic Language Server
 		-- =====================================================================
