@@ -103,25 +103,6 @@ return {
 				})
 			end,
 			--          client.notify("$/onDidChangeTsOrJsFile", { uri = ctx.match })
-			["markdown_oxide"] = function()
-				lspconfig["markdown_oxide"].setup({
-					on_attach = function(client, bufnr)
-						-- Default LSP keymaps and capabilities
-						--vim.lsp.buf.inlay_hints(bufnr, true) -- Enable inlay hints if needed
-
-						-- Markdown specific editor settings
-						vim.opt_local.wrap = true
-						vim.opt_local.linebreak = true
-						vim.opt_local.breakindent = true
-
-						-- Enhanced navigation for wrapped lines
-						vim.keymap.set("n", "j", "gj", { buffer = bufnr, desc = "Move down (visual lines)" })
-						vim.keymap.set("n", "k", "gk", { buffer = bufnr, desc = "Move up (visual lines)" })
-					end,
-					capabilities = capabilities,
-					filetypes = { "markdown" },
-				})
-			end,
 			["graphql"] = function()
 				-- configure graphql language server
 				lspconfig["graphql"].setup({
@@ -149,6 +130,29 @@ return {
 							completion = {
 								callSnippet = "Replace",
 							},
+		-- =====================================================================
+		-- =====================================================================
+		-- Markdown Language Server
+		-- =====================================================================
+		vim.lsp.markdown_oxide = {
+			setup = {
+				capabilities = capabilities,
+				on_attach = function(client, bufnr)
+					-- Default LSP keymaps and capabilities
+					--vim.lsp.buf.inlay_hints(bufnr, true) -- Enable inlay hints if needed
+
+					-- Markdown specific editor settings
+					vim.opt_local.wrap = true
+					vim.opt_local.linebreak = true
+					vim.opt_local.breakindent = true
+
+					-- Enhanced navigation for wrapped lines
+					vim.keymap.set("n", "j", "gj", { buffer = bufnr, desc = "Move down (visual lines)" })
+					vim.keymap.set("n", "k", "gk", { buffer = bufnr, desc = "Move up (visual lines)" })
+				end,
+				filetypes = { "markdown" },
+			},
+		}
 						},
 					},
 				})
