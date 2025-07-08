@@ -37,7 +37,7 @@
 #battery,
 #wireplumber,
 #backlight,
-#custom-temperature,
+#temperature,
 #memory,
 #cpu,
 #network,
@@ -70,7 +70,7 @@
 #backlight {
   background-color: #a6a3a1;
 }
-#custom-temperature {
+#temperature {
   background-color: #74c7ec;
 }
 #memory {

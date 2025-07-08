@@ -19,7 +19,7 @@
         "battery",
         "bluetooth",
         "wireplumber",
-        "custom/temperature",
+        "temperature",
         "memory",
         "cpu"
     ],
@@ -100,6 +100,18 @@
         "on-click": "pactl -- set-sink-mute 0 toggle",
         "tooltip": true,
         "tooltip-format": "Volume: {volume}%"
+    },
+    "temperature": {
+        // "thermal-zone": 2,
+        // "hwmon-path": "/sys/class/hwmon/hwmon2/temp1_input",
+        "critical-threshold": 80,
+        // "format-critical": "{temperatureC}°C {icon}",
+        "format": "{temperatureF}°F {icon}",
+        "format-icons": [
+            "",
+            "",
+            ""
+        ]
     },
     "custom/temperature": {
         "exec": "sensors | awk '/^Package id 0:/ {print int($4)}'",
