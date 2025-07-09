@@ -209,3 +209,6 @@ function config_get() {
 function config_read_file() {
     (grep -E "^${2}=" -m 1 "${1}" 2>/dev/null || echo "VAR=__UNDEFINED__") | head -n 1 | cut -d '=' -f 2-;
 }
+
+# Created by `pipx` on 2025-07-08 22:26:44
+export PATH="$PATH:/home/geoff/.local/bin"
