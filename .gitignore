@@ -1,2 +1,6 @@
 .config/nvim/lua/geoff/plugins/credentials/db_credentials.lua
 .config/nvim/lazy-lock.json
+
+# Ignore environment files
+.env
+
