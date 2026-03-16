@@ -212,3 +212,6 @@ function config_read_file() {
 
 # Created by `pipx` on 2025-07-08 22:26:44
 export PATH="$PATH:/home/geoff/.local/bin"
+export PYENV_ROOT="$HOME/.pyenv"
+[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init - bash)"
