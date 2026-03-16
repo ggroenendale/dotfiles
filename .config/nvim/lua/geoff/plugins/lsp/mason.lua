@@ -34,6 +34,7 @@ return {
 				"nginx_language_server",
 				"sqlls",
 				"lemminx",
+				"markdown_oxide",
 				"html",
 				--"html-lsp",
 				--"jinja_lsp", -- jinja
