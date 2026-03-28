@@ -33,3 +33,29 @@ stow .
 
 > NOTE: stow by default ignores the `/.git` folder. If we want to ignore other files we can create a `.stow-local-ignore`
 > file and make entries similar to .gitignore entries.
+
+## Screen Capture System
+
+This dotfiles repository includes a comprehensive screen capture and recording system for Wayland/Hyprland on Arch Linux.
+
+### Features:
+- **Screenshots**: Full screen, region selection, active window
+- **Screen Recording**: Full screen and region recording
+- **Clipboard Integration**: Automatic copying to clipboard
+- **Keyboard Shortcuts**: Pre-configured Hyprland keybindings
+- **Command Line Access**: Bash functions and aliases
+
+### Keybindings:
+- `PRINT`: Full screenshot
+- `SHIFT + PRINT`: Region screenshot
+- `SUPER + PRINT`: Active window screenshot
+- `SUPER + ALT + R`: Screen recording menu
+- `SUPER + SHIFT + R`: Stop recording
+
+### Usage:
+After running `stow .`, use the commands:
+- `screenshot-help` for all screenshot commands
+- `screenrecord-menu` for recording options
+- `open-screenshots` to view captured screenshots
+
+For detailed documentation, see: `~/.local/bin/screenshot-scripts/README.md`
