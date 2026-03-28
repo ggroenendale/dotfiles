@@ -57,9 +57,7 @@ return {
 							-- Debug: Check if it's actually set
 							local check_key = os.getenv("TAVILY_API_KEY")
 							if check_key then
-								vim.notify(
-									"Verified TAVILY_API_KEY in os.getenv: " .. string.sub(check_key, 1, 10) .. "..."
-								)
+								print("Verified TAVILY_API_KEY in os.getenv: " .. string.sub(check_key, 1, 10) .. "...")
 							else
 								vim.notify("WARNING: TAVILY_API_KEY not found in os.getenv()", vim.log.levels.WARN)
 							end
@@ -69,7 +67,7 @@ return {
 			end
 
 			if loaded_count > 0 then
-				vim.notify("Loaded " .. loaded_count .. " environment variables from " .. env_path)
+				--vim.notify("Loaded " .. loaded_count .. " environment variables from " .. env_path)
 				return true
 			else
 				vim.notify("No valid environment variables found in " .. env_path, vim.log.levels.WARN)

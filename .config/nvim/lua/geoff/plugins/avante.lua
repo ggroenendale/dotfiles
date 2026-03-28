@@ -29,13 +29,13 @@ return {
 					},
 				},
 			},
-			{
-				"MeanderingProgrammer/render-markdown.nvim",
-				opts = {
-					file_types = { "markdown", "Avante" },
-				},
-				ft = { "markdown", "Avante" },
-			},
+			--{
+			--	"MeanderingProgrammer/render-markdown.nvim",
+			--	opts = {
+			--		file_types = { "markdown", "Avante" },
+			--	},
+			--	ft = { "markdown", "Avante" },
+			--},
 		},
 
 		opts = {
@@ -59,7 +59,7 @@ return {
 					__inherited_from = "openai",
 					api_key_name = "DEEPSEEK_API_KEY",
 					endpoint = "https://api.deepseek.com/v1",
-					model = "deepseek-chat", -- or "deepseek-coder"
+					model = "deepseek-chat",
 
 					-- Request body parameters go in extra_request_body
 					extra_request_body = {
@@ -93,11 +93,23 @@ return {
 
 			-- Window layout
 			windows = {
-				wrap = true, -- Wrap long lines
-				width = 30, -- Percentage of editor width
-				sidebar_header = {
-					align = "center",
-					rounded = true,
+				wrap = true,
+				width = 26, -- slightly wider feels better with code
+
+				sidebar = {
+					height = 40, -- 👈 big chat area
+				},
+
+				input = {
+					height = 10, -- 👈 larger input + todos
+				},
+
+				edit = {
+					border = "rounded",
+				},
+
+				ask = {
+					border = "rounded",
 				},
 			},
 

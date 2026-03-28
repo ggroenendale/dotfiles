@@ -1,3 +1,4 @@
+--print("Loading alpha")
 return {
 	"goolord/alpha-nvim",
 	event = "VimEnter",
@@ -94,6 +95,9 @@ return {
 				-- Insert result into output table
 				table.insert(values, { type = "text", val = row_str, opts = opts })
 			end
+
+			--print("Are there alpha values?")
+			--print(values)
 
 			return values
 		end
@@ -298,12 +302,45 @@ return {
 				block3,
 				{ type = "padding", val = 2 },
 			},
+			startup = {
+				should_skip_alpha = function()
+					return false
+				end,
+			},
 		}
+
+		--print("Is there another arg in vim argc")
+		--print(vim.fn.argc() > 0)
+
+		-- Override should_skip_alpha to allow directories
+		-- This didn't work, couldnt figure out how to override should skip
+		-- so instead we created a different start function that checks for
+		-- neovide as the app
+		--local old_should_skip_alpha = alpha.should_skip_alpha
+		--alpha.should_skip_alpha = function()
+		--	-- Check if we have arguments
+		--	if vim.fn.argc() > 0 then
+		--		-- Get the first argument
+		--		local first_arg = vim.fn.argv(0)
+		--		-- If it's a directory, don't skip alpha
+		--		print("This is the directory?")
+		--		print(first_arg)
+		--		if vim.fn.isdirectory(first_arg) == 1 then
+		--			return false
+		--		end
+		--		-- Otherwise use the original logic
+		--		return old_should_skip_alpha()
+		--	end
+		--	-- No arguments, use original logic
+		--	return old_should_skip_alpha()
+		--end
 
 		-- Send config to alpha
 		alpha.setup(opts)
 
 		-- Disable folding on alpha buffer
 		vim.cmd([[autocmd FileType alpha setlocal nofoldenable]])
+
+		--print("The alpha config does load")
 	end,
 }
