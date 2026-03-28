@@ -33,6 +33,7 @@
 #clock,
 #custom-power,
 #custom-reboot,
+#custom-screenshot,
 #bluetooth,
 #battery,
 #wireplumber,
@@ -57,6 +58,9 @@
 }
 #custom-reboot {
   background-color: #a6e3a1;
+}
+#custom-screenshot {
+  background-color: #f5c2e7;
 }
 #bluetooth {
   background-color: #f9e2af;

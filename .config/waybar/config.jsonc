@@ -6,6 +6,7 @@
     "modules-left": [
         "hyprland/workspaces",
         "tray",
+        "custom/screenshot",
         "custom/lock",
         "custom/reboot",
         "custom/power",
@@ -21,7 +22,8 @@
         "wireplumber",
         "temperature",
         "memory",
-        "cpu"
+        "cpu",
+        "keyboard-state"
     ],
     "hyprland/workspaces": {
         "disable-scroll": true,
@@ -52,6 +54,13 @@
         "on-click": "systemctl poweroff",
         "tooltip": true,
         "tooltip-format": "关"
+    },
+    "custom/screenshot": {
+        "format": "  ",
+        "on-click": "~/.local/bin/screenshot-scripts/screenshot-menu.sh",
+        "on-click-right": "~/.local/bin/screenshot-scripts/screenrecord-menu.sh",
+        "tooltip": true,
+        "tooltip-format": "Screenshot Menu (Left Click)\nScreen Record Menu (Right Click)"
     },
     "network": {
         "format-wifi": " 󰤨 {essid} ",
@@ -93,9 +102,9 @@
                 "  ",
                 "  ",
                 "  "
-            ],
-            "exec": "pw-volume status"
+            ]
         },
+        "exec": "pw-volume status",
         "on-click-right": "pwvucontrol -t 3",
         "on-click": "pactl -- set-sink-mute 0 toggle",
         "tooltip": true,
@@ -160,5 +169,15 @@
         "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}",
         "tooltip-format-enumerate-connected": "{device_alias}\t{device_address}",
         "tooltip-format-enumerate-connected-battery": "{device_alias}\t{device_address}\t{device_battery_percentage}%"
+    },
+    "keyboard-state": {
+        "numlock": true,
+        "format": {
+            "numlock": "N {icon}"
+            },
+        "format-icons": {
+            "locked": "",
+            "unlocked": ""
+        }
     }
 }
