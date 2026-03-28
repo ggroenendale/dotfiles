@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+dir=$( (
+    zoxide query -l
+    fd -H -t d ".git" ~/projects ~/repos ~/code 2>/dev/null | sed 's|/.git||'
+) | sort -u | fuzzel --dmenu --prompt="Workspace")
+
+[ -z "$dir" ] && exit 0
+
+zoxide add "$dir"
+
+neovide "$dir"
