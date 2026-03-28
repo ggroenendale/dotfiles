@@ -4,3 +4,6 @@
 # Ignore environment files
 .env
 
+# Ignore the backgrounds folder
+backgrounds/
+
