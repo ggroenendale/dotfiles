@@ -58,3 +58,14 @@ alias open-recordings="thunar ~/Videos/ScreenRecordings 2>/dev/null || nautilus 
 # Screenshot info
 alias screenshot-help="echo '=== Screenshot Commands ==='; echo 'screenshot-full     - Full screen'; echo 'screenshot-region   - Select region'; echo 'screenshot-window   - Active window'; echo 'screenshot-menu     - Interactive menu'; echo ''; echo '=== Screen Recording Commands ==='; echo 'screenrecord-full   - Record full screen'; echo 'screenrecord-region - Record selected region'; echo 'screenrecord-stop   - Stop recording'; echo 'screenrecord-status - Check status'; echo 'screenrecord-menu   - Interactive menu'; echo ''; echo '=== Quick Aliases ==='; echo 'ss-*               - Short for screenshot-*'; echo 'sr-*               - Short for screenrecord-*'"
 
+# Waybar functions
+waybar-restart() {
+    echo "Restarting Waybar..."
+    killall waybar 2>/dev/null
+    sleep 1
+    nohup waybar >/dev/null 2>&1 &
+    echo "Waybar restarted! (running in background with nohup)"
+}
+
+alias wb-restart="waybar-restart"
+
