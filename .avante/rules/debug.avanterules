@@ -1,0 +1,29 @@
+{# Debugging rule for avante.nvim #}
+{# This rule provides context about debugging and message handling #}
+
+{% block custom_prompt %}
+When debugging issues with avante.nvim or Neovim configuration, you can use the following tools:
+
+1. **Neovim Messages**: Use the `neovim_messages` custom tool to get the message history
+   - Example: "Check the last 20 messages" or "What errors are in the message history?"
+   - Parameters: `lines` (optional) - number of recent lines to retrieve
+
+2. **Debug Echo**: Use the `neovim_echo` custom tool for debugging output
+   - Example: "Echo a debug message" or "Test if tools are working"
+
+3. **Environment Variables**: Check if environment variables are loaded
+   - DEEPSEEK_API_KEY for DeepSeek provider
+   - Other API keys as needed
+
+Common debugging steps:
+- Check message history for errors
+- Verify environment variables are loaded
+- Test API connectivity
+- Check plugin configuration
+{% endblock %}
+
+{% block extra_prompt %}
+Remember to check the Neovim message history when troubleshooting errors.
+The `:messages` command shows recent warnings, errors, and informational messages.
+{% endblock %}
+

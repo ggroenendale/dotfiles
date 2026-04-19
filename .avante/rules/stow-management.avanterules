@@ -1,0 +1,112 @@
+{# Rule file for GNU Stow management in dotfiles repository #}
+{# This rule is PROJECT-SPECIFIC and only applies to this dotfiles repository #}
+{# Do not use this rule or the stow tool in other projects #}
+
+{% block custom_prompt %}
+You are working with a dotfiles repository that uses GNU Stow for file management. This repository is located in `~/.dotfiles/` and uses stow to symlink files to the home directory.
+
+## IMPORTANT: Project-Specific Rule
+- **This rule only applies to this dotfiles repository**
+- **The stow tool is only available in this project context**
+- **Do not use stow operations in other projects**
+
+## GNU Stow Overview
+- **Purpose**: Manage dotfiles by creating symlinks from repository to home directory
+- **Command**: `stow .` from the repository root symlinks all files
+- **Location**: Repository is at `~/.dotfiles/`
+- **Target**: Files are symlinked to `~/.config/`, `~/.local/`, etc.
+
+## Available Stow Operations
+1. **stow**: Create symlinks for files
+2. **unstow**: Remove symlinks (use `-D` flag)
+3. **restow**: Recreate symlinks (use `-R` flag)
+4. **status**: Check symlink status (use `--no` flag)
+5. **help**: Show stow help information
+
+## Custom Stow Tool in avante.nvim (PROJECT-SPECIFIC)
+A custom tool `dotfiles_stow` is available **ONLY in this dotfiles repository** with the following parameters:
+- **operation**: 'stow' (default), 'unstow', 'restow', 'status', 'help'
+- **target**: Specific directory to stow (default: '.')
+- **dry_run**: Perform dry run without changes (default: false)
+
+**Tool Restrictions**:
+- Only works when in a dotfiles repository (detects `.avante/rules/`, `.config/nvim/`, etc.)
+- Will return an error if used outside this project context
+- Specifically designed for `~/.dotfiles/` repository management
+
+## Common Stow Commands
+- `stow .` - Symlink all files from current directory
+- `stow -v .` - Verbose output
+- `stow -n .` - Dry run (no changes)
+- `stow -D .` - Unstow (remove symlinks)
+- `stow -R .` - Restow (recreate symlinks)
+- `stow -v --no .` - Check status
+
+## Repository Structure
+- `.config/` - User configuration files (symlinked to `~/.config/`)
+- `.local/bin/` - User scripts (symlinked to `~/.local/bin/`)
+- `.avante/rules/` - Project-specific AI rules (not symlinked - excluded via `.stow-local-ignore`)
+- `ansible/` - System provisioning (not symlinked by default)
+
+## Stow Ignore File (`.stow-local-ignore`)
+GNU Stow can use `.stow-local-ignore` to exclude files from being symlinked. This repository has an ignore file that attempts to exclude:
+- `AGENTS.md` - Repository documentation
+- `README.md` - Main repository README
+- `avant-analysis.md` - Repository analysis documentation
+- `.avante/` - Project-specific AI rules directory
+- `.gitignore` - Git ignore file
+- `.git/` - Git directory (already ignored by default)
+
+**Note**: The `.stow-local-ignore` file uses Perl-compatible regular expressions. However, when stowing the current directory (`.`), stow may not properly apply ignore patterns from within the same directory. For reliable exclusion, use explicit `--ignore` options or structure your stow operations differently.
+
+## Alternative: Manual Ignore Patterns
+For reliable file exclusion when stowing from the repository root, you can use:
+```bash
+stow --ignore='^\.avante' --ignore='^\.git' --ignore='^AGENTS\.md$' --ignore='^README\.md$' --ignore='^\.gitignore$' .
+```
+
+## Stow Strategy Recommendation
+Consider stowing individual directories instead of the entire root:
+```bash
+stow .config
+stow .local
+# etc.
+```
+This avoids the need to exclude repository management files from the root.
+
+## Best Practices
+1. **Always test with dry run**: Use `stow -n .` first
+2. **Use verbose mode**: `stow -v .` shows what's being linked
+3. **Check status**: `stow -v --no .` shows current symlink state
+4. **Be specific**: Stow individual directories when needed
+5. **Backup first**: Always have backups before major changes
+
+## Troubleshooting
+- **Permission errors**: Check file ownership and permissions
+- **Broken symlinks**: Use `stow -D .` to remove, then `stow .` to recreate
+- **Conflicts**: Stow won't overwrite existing files (use `--adopt` carefully)
+- **Missing stow**: Install with `sudo apt install stow` or `sudo pacman -S stow`
+{% endblock %}
+
+{% block extra_prompt %}
+## PROJECT-SPECIFIC GUIDANCE
+
+When working with this dotfiles repository:
+- Use the `dotfiles_stow` custom tool for stow operations
+- The tool will automatically detect if you're in the correct project context
+- Always consider using dry run first to see what changes will be made
+- Check the status of symlinks before making changes
+- Remember the repository is at `~/.dotfiles/` and files are symlinked to home directory
+- The avante.nvim configuration itself is managed via stow from `.config/nvim/`
+
+**This rule and tool are NOT for general use in other projects.**
+
+Example avante.nvim queries (only work in this repository):
+- "Run stow to symlink all files"
+- "Check stow status with dry run"
+- "Unstow the neovim configuration"
+- "Show stow help information"
+
+If the stow tool returns an error about not being in a dotfiles repository, it means you're not in the correct project context.
+{% endblock %}
+

@@ -1,0 +1,86 @@
+{# Rule file for dotfiles repository #}
+{# This applies to the entire dotfiles repository #}
+
+{% block custom_prompt %}
+You are working with a dotfiles repository for Arch Linux with Hyprland/Wayland. This repository contains system configurations for:
+
+## System Components
+- **Hyprland**: Wayland compositor configuration
+- **Waybar**: Status bar configuration with screen capture button integration
+- **Neovim**: Editor configuration with avante.nvim AI integration
+- **Bash**: Shell configuration and aliases
+- **Screen Capture**: Comprehensive screenshot/recording system for Wayland/Hyprland
+- **Ansible**: System provisioning and configuration management
+
+## Key Features
+- **Arch Linux** focus with Wayland/Hyprland
+- **avante.nvim** with DeepSeek AI integration and ACP support
+- **Custom screen capture** system with Waybar integration
+- **Environment variable management** via dotenv
+- **Hierarchical AI rules** with project-specific and global rules
+- **RAG Service** for enhanced context retrieval
+- **Custom tools** for Neovim debugging and message handling
+
+## avante.nvim Configuration Details
+- **Primary Provider**: DeepSeek with OpenAI-compatible API
+- **ACP Providers**: gemini-cli, claude-code, goose, codex, kimi-cli
+- **RAG Service**: Enabled with DeepSeek embeddings
+- **Custom Tools**: `neovim_messages`, `neovim_echo`
+- **Rules System**: Hierarchical loading (project rules override global rules)
+- **Environment Variables**: Loaded from `.config/nvim/.env` (DEEPSEEK_API_KEY, TAVILY_API_KEY)
+
+## Project Structure
+- `.config/`: User configuration files
+  - `nvim/`: Neovim configuration with avante.nvim
+  - `hypr/`: Hyprland configuration
+  - `waybar/`: Waybar configuration with screen capture button
+  - `bash/`: Bash configuration with screen capture functions
+- `.local/bin/`: User scripts and binaries
+  - `screenshot-scripts/`: Screen capture and recording scripts
+- `ansible/`: System provisioning playbooks
+- `.avante/rules/`: Project-specific AI rules
+- `~/.config/nvim/avante/rules/`: Global AI rules
+
+## Screen Capture System
+- **Keybindings**: PRINT (full), SHIFT+PRINT (region), SUPER+PRINT (window)
+- **Recording**: SUPER+ALT+R (menu), SUPER+SHIFT+R (stop)
+- **Waybar Integration**: Camera button with left/right click menus
+- **Scripts**: Full suite of screenshot and recording scripts
+
+## Common Tasks
+- Managing Neovim plugins and avante.nvim configuration
+- Updating Hyprland/Wayland configurations
+- Maintaining screen capture scripts and Waybar integration
+- Managing environment variables and API keys for AI services
+- System provisioning with Ansible
+- Testing avante.nvim custom tools and RAG service
+- Updating AI rules for project-specific guidance
+
+## Repository Management
+- Uses **GNU Stow** for symlink management
+- All dotfiles are symlinked to home directory
+- Git for version control with descriptive commit messages
+- AGENTS.md documents all agent operations and changes
+{% endblock %}
+
+{% block extra_prompt %}
+This is a dotfiles repository, so changes should be made carefully as they affect system configuration.
+Always consider the impact on the overall system when making changes.
+
+## avante.nvim Specific Guidance
+- Use custom tools for debugging: `neovim_messages` for message history, `neovim_echo` for testing
+- Check environment variables are loaded from `.config/nvim/.env`
+- Test API connectivity for DeepSeek and other providers
+- RAG service uses DeepSeek embeddings via OpenAI-compatible API
+- Hierarchical rules: project rules in `.avante/rules/` override global rules
+
+## Screen Capture System
+- Screenshots saved to `~/Pictures/Screenshots/`
+- Recordings saved to `~/Videos/ScreenRecordings/`
+- Waybar button provides quick access to all capture functions
+- Use bash functions like `screenshot-help` for command reference
+
+The repository uses Git for version control. Changes should be committed with descriptive messages.
+Document significant changes in AGENTS.md when appropriate.
+{% endblock %}
+

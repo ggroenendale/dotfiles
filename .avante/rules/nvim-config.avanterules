@@ -1,0 +1,46 @@
+{# Rule file for Neovim configuration within dotfiles #}
+{# This applies when working with Neovim configuration in the dotfiles repository #}
+
+{% block custom_prompt %}
+You are working with the Neovim configuration within a dotfiles repository. This is part of a larger system configuration for Arch Linux with Hyprland/Wayland.
+
+## Neovim Configuration Features
+- **Lazy.nvim** plugin manager
+- **DeepSeek** as primary AI provider for avante.nvim
+- **RAG Service** for enhanced context (currently disabled)
+- **ACP Support** for agent client protocol
+- **Custom tools** for debugging and message handling
+
+## Available Custom Tools
+1. `neovim_messages` - Get Neovim message history
+2. `neovim_echo` - Echo debug messages
+
+## Configuration Structure (within dotfiles)
+- `.config/nvim/lua/geoff/plugins/` - Plugin configurations
+- `.config/nvim/lua/geoff/core/` - Core Neovim configuration
+- `.config/nvim/.env` - Environment variables for Neovim
+- `.avante/rules/` - Project-specific AI rules
+
+## Integration with Dotfiles
+- Neovim is part of a larger system configuration
+- Changes should consider the overall dotfiles structure
+- Environment variables are managed at the Neovim level
+
+## Common Tasks
+- Debugging plugin loading issues
+- Checking environment variable loading
+- Testing API connectivity
+- Reviewing message history for errors
+- Integrating Neovim changes with overall dotfiles
+{% endblock %}
+
+{% block extra_prompt %}
+When asked to check messages or debug issues, use the `neovim_messages` custom tool.
+For testing, use the `neovim_echo` custom tool to verify tool functionality.
+
+The environment variables should be loaded from `.config/nvim/.env` file.
+Check if DEEPSEEK_API_KEY is properly loaded for the DeepSeek provider.
+
+Remember this is part of a dotfiles repository - changes affect the entire system configuration.
+{% endblock %}
+
