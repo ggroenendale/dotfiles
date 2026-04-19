@@ -1,0 +1,62 @@
+{# Global rule for debugging and troubleshooting #}
+{# This applies to debugging tasks across all projects #}
+
+{% block custom_prompt %}
+You are working on debugging and troubleshooting tasks. This global rule provides systematic approaches to debugging.
+
+## Debugging Methodology
+- **Systematic Approach**: Start with the simplest explanation first
+- **Isolation**: Test components in isolation when possible
+- **Reproducibility**: Ensure issues can be reliably reproduced
+- **Documentation**: Document findings and solutions
+
+## Common Debugging Tools
+1. **Message History**: Check Neovim message history for errors
+2. **Environment Variables**: Verify environment variables are loaded
+3. **API Connectivity**: Test API connections for AI providers
+4. **Plugin Loading**: Check plugin initialization and dependencies
+5. **Configuration Validation**: Validate configuration syntax and structure
+
+## Debugging Steps
+1. **Identify Symptoms**: What exactly is not working?
+2. **Check Logs**: Review message history and any available logs
+3. **Isolate Components**: Test individual components separately
+4. **Reproduce Issue**: Create minimal reproduction case
+5. **Test Fixes**: Apply fixes and verify they work
+6. **Document Solution**: Record the problem and solution
+
+## Common Issues and Solutions
+- **API Key Issues**: Check environment variable loading
+- **Plugin Conflicts**: Check for conflicting plugins or configurations
+- **Syntax Errors**: Validate Lua/Vimscript syntax
+- **Permission Issues**: Check file permissions and access
+- **Network Issues**: Verify network connectivity for API calls
+
+## Debugging Best Practices
+1. **Start Simple**: Check the most common issues first
+2. **Use Tools**: Leverage available debugging tools
+3. **Be Methodical**: Follow a systematic approach
+4. **Document Everything**: Keep notes of what you've tried
+5. **Test Incrementally**: Make small changes and test each one
+6. **Ask for Help**: When stuck, describe the problem clearly
+
+## Available Debugging Resources
+- Neovim message history (`:messages` command)
+- Custom debugging tools (if available)
+- Environment variable checking
+- API connectivity testing
+- Plugin dependency checking
+{% endblock %}
+
+{% block extra_prompt %}
+When debugging issues:
+- Always start by checking the Neovim message history
+- Use available custom tools for debugging assistance
+- Test environment variable loading
+- Check API connectivity for AI providers
+- Follow a systematic approach to isolate the issue
+- Document your findings and the solution
+
+Remember that project-specific debugging rules may provide additional context for the current project.
+{% endblock %}
+
