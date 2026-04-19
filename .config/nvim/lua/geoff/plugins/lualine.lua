@@ -14,6 +14,7 @@ return {
             fg = "#C3CCDC",
             bg = "#112638",
             inactive_bg = "#2C3043",
+            separator = "#5C6370",  -- Darker gray for separators
         }
 
         local my_lualine_theme = {
@@ -53,6 +54,8 @@ return {
         lualine.setup({
             options = {
                 theme = my_lualine_theme,
+                component_separators = { left = '|', right = '|'},
+                section_separators = { left = '', right = ''},
             },
             sections = {
                 lualine_x = {
@@ -64,6 +67,19 @@ return {
                     { "encoding" },
                     { "fileformat" },
                     { "filetype" },
+                    -- Deepseek budget component
+                    function()
+                        local ok, deepseek_budget = pcall(require, "deepseek-budget")
+                        if ok then
+                            local display = deepseek_budget.get_display()
+                            -- Handle both string and table formats
+                            if type(display) == "table" then
+                                return display[1] or display.formatted or ""
+                            end
+                            return display
+                        end
+                        return ""
+                    end,
                 },
             },
         })

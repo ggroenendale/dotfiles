@@ -3,7 +3,9 @@ return {
 	dependencies = {
 		"hrsh7th/nvim-cmp",
 	},
-	event = "VimEnter",
+	-- Load immediately when Neovim starts (before other plugins)
+	lazy = false,
+	priority = 1000, -- High priority to load first
 	config = function()
 		-- Function to load environment variables from .env file
 		local function load_env_variables()
@@ -50,16 +52,16 @@ return {
 
 						loaded_count = loaded_count + 1
 
-						-- Debug: Check for TAVILY_API_KEY
-						if key == "TAVILY_API_KEY" then
-							vim.notify("TAVILY_API_KEY loaded: " .. string.sub(value, 1, 10) .. "...")
+						-- Debug: Check for DEEPSEEK_API_KEY
+						if key == "DEEPSEEK_API_KEY" then
+							vim.notify("DEEPSEEK_API_KEY loaded: " .. string.sub(value, 1, 10) .. "...")
 
 							-- Debug: Check if it's actually set
-							local check_key = os.getenv("TAVILY_API_KEY")
+							local check_key = os.getenv("DEEPSEEK_API_KEY")
 							if check_key then
-								print("Verified TAVILY_API_KEY in os.getenv: " .. string.sub(check_key, 1, 10) .. "...")
+								print("Verified DEEPSEEK_API_KEY in os.getenv: " .. string.sub(check_key, 1, 10) .. "...")
 							else
-								vim.notify("WARNING: TAVILY_API_KEY not found in os.getenv()", vim.log.levels.WARN)
+								vim.notify("WARNING: DEEPSEEK_API_KEY not found in os.getenv()", vim.log.levels.WARN)
 							end
 						end
 					end
@@ -67,7 +69,7 @@ return {
 			end
 
 			if loaded_count > 0 then
-				--vim.notify("Loaded " .. loaded_count .. " environment variables from " .. env_path)
+				vim.notify("Loaded " .. loaded_count .. " environment variables from " .. env_path)
 				return true
 			else
 				vim.notify("No valid environment variables found in " .. env_path, vim.log.levels.WARN)
@@ -75,7 +77,7 @@ return {
 			end
 		end
 
-		-- Load environment variables on startup
+		-- Load environment variables immediately on startup
 		load_env_variables()
 
 		-- Also try cmp-dotenv for autocompletion

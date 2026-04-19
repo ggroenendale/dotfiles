@@ -34,3 +34,8 @@ opt.clipboard:append("unnamedplus")
 -- split windows
 opt.splitright = true -- split vertical window to the right
 opt.splitbelow = true -- split horizontal window to the bottom
+
+-- Global status line for Neovide (single status line at bottom)
+if vim.g.neovide then
+    opt.laststatus = 3 -- Global status line only
+end

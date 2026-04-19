@@ -25,6 +25,11 @@
 require("geoff.core")
 require("geoff.lazy")
 
+-- Load Neovide-specific configuration
+if vim.g.neovide then
+    require("geoff.core.neovide").setup()
+end
+
 ----------------------------------------------------------------------
 -- Neovide GUI configuration
 --
