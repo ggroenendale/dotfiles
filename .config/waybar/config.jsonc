@@ -141,7 +141,7 @@
     "clock": {
         "interval": 1,
         "timezone": "America/Vancouver",
-        "format": "  {:%H:%M} ",
+        "format": "  {:%I:%M %p} ",
         "tooltip": false,
         "tooltip-format": ""
     },
