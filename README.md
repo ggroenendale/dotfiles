@@ -59,3 +59,95 @@ After running `stow .`, use the commands:
 - `open-screenshots` to view captured screenshots
 
 For detailed documentation, see: `~/.local/bin/screenshot-scripts/README.md`
+
+## Plugin Source Code Access
+
+For debugging and development purposes, the repository includes convenient access to Neovim plugin source code:
+
+### Symlink to Plugin Source
+```
+nvim-plugins-source -> ~/.local/share/nvim/lazy/
+```
+
+This symlink provides quick access to all installed Neovim plugin source code (210MB+). Useful for:
+- Debugging plugin issues (e.g., "Invalid buffer id" errors in avante.nvim)
+- Understanding plugin implementations
+- Reference when writing custom configurations
+
+### Git Ignored
+The symlink and plugin source directory are excluded from git:
+- Added to `.gitignore`: `nvim-plugins-source` and `.local/share/nvim/`
+- Added to `.stow-local-ignore`: Won't be symlinked by GNU Stow
+
+### Usage Examples:
+```bash
+# Browse plugin source code
+cd nvim-plugins-source/avante.nvim/lua/avante/
+
+# Check specific plugin implementation
+vim nvim-plugins-source/avante.nvim/lua/avante/utils/root.lua
+
+# List all installed plugins
+ls nvim-plugins-source/
+```
+
+## RAG Service Fix for Podman
+
+The avante.nvim RAG service requires fixes to work with Podman instead of Docker:
+
+### Issues Fixed:
+1. **Podman Runner Support**: avante.nvim only supports "docker" or "nix" runners, not "podman"
+2. **Hardcoded Docker Commands**: Commands use "docker" instead of the runner value
+3. **Missing Docker Binary**: System only has podman, not docker
+
+### Solutions Implemented:
+1. **Patched avante.nvim**: Modified `~/.local/share/nvim/lazy/avante.nvim/lua/avante/rag_service.lua`
+   - Updated `get_rag_service_runner()` to treat "podman" as "docker"
+   - Backup created at: `rag_service.lua.backup`
+
+2. **Created Docker Symlink**: `~/.local/bin/docker -> /usr/bin/podman`
+   - Makes podman accessible as "docker" command
+   - Required because avante.nvim hardcodes "docker" commands
+
+3. **RAG Container Running**: Tested and verified container is operational
+   - Image: `quay.io/yetoneful/avante-rag-service:0.0.11`
+   - Port: `20250`
+   - Health check: `curl http://localhost:20250/health`
+
+### Verification:
+```bash
+# Check if RAG container is running
+podman ps | grep avante-rag-service
+
+# Check container logs
+podman logs avante-rag-service --tail 10
+
+# Test service health (after container starts)
+curl -s http://localhost:20250/health
+```
+
+### Manual Container Start (if needed):
+```bash
+# Remove existing container
+podman rm -fv avante-rag-service 2>/dev/null || true
+
+# Start RAG service manually
+podman run --platform=linux/amd64 -d \
+  -p 0.0.0.0:20250:20250 \
+  --name avante-rag-service \
+  -v ~/.local/share/nvim/avante/rag_service:/data \
+  -v $HOME:/host:ro \
+  -e ALLOW_RESET=TRUE \
+  -e DATA_DIR=/data \
+  -e RAG_EMBED_PROVIDER=openai \
+  -e RAG_EMBED_ENDPOINT=https://api.deepseek.com/v1 \
+  -e RAG_EMBED_API_KEY="$DEEPSEEK_API_KEY" \
+  -e RAG_EMBED_MODEL=text-embedding-ada-002 \
+  -e RAG_EMBED_EXTRA='{}' \
+  -e RAG_LLM_PROVIDER=openai \
+  -e RAG_LLM_ENDPOINT=https://api.deepseek.com/v1 \
+  -e RAG_LLM_API_KEY="$DEEPSEEK_API_KEY" \
+  -e RAG_LLM_MODEL=deepseek-chat \
+  -e RAG_LLM_EXTRA='{}' \
+  quay.io/yetoneful/avante-rag-service:0.0.11
+```
