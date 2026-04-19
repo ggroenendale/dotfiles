@@ -7,3 +7,9 @@
 # Ignore the backgrounds folder
 backgrounds/
 
+# Ignore Neovim plugin source code and runtime data
+.local/share/nvim/
+
+# Ignore the symlink to plugin source code (machine-specific)
+nvim-plugins-source
+
