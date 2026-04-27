@@ -362,7 +362,7 @@ case $dotfiles_os in
     __task "Unsupported OS"
     _cmd "echo 'Unsupported OS'"
     ;;
-fi  
+esac 
 
 
 #if ! [[ -d "$DOTFILES_DIR" ]]; then
