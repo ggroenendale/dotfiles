@@ -225,31 +225,36 @@ dotfiles_os=$(detect_os)
 #   OS Installer                       
 # =========================================================
 
-
+# ---------------------------------------------------------
+# arch_setup()
+# ---------------------------------------------------------
+#
+#  
+# ---------------------------------------------------------
 arch_setup() {
 
     # Update Packages
     _cmd "sudo pacman -Sy --noconfirm"
     # Install Git
-    if ! [ -x "$(command -v git)" ]; then 
+    if ! [ -x "$(command -v git)" ]; then
         __task "Installing Git"
         _cmd "sudo pacman -S --noconfirm git"
-    fi 
+    fi
 
     # Install Python3
-    if ! [ -x "$(command -v python3)" ]; then 
+    if ! [ -x "$(command -v python3)" ]; then
         __task "Installing Ansible (This may take a few minutes)"
         _cmd "sudo pacman -S --noconfirm python3"
     fi
 
     # Install Python3 Pip
-    if ! [ -x "$(command -v pip)" ]; then 
+    if ! [ -x "$(command -v pip)" ]; then
         __task "Installing Pip (This may take a few minutes)"
         _cmd "sudo pacman -S --noconfirm python-pip"
-    fi   
+    fi
 
     # Install python-argcomplete
-    if ! [ -x "$(command -v )" ]; then 
+    if ! python3 -c "import argcomplete" 2>/dev/null; then
         __task "Installing python-argcomplete"
         _cmd "sudo pacman -S --noconfirm python-argcomplete"
     fi
@@ -261,9 +266,33 @@ arch_setup() {
     fi
 
     # Install OpenSSH
+    if ! [ -x "$(command -v ssh)" ]; then
+        __task "Installing OpenSSH"
+        _cmd "sudo pacman -S --noconfirm openssh"
+    fi
+
+    # Install Ansible Python dependencies
+    __task "Installing Ansible Python dependencies"
+    _cmd "sudo pacman -S --noconfirm python-passlib python-kubernetes python-docker python-jmespath"
+
+    # Install Ansible collections
+    __task "Installing Ansible collections"
+    _cmd "ansible-galaxy collection install community.general ansible.posix"
+
     # Set Locale
+    if ! locale -a 2>/dev/null | grep -q "en_US.utf8"; then
+        __task "Setting locale"
+        _cmd "sudo sed -i 's/^#en_US.UTF-8/en_US.UTF-8/' /etc/locale.gen"
+        _cmd "sudo locale-gen"
+    fi
 }
 
+# ---------------------------------------------------------
+# debian_setup()
+# ---------------------------------------------------------
+#
+#  
+# ---------------------------------------------------------
 debian_setup() {
 
     # Source os-release to get VERSION_ID
@@ -299,10 +328,82 @@ debian_setup() {
     fi
 }
 
+# ---------------------------------------------------------
+# opensuse_setup()
+# ---------------------------------------------------------
+# Installs:
+#   git
+#   python3
+#   pip
+#   python-argcomplete
+#   ansible
+# in that order by first checking if the a package is available
+# then installing if not.
+#  
+# ---------------------------------------------------------
 opensuse_setup() {
-    echo "Running opensuse..."
+
+    # Update Packages
+    _cmd "sudo zypper --non-interactive refresh"
+
+    # Install Git
+    if ! [ -x "$(command -v git)" ]; then
+        __task "Installing Git"
+        _cmd "sudo zypper --non-interactive install git"
+    fi
+
+    # Install Python3
+    if ! [ -x "$(command -v python3)" ]; then
+        __task "Installing Python3"
+        _cmd "sudo zypper --non-interactive install python3"
+    fi
+
+    # Install Python3 Pip
+    if ! [ -x "$(command -v pip)" ]; then
+        __task "Installing Pip"
+        _cmd "sudo zypper --non-interactive install python3-pip"
+    fi
+
+    # Install python-argcomplete
+    if ! python3 -c "import argcomplete" 2>/dev/null; then
+        __task "Installing python-argcomplete"
+        _cmd "sudo zypper --non-interactive install python3-argcomplete"
+    fi
+
+    # Install Ansible if not available
+    if ! [ -x "$(command -v ansible)" ]; then
+        __task "Installing Ansible (This may take a few minutes)"
+        _cmd "sudo zypper --non-interactive install ansible"
+    fi
+
+    # Install OpenSSH
+    if ! [ -x "$(command -v ssh)" ]; then
+        __task "Installing OpenSSH"
+        _cmd "sudo zypper --non-interactive install openssh"
+    fi
+
+    # Install Ansible Python dependencies
+    __task "Installing Ansible Python dependencies"
+    _cmd "sudo zypper --non-interactive install python3-passlib python3-kubernetes python3-docker python3-jmespath"
+
+    # Install Ansible collections
+    __task "Installing Ansible collections"
+    _cmd "ansible-galaxy collection install community.general ansible.posix"
+
+    # Set Locale
+    if ! locale -a 2>/dev/null | grep -q "en_US.utf8"; then
+        __task "Setting locale"
+        _cmd "sudo localectl set-locale LANG=en_US.UTF-8"
+        _cmd "sudo locale-gen"
+    fi
 }
 
+# ---------------------------------------------------------
+# ubuntu_setup()
+# ---------------------------------------------------------
+#
+#  
+# ---------------------------------------------------------
 ubuntu_setup() {
     # Source os-release to get VERSION_ID
     if [ -f /etc/os-release ]; then
@@ -359,8 +460,8 @@ case $dotfiles_os in
         opensuse_setup
         ;;
     *)
-    __task "Unsupported OS"
-    _cmd "echo 'Unsupported OS'"
+        __task "Unsupported OS"
+        _cmd "echo 'Unsupported OS'"
     ;;
 esac 
 
