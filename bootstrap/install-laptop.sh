@@ -300,7 +300,7 @@ debian_setup() {
 }
 
 opensuse_setup() {
-    
+    echo "Running opensuse..."
 }
 
 ubuntu_setup() {
@@ -356,7 +356,7 @@ case $dotfiles_os in
         echo "do ubuntu"
         ;;
     opensuse)
-        echo "do open suse"
+        opensuse_setup
         ;;
     *)
     __task "Unsupported OS"
