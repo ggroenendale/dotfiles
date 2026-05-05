@@ -387,6 +387,61 @@ Successfully debugged and fixed the RAG service issue in avante.nvim. The servic
 
 ---
 
+## Task: Refactor avante.nvim Podman Fix to Monkey-Patching Approach
+**Date**: 2026-04-26
+**Agent**: Claude
+**Task Description**: Refactor the avante.nvim podman fix from direct plugin file modification to a monkey-patching approach that survives plugin updates
+
+### Operations Performed
+
+#### 1. Analysis of the Problem
+- Identified that directly patching `rag_service.lua` in the lazy.nvim plugin directory is fragile
+- When lazy.nvim updates avante.nvim (via `git pull`), the patch would be overwritten
+- The backup file (`rag_service.lua.backup`) would become stale after updates
+- Need a sustainable approach that doesn't modify plugin files
+
+#### 2. Monkey-Patching Implementation
+- Added an `init` hook in `avante.lua` config that uses `vim.api.nvim_create_autocmd` with `AvantePluginLoaded` event
+- The autocommand runs once after avante loads and overrides two functions:
+  - `get_rag_service_runner()`: Treats "podman" as "docker" in the runner logic
+  - `get_rag_service_url()`: Uses `127.0.0.1` instead of `localhost` to avoid IPv6 resolution issues with podman
+- No plugin files are modified - all changes live in our config
+
+#### 3. Cleanup
+- Reverted `rag_service.lua` to its original state via `git checkout`
+- Removed the backup file (`rag_service.lua.backup`)
+- The `docker` symlink (`~/.local/bin/docker -> /usr/bin/podman`) is preserved since avante.nvim hardcodes `"docker"` in command invocations (e.g., `docker run`, `docker inspect`, `docker rm`)
+
+### Files Modified
+1. `.config/nvim/lua/geoff/plugins/avante.lua` - Added monkey-patching init hook
+
+### Key Changes
+- **Before**: Directly patched `~/.local/share/nvim/lazy/avante.nvim/lua/avante/rag_service.lua`
+- **After**: Monkey-patches from config using `AvantePluginLoaded` autocommand
+- **Plugin Updates**: Now safe - lazy.nvim can update avante.nvim without overwriting our changes
+- **Docker Symlink**: Still needed for hardcoded `"docker"` commands in the plugin
+
+### How It Works
+1. lazy.nvim loads avante.nvim plugin
+2. The `init` hook registers an autocommand for `AvantePluginLoaded` event
+3. When avante finishes loading, the autocommand fires
+4. It overrides `get_rag_service_runner()` to handle "podman" → "docker" mapping
+5. It overrides `get_rag_service_url()` to use `127.0.0.1` instead of `localhost`
+
+### Why This Approach
+- **No plugin files modified**: Changes survive plugin updates
+- **Self-documenting**: The init hook clearly shows what's being overridden and why
+- **Easy to maintain**: If upstream adds podman support, just remove the monkey-patch
+- **Consistent with Neovim patterns**: Autocommand-based initialization is idiomatic
+
+### Verification
+✅ Plugin file reverted to original: `git diff` shows no local changes
+✅ Monkey-patch in avante.lua config is properly structured
+✅ Docker symlink preserved for hardcoded commands
+✅ No diagnostics errors in avante.lua
+
+---
+
 ## Task: GNU Stow Custom Tool for Dotfiles Management
 **Date**: 2026-04-18
 **Agent**: Claude
@@ -677,4 +732,586 @@ Successfully fixed the Deepseek budget plugin configuration to work properly wit
 
 ### Outcome
 Successfully fixed the module loading issue for the Deepseek budget plugin. The plugin now loads correctly with lazy.nvim, and the balance information should appear in the status line when the API key is configured in `.config/nvim/.env`.
+
+---
+
+## Task: avante.nvim Project Consistency Rules Enhancement
+**Date**: 2026-04-19
+**Agent**: Claude
+**Task Description**: Extend avante.nvim configuration with comprehensive project consistency rules, creating standardized .avante/ folder structure for all projects
+
+### Operations Performed
+
+#### 1. Global Rule Creation
+- Created `project-consistency.avanterules` global rule file
+- Defined standardized `.avante/` folder structure requirement for all projects
+- Specified three required subfolders: `context/`, `plans/`, `rules/`
+- Added comprehensive guidance on structure usage and best practices
+
+#### 2. Template Development
+- Created templates directory: `~/.config/nvim/avante/templates/`
+- Developed `INDEX.md` template for context folder with comprehensive project information structure
+- Created `current.md` template for plans folder with project tracking (Proj-001 style IDs)
+- Added README.md for templates directory with usage instructions
+
+#### 3. Folder Structure Specification
+**Required Structure:**
+```
+.avante/
+├── context/           # Project context and information
+│   └── INDEX.md      # Central index of project information (REQUIRED)
+├── plans/            # Project plans and task management
+│   └── current.md    # Active work log with project tracking (REQUIRED)
+└── rules/            # Project-specific rules for avante.nvim
+    └── *.avanterules # Project-specific rule files
+```
+
+#### 4. Rule Integration
+- Global rule automatically loads from `~/.config/nvim/avante/rules/`
+- Provides hierarchical guidance: project rules override global rules
+- Includes instructions for avante.nvim to utilize the structure
+- Adds best practices for maintaining consistency across projects
+
+### Files Created/Modified
+1. `.config/nvim/avante/rules/project-consistency.avanterules` - Global rule for project consistency
+2. `.config/nvim/avante/templates/INDEX.md` - Context index template
+3. `.config/nvim/avante/templates/current.md` - Active work log template
+4. `.config/nvim/avante/templates/README.md` - Templates documentation
+
+### Key Features Implemented
+- **Standardized Structure**: Consistent `.avante/` folder structure across all projects
+- **Context Management**: `INDEX.md` as central source of project information
+- **Plan Tracking**: `current.md` with project IDs (Proj-001 style) for task management
+- **Rule Hierarchy**: Project-specific rules in `.avante/rules/` override global rules
+- **Template System**: Ready-to-use templates for quick project setup
+- **avante.nvim Integration**: Rules guide AI to utilize the structure effectively
+
+### Rule Components
+1. **context/ Folder**: Contains `INDEX.md` with project overview, architecture, key files, dependencies
+2. **plans/ Folder**: Contains `current.md` with active projects, phases, validation requirements
+3. **rules/ Folder**: Project-specific `.avanterules` files for customized AI guidance
+4. **Project IDs**: Standardized identification system (Proj-001, Proj-002, etc.)
+
+### Usage Guidelines
+1. **New Projects**: Create `.avante/` structure with three subfolders
+2. **Context First**: Always check `INDEX.md` for project information
+3. **Plan Updates**: Log work in `current.md` with project IDs
+4. **Rule Customization**: Add project-specific rules to `.avante/rules/`
+5. **Consistency**: Maintain same structure across all projects
+
+### Integration with avante.nvim
+- **Auto-detection**: avante.nvim detects and uses `.avante/` structure
+- **Context Loading**: References `INDEX.md` for project information
+- **Plan Awareness**: Uses `current.md` for task guidance and progress tracking
+- **Rule Application**: Applies project-specific rules from `.avante/rules/`
+
+### Best Practices
+1. **Version Control**: Include `.avante/` in version control (except sensitive data)
+2. **Regular Updates**: Keep context and plans current as project evolves
+3. **Team Coordination**: Structure supports collaboration between team members and AI agents
+4. **Documentation**: Comprehensive templates reduce setup time and ensure consistency
+
+### Outcome
+Successfully extended avante.nvim with comprehensive project consistency rules that establish a standardized `.avante/` folder structure for all projects. The implementation provides templates, guidelines, and integration points that ensure consistent AI-assisted development workflows across all repositories while maintaining flexibility for project-specific customization.
+
+---
+
+## Task: Simplify current.md Template for Project Tracking
+**Date**: 2026-04-19
+**Agent**: Claude
+**Task Description**: Simplify the current.md template by removing unnecessary sections and focusing on essential project tracking with enhanced AI agent guidelines
+
+### Operations Performed
+
+#### 1. Template Simplification
+- Removed "Validation Requirements" section (moved to project plan document)
+- Removed "Testing Requirements" section (moved to project plan document)
+- Removed "Risks and Issues" section (moved to project plan document)
+- Removed "Completed Projects" section (project completion noted in project plan)
+- Removed "Project Queue" section (planned projects managed in project plan)
+
+#### 2. Enhanced AI Agent Guidelines
+- Preserved and enhanced the AI Agent Guidelines section
+- Added specific guidance about referencing project plan for validation/testing
+- Emphasized that current.md should focus only on active work
+- Added best practice: "Note project completion in the project plan document, not in current.md"
+- Added guideline: "Keep current.md focused on active work only - no validation/testing/risks sections"
+
+#### 3. Updated Documentation
+- Updated templates README to reflect simplified current.md structure
+- Clarified that validation, testing, risks, completed projects, and project queue are managed in project plan document
+- Maintained comprehensive AI agent guidance for effective project tracking
+
+### Files Modified
+1. `.config/nvim/avante/templates/current.md` - Simplified template with focused structure
+2. `.config/nvim/avante/templates/README.md` - Updated documentation
+
+### Key Changes Made
+1. **Streamlined Structure**: Removed redundant sections that belong in project plan
+2. **Clear Separation**: current.md now focuses exclusively on active work tracking
+3. **Enhanced Guidance**: AI Agent Guidelines provide clear instructions for using the simplified template
+4. **Better Organization**: Validation, testing, risks, completed projects, and project queue managed in appropriate documents
+
+### Simplified Template Structure
+**Active Projects Section:**
+- Project entries with IDs (Proj-001 style)
+- Status, priority, dates, assignment
+- Project overview
+- Current phase with steps
+- Dependencies
+
+**Work Log Section:**
+- Date-based entries
+- Project-specific activities
+- Time tracking
+- Results and next steps
+- Issues encountered
+
+**AI Agent Guidelines Section:**
+- When working on projects
+- Starting new work
+- Completing work
+- Reporting issues
+- Best practices
+- Project management
+
+### Rationale for Changes
+1. **Separation of Concerns**: Project plan documents handle validation, testing, risks
+2. **Focus on Active Work**: current.md tracks only what's currently being worked on
+3. **Reduced Duplication**: Avoids maintaining the same information in multiple places
+4. **Clearer Workflow**: AI agents know exactly where to find different types of information
+5. **Better Maintenance**: Easier to keep current.md updated when it's focused on active work
+
+### Integration with Project Plan
+- **Validation/Testing**: Managed in project plan document
+- **Risks/Issues**: Documented in project plan with mitigation strategies
+- **Completed Projects**: Noted in project plan with outcomes and lessons learned
+- **Project Queue**: Planned projects listed in project plan with prerequisites
+
+### AI Agent Workflow
+1. **Check current.md** for active projects and work log
+2. **Reference project plan** for validation, testing, and risk information
+3. **Update phase steps** as work progresses
+4. **Log work** with specific details and next steps
+5. **Note completion** in project plan when projects are finished
+
+### Outcome
+Successfully simplified the current.md template to focus exclusively on active work tracking while maintaining comprehensive AI agent guidance. The simplified structure reduces duplication, clarifies responsibilities, and creates a cleaner workflow where current.md tracks active work while project plans handle validation, testing, risks, and project lifecycle management.
+
+---
+
+## Task: Create Project Plan Document Template
+**Date**: 2026-04-19
+**Agent**: Claude
+**Task Description**: Create a comprehensive Project Plan Document template to ensure consistency across all project plans, complementing the simplified current.md template
+
+### Operations Performed
+
+#### 1. Project Plan Template Creation
+- Created `project-plan.md` template in templates directory
+- Designed comprehensive structure for project planning documentation
+- Included all sections removed from current.md template:
+  - Validation Requirements
+  - Testing Requirements
+  - Risks and Issues
+  - Completed Projects
+  - Project Queue (Future Projects)
+
+#### 2. Template Structure Design
+**Core Sections:**
+1. **Project Overview**: Executive summary, goals, success criteria
+2. **Project Scope**: In/out of scope, deliverables
+3. **Project Timeline**: Milestones, phases, schedule
+4. **Team and Resources**: Project team, resource requirements
+5. **Validation Requirements**: Functional and non-functional validation
+6. **Testing Requirements**: Unit, integration, E2E, UAT testing
+7. **Risks and Issues**: Identified risks, current issues with mitigation
+8. **Dependencies**: Internal and external dependencies
+9. **Communication Plan**: Stakeholder communication, meeting schedule
+10. **Change Management**: Change request process, version control
+11. **Completed Projects**: Archive of completed work with lessons learned
+12. **Project Queue**: Planned future projects with prerequisites
+
+#### 3. Templates README Update
+- Added `project-plan.md` to available templates list
+- Documented purpose, usage, and contents
+- Clarified relationship between current.md and project-plan.md
+- Explained separation of concerns: current.md for active work, project-plan.md for comprehensive planning
+
+#### 4. Template Testing
+- Verified template can be copied and used successfully
+- Tested structure with sample project
+- Confirmed all sections are properly formatted
+
+### Files Created/Modified
+1. `.config/nvim/avante/templates/project-plan.md` - Comprehensive project plan template
+2. `.config/nvim/avante/templates/README.md` - Updated with project plan template documentation
+
+### Key Features Implemented
+- **Comprehensive Planning**: All aspects of project planning in one document
+- **Validation & Testing**: Detailed requirements for quality assurance
+- **Risk Management**: Structured approach to identifying and mitigating risks
+- **Project Lifecycle**: Support for completed projects and future project queue
+- **Team Coordination**: Communication plans and change management processes
+- **Integration with current.md**: Clear separation of active work tracking vs. comprehensive planning
+
+### Template Sections Detail
+
+**Validation Requirements:**
+- Functional validation with methods and success criteria
+- Non-functional validation (performance, security, usability)
+- Clear ownership and accountability
+
+**Testing Requirements:**
+- Unit testing framework and coverage targets
+- Integration testing scope and environment
+- End-to-end testing scenarios
+- User Acceptance Testing (UAT) criteria
+
+**Risks and Issues:**
+- Risk identification with probability/impact assessment
+- Mitigation strategies and ownership
+- Issue tracking with resolution plans
+- Status tracking for risks and issues
+
+**Completed Projects:**
+- Structured archive of completed work
+- Lessons learned documentation
+- Key results and outcomes
+- Next steps and follow-up actions
+
+**Project Queue:**
+- Future project planning
+- Priority-based scheduling
+- Prerequisites and dependencies
+- Resource planning
+
+### Integration with Existing System
+- **Complementary to current.md**: project-plan.md handles planning, current.md tracks active work
+- **Consistent with .avante/ structure**: Both templates follow the standardized folder structure
+- **AI agent guidance**: Clear separation helps AI agents know where to find different information
+- **Version control friendly**: Structured format works well with git and documentation systems
+
+### Usage Guidelines
+1. **Create project-plan.md** for each major project in `.avante/plans/` directory
+2. **Use consistent naming**: `project-plan.md` or `[project-name]-plan.md`
+3. **Regular updates**: Update as project evolves and new information emerges
+4. **Reference from current.md**: Link to relevant sections when logging work
+5. **Archive completed projects**: Move completed project information to Completed Projects section
+
+### Outcome
+Successfully created a comprehensive Project Plan Document template that provides a standardized structure for project planning across all repositories. The template complements the simplified current.md template by handling all comprehensive planning aspects (validation, testing, risks, completed projects, project queue) while current.md focuses exclusively on active work tracking. This creates a clean separation of concerns and ensures consistent project documentation across all projects.
+
+**Update (2026-04-19):** Enhanced the template for single developer use:
+- Removed "Team" section (not needed for single developer)
+- Enhanced "Resources" section with focus on infrastructure, development environment, budget, and external services
+- Added specific sections for cloud providers, hardware requirements, development stack, and service costs
+
+**Update (2026-04-19):** Simplified timeline and corporate sections:
+- Simplified timeline section to focus on key checkpoints rather than corporate milestones
+- Removed excessive corporate-focused sections (communication plan, change management, complex tables)
+- Streamlined template for personal work and side projects
+- Maintained essential planning elements while removing bureaucracy
+---
+
+## Task: Context Directory Extension with ARCHITECTURE.md
+**Date**: 2026-04-21
+**Agent**: Claude
+**Task Description**: Extend the context directory with a comprehensive ARCHITECTURE.md file for detailed system architecture documentation
+
+### Operations Performed
+
+#### 1. Directory Structure Analysis
+- Checked existing `.avante/context/` directory structure
+- Reviewed project consistency rules for proper file placement
+- Analyzed existing context files to understand documentation patterns
+- Confirmed ARCHITECTURE.md belongs in `.avante/context/` directory
+
+#### 2. ARCHITECTURE.md Creation
+- Created comprehensive architecture document at `.avante/context/ARCHITECTURE.md`
+- Documented complete system architecture with detailed technical information
+- Included architectural principles, high-level architecture, and component details
+- Added data flow diagrams, directory structure, and technology stack
+- Covered security architecture, performance considerations, and scalability
+
+#### 3. INDEX.md Integration
+- Updated INDEX.md to reference ARCHITECTURE.md in "Context Documents" section
+- Added ARCHITECTURE.md to "System Configuration" category
+- Updated `last_edited` date in INDEX.md frontmatter to 2026-04-21
+- Removed generic template sections from INDEX.md (replaced by detailed ARCHITECTURE.md)
+- Verified all links and references are correct
+
+#### 4. Documentation Quality Assurance
+- Verified ARCHITECTURE.md has proper frontmatter with metadata
+- Checked that INDEX.md correctly links to ARCHITECTURE.md
+- Ensured consistent formatting across both documents
+- Validated that architecture information is comprehensive and accurate
+
+### Files Created/Modified
+1. `.avante/context/ARCHITECTURE.md` - Created comprehensive architecture document
+2. `.avante/context/INDEX.md` - Updated with ARCHITECTURE.md reference and date
+
+### Key Features of ARCHITECTURE.md
+- **Comprehensive Coverage**: Detailed technical architecture of entire dotfiles repository
+- **Component Architecture**: In-depth analysis of Neovim, Hyprland, screen capture, AI services
+- **Data Flow Diagrams**: Visual representations of system interactions
+- **Technology Stack**: Complete listing of tools, libraries, and frameworks
+- **Directory Structure**: Detailed mapping of repository organization
+- **Security Architecture**: API key management, container security, system security
+- **Performance Considerations**: Startup performance, resource usage, optimization strategies
+- **Scalability and Extensibility**: Guidelines for adding new components
+
+### Document Structure
+1. **Architectural Principles**: Modularity, AI-first development, Wayland native
+2. **High-Level Architecture**: System components diagram and description
+3. **Component Architecture**: Detailed analysis of each major component
+4. **Data Flow and Integration**: Workflows for screen capture, AI assistance, dotfiles management
+5. **Directory Structure Details**: Complete mapping of repository organization
+6. **Technology Stack**: Core technologies, AI/ML stack, development tools
+7. **Configuration Management**: Symlink management, environment variables, version control
+8. **Security Architecture**: API key management, container security, system security
+9. **Performance Considerations**: Startup performance, resource usage, optimization
+10. **Scalability and Extensibility**: Adding new components, extension points
+11. **Monitoring and Maintenance**: System health monitoring, maintenance procedures
+12. **Future Architecture Directions**: Planned enhancements, technical debt management
+
+### Integration with Existing Documentation
+- **INDEX.md**: Provides high-level overview with link to detailed ARCHITECTURE.md
+- **ARCHITECTURE.md**: Comprehensive technical details referenced from INDEX.md
+- **Other Context Files**: ARCHITECTURE.md complements existing component-specific documents
+- **Project Consistency**: Follows standardized `.avante/` folder structure
+
+### Outcome
+Successfully extended the context directory with a comprehensive ARCHITECTURE.md file that provides detailed technical architecture documentation for the entire dotfiles repository. The architecture document complements the existing INDEX.md overview with in-depth technical information, creating a complete documentation hierarchy where INDEX.md provides the high-level overview and ARCHITECTURE.md provides detailed technical architecture.
+
+---
+
+## Task: SSH Server Management System
+**Date**: 2026-04-26
+**Agent**: Claude
+**Task Description**: Create a comprehensive SSH server management system with interactive connection menus, updated SSH config, and bash integration
+
+### Operations Performed
+
+#### 1. SSH Config Audit
+- Analyzed existing `~/.ssh/config` with 2 hosts (`server_node_1`, `server_node_2`) containing placeholder comments
+- Discovered 12+ unique IPs in `~/.ssh/known_hosts` from previous connections
+- Identified all network servers: 192.168.1.2, .11, .12, .40, .41, .51, .53, .78, .101, .118, .119, .135
+
+#### 2. SSH Config Update
+- Updated `~/.ssh/config` with all discovered servers using descriptive names (node-XX pattern)
+- Added `gateway` entry for 192.168.1.2 with separate identity file
+- Added sensible defaults: `StrictHostKeyChecking accept-new`, `ServerAliveInterval 60`
+- Preserved legacy aliases (`server_node_1`, `server_node_2`) for backwards compatibility
+- Removed placeholder comments
+
+#### 3. SSH Management Scripts
+Created two scripts in `.local/bin/ssh-scripts/`:
+
+**ssh-list.sh**: Lists all hosts from SSH config with their IP, user, and port
+- Supports `table` (default), `simple`, and `json` output formats
+- Parses SSH config using awk to extract Host, HostName, User, and Port
+- No network scanning - purely reads from config file
+
+**ssh-connect.sh**: Interactive SSH connection manager
+- Terminal menu mode (`-m`): Numbered list of hosts, read selection, connect
+- Fuzzel GUI mode (`-g`): dmenu-style picker with fuzzel
+- Auto-detect: Uses terminal menu when run from terminal, GUI otherwise
+- Direct connect (`-d`): Connect to arbitrary IP/hostname
+- List mode (`-l`): Delegates to ssh-list.sh
+- Help mode (`-h`): Shows usage information
+
+#### 4. Bash Integration
+- Added `ssh-connect` and `ssh-list` functions to `.config/bash/50-functions.sh`
+- Added quick-connect aliases: `node-01`, `node-02`, ..., `node-135`, `gateway`
+- Added legacy aliases: `server-node-1`, `server-node-2`
+- Added `ssh-help` alias for quick reference
+
+#### 5. Dotfiles Repository Integration
+- Scripts placed directly in `.dotfiles/.local/bin/ssh-scripts/`
+- Symlinked to `~/.local/bin/ssh-scripts/` via stow
+- No host scanning/pinging - purely config-based
+
+### Files Created/Modified
+1. `~/.ssh/config` - Updated with all discovered servers and proper configuration
+2. `.local/bin/ssh-scripts/ssh-list.sh` - Created (in dotfiles repo)
+3. `.local/bin/ssh-scripts/ssh-connect.sh` - Created (in dotfiles repo)
+4. `.config/bash/50-functions.sh` - Added SSH functions and aliases
+5. `AGENTS.md` - Added task documentation (this entry)
+
+### Key Features Implemented
+- **SSH Config**: All discovered servers with descriptive names and proper defaults
+- **Interactive Menu**: Terminal and fuzzel GUI for easy server selection
+- **Quick Aliases**: Direct `node-XX` commands for fast connections
+- **No Network Scanning**: Purely config-based, no ping/host scanning
+- **Dotfiles Managed**: Scripts live in the dotfiles repo, symlinked via stow
+- **Backwards Compatible**: Legacy host aliases preserved
+
+### Usage
+- `ssh-connect` - Interactive menu
+- `ssh-connect -g` - Fuzzel GUI menu
+- `ssh-connect -l` - List all hosts
+- `ssh-connect node-01` - Connect directly
+- `ssh-connect -d 192.168.1.100` - Connect to arbitrary IP
+- `node-01` - Quick alias (works for all node-XX and gateway)
+- `ssh-list` - Table view of all hosts
+
+---
+
+## SSH Tool Suite - Complete Reference
+**Date**: 2026-04-26
+**Agent**: Claude
+**Task Description**: Comprehensive documentation of the entire SSH tool suite for the dotfiles repository
+
+### Overview
+
+The SSH tool suite provides a complete server management system for the home network, consisting of:
+- **SSH config** (`~/.ssh/config`) - Centralized host definitions
+- **ssh-connect.sh** - Interactive connection manager (terminal menu)
+- **ssh-list.sh** - Host listing with status, hostname, and OS info
+- **Bash aliases** - Quick-connect shortcuts for all hosts
+
+### Network Topology
+
+The home network has 3 physical hosts:
+| Host | IP | OS | Role |
+|------|-----|-----|------|
+| `node-01` | 192.168.1.11 | Ubuntu 24.04 LTS | Primary server (Aconcagua-Host) |
+| `node-02` | 192.168.1.12 | Ubuntu 22.04 LTS | Workstation (geoff-workstation) |
+| `gateway` | 192.168.1.2 | Router OS | Network gateway/router |
+
+Other IPs discovered on the network (.40, .41, .51, .53, .78, .101, .118, .119, .135) were identified as Docker/Kubernetes/WSL virtual services running on the two physical servers, not separate machines.
+
+### SSH Config (`~/.ssh/config`)
+
+**Location**: `~/.ssh/config` (not in dotfiles repo - contains local paths)
+
+**Structure**:
+- Global defaults section (`Host *`) with user, identity file, and connection settings
+- Individual host entries with descriptive names (`node-01`, `node-02`, `gateway`)
+- `gateway` uses a separate identity file (`~/.ssh/id_ed25519`) from the servers (`~/.ssh/terraform_key`)
+
+**Key settings**:
+- `StrictHostKeyChecking accept-new` - Auto-accept new host keys
+- `ServerAliveInterval 60` - Keep connections alive
+- `AddKeysToAgent yes` - Auto-add keys to SSH agent
+
+### ssh-connect.sh - Interactive Connection Manager
+
+**Location**: `.local/bin/ssh-scripts/ssh-connect.sh`
+
+**Purpose**: Interactive terminal menu for selecting and connecting to SSH hosts.
+
+**Features**:
+- Parses `~/.ssh/config` to discover available hosts
+- Shows numbered menu with hostname, IP, online/offline status, remote hostname, and OS info
+- Pings each host to determine online status (non-blocking, 1 second timeout)
+- Queries remote hostname and OS via SSH with caching to `~/.cache/ssh-list/hosts.cache`
+- Color-coded output: green for online, red for offline
+- Terminal-only mode (no GUI dependencies)
+
+**Usage**:
+```
+ssh-connect              # Interactive terminal menu
+ssh-connect -l           # List all hosts (delegates to ssh-list.sh)
+ssh-connect node-01      # Connect directly to node-01
+ssh-connect -d 10.0.0.5 # Connect to arbitrary IP/hostname
+ssh-connect -h           # Show help
+```
+
+**How it works**:
+1. `get_hosts()` - Parses SSH config with awk to extract Host entries
+2. `get_hostname()` - Resolves host alias to IP from config
+3. `get_host_info()` - Pings host, then SSH-queries for hostname and OS
+4. `terminal_menu()` - Displays interactive numbered menu with status indicators
+5. `main()` - Routes to appropriate mode based on arguments
+
+**Caching**: Host info is cached in `~/.cache/ssh-list/hosts.cache` (last 50 entries) to avoid repeated SSH probes on subsequent runs.
+
+### ssh-list.sh - Host Listing Tool
+
+**Location**: `.local/bin/ssh-scripts/ssh-list.sh`
+
+**Purpose**: List all SSH hosts with detailed status information.
+
+**Output formats**:
+- `table` (default) - Color-coded table with Host, IP, Status, Hostname, OS columns
+- `simple` - Just hostnames, one per line (useful for scripting)
+- `json` - JSON array with all fields for programmatic use
+
+**Usage**:
+```
+ssh-list              # Table view (default)
+ssh-list simple       # Simple hostname list
+ssh-list json         # JSON output
+```
+
+**Features**:
+- Same caching mechanism as ssh-connect.sh (shared cache file)
+- Shows online/offline status with color indicators
+- Displays remote hostname and OS information
+- Includes helpful tip at bottom of table view
+
+### Bash Aliases (`50-functions.sh`)
+
+**Location**: `.config/bash/50-functions.sh`
+
+**Functions**:
+- `ssh-connect` - Wrapper that calls `ssh-connect.sh "$@"`
+- `ssh-list` - Wrapper that calls `ssh-list.sh "$@"`
+
+**Quick-connect aliases**:
+- `node-01` → `ssh node-01`
+- `node-02` → `ssh node-02`
+- `gateway` → `ssh gateway`
+
+**Legacy aliases** (preserved for backwards compatibility):
+- `server-node-1` → `ssh server_node_1`
+- `server-node-2` → `ssh server_node_2`
+
+**Help alias**:
+- `ssh-help` - Prints summary of all SSH commands and aliases
+
+### File Locations
+
+| File | In Dotfiles? | Symlinked? |
+|------|-------------|------------|
+| `~/.ssh/config` | No (local paths) | N/A |
+| `.local/bin/ssh-scripts/ssh-connect.sh` | Yes | Yes (via stow) |
+| `.local/bin/ssh-scripts/ssh-list.sh` | Yes | Yes (via stow) |
+| `.config/bash/50-functions.sh` | Yes | Yes (via stow) |
+
+### Design Decisions
+
+1. **Terminal-only**: ssh-connect.sh was simplified to terminal-only mode. No GUI dependencies (fuzzel removed) for reliability in any environment (SSH sessions, TTYs, etc.).
+
+2. **Config-based, not scan-based**: Scripts read from SSH config rather than scanning the network. No ping sweeps or port scans.
+
+3. **Cached SSH queries**: Hostname and OS are fetched via SSH and cached to avoid slow repeated queries on every menu invocation.
+
+4. **No ghost entries**: After network discovery revealed that many IPs were Docker/Kubernetes services, those entries were removed from SSH config. Only physical hosts remain.
+
+5. **Separate identity files**: Gateway uses `id_ed25519` while servers use `terraform_key`, reflecting different authentication methods for different network segments.
+
+### Troubleshooting
+
+**"Permission denied" on connection**:
+- Verify SSH key is added: `ssh-add -l`
+- Check key is on remote: `ssh-copy-id user@host`
+- Verify correct identity file in SSH config
+
+**Host appears offline**:
+- Check ping: `ping -c 1 <ip>`
+- Verify host is powered on
+- Check network connectivity
+
+**Cache shows stale data**:
+- Clear cache: `rm ~/.cache/ssh-list/hosts.cache`
+- Cache is automatically trimmed to 50 entries
+
+**"No hosts found" error**:
+- Verify SSH config exists: `ls -la ~/.ssh/config`
+- Check config has valid Host entries
+- Ensure config file is readable
+
 
