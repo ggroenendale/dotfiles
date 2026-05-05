@@ -1,5 +1,24 @@
 # Project Plan: [Project Name]
 
+> **⚠️ AGENT SAFETY LOCK — READ BEFORE PROCEEDING**
+>
+> **DO NOT EXECUTE ANY WORK ON THIS PROJECT WITHOUT EXPLICIT USER AUTHORIZATION.**
+>
+> This project plan is a reference document only. No work may be performed on any phase, step, or deliverable unless the user has given a clear, unambiguous instruction to do so in the current conversation.
+>
+> **Rules for AI agents:**
+>
+> 1. **Do not** start, continue, or resume any work on this project autonomously.
+> 2. **Do not** create, modify, or delete any files related to this project unless the user explicitly asks you to.
+> 3. **Do not** assume that because this file exists, work is authorized — it is not.
+> 4. **Do not** offer to begin working on any phase or step. Wait for the user to ask.
+> 5. If the user asks a general question about this plan (e.g., "what's in Phase 3?"), answer the question only — do not offer to execute it.
+> 6. If the user gives a specific instruction to modify or execute part of this plan, proceed only with that exact instruction.
+>
+> **Why this exists:** AI agents lose context between sessions. Without this lock, an agent could resume a previous conversation's context and start modifying files or running commands without the user's knowledge or consent. This lock ensures the user remains in control at all times.
+>
+> **To authorize work:** The user will explicitly say something like "Start Phase 0" or "Work on step 1.1". Until then, do nothing.
+
 ## Table of Contents
 
 - [Project Overview](#project-overview)
@@ -75,11 +94,11 @@
 
 ### Deliverables
 
-| # | Phase Name | Description | Completed By |
-|---|------------|-------------|--------------|
-| 1 | [Phase Name] | [Description] | [Phase #] |
-| 2 | [Phase Name] | [Description] | [Phase #] |
-| 3 | [Phase Name] | [Description] | [Phase #] |
+| #   | Phase Name   | Description   | Completed By |
+| --- | ------------ | ------------- | ------------ |
+| 1   | [Phase Name] | [Description] | [Phase #]    |
+| 2   | [Phase Name] | [Description] | [Phase #]    |
+| 3   | [Phase Name] | [Description] | [Phase #]    |
 
 ## Dependencies
 
@@ -101,9 +120,9 @@
 
 #### Phase 0 Deliverables
 
-| # | Deliverable | Description |
-|---|-------------|-------------|
-| 1 | **[Deliverable Name]** | [Description] |
+| #   | Deliverable            | Description   |
+| --- | ---------------------- | ------------- |
+| 1   | **[Deliverable Name]** | [Description] |
 
 #### 0.1 — [Step title]
 
@@ -126,9 +145,9 @@
 
 #### Phase 1 Deliverables
 
-| # | Deliverable | Description |
-|---|-------------|-------------|
-| 1 | **[Deliverable Name]** | [Description] |
+| #   | Deliverable            | Description   |
+| --- | ---------------------- | ------------- |
+| 1   | **[Deliverable Name]** | [Description] |
 
 #### 1.1 — [Step title]
 
@@ -151,9 +170,9 @@
 
 #### Phase 2 Deliverables
 
-| # | Deliverable | Description |
-|---|-------------|-------------|
-| 1 | **[Deliverable Name]** | [Description] |
+| #   | Deliverable            | Description   |
+| --- | ---------------------- | ------------- |
+| 1   | **[Deliverable Name]** | [Description] |
 
 #### 2.1 — [Step title]
 
@@ -176,9 +195,9 @@
 
 #### Phase 3 Deliverables
 
-| # | Deliverable | Description |
-|---|-------------|-------------|
-| 1 | **[Deliverable Name]** | [Description] |
+| #   | Deliverable            | Description   |
+| --- | ---------------------- | ------------- |
+| 1   | **[Deliverable Name]** | [Description] |
 
 #### 3.1 — [Step title]
 
@@ -201,9 +220,9 @@
 
 #### Phase 4 Deliverables
 
-| # | Deliverable | Description |
-|---|-------------|-------------|
-| 1 | **[Deliverable Name]** | [Description] |
+| #   | Deliverable            | Description   |
+| --- | ---------------------- | ------------- |
+| 1   | **[Deliverable Name]** | [Description] |
 
 #### 4.1 — [Step title]
 
@@ -226,9 +245,9 @@
 
 #### Phase 5 Deliverables
 
-| # | Deliverable | Description |
-|---|-------------|-------------|
-| 1 | **[Deliverable Name]** | [Description] |
+| #   | Deliverable            | Description   |
+| --- | ---------------------- | ------------- |
+| 1   | **[Deliverable Name]** | [Description] |
 
 #### 5.1 — [Step title]
 
@@ -251,9 +270,9 @@
 
 #### Phase 6 Deliverables
 
-| # | Deliverable | Description |
-|---|-------------|-------------|
-| 1 | **[Deliverable Name]** | [Description] |
+| #   | Deliverable            | Description   |
+| --- | ---------------------- | ------------- |
+| 1   | **[Deliverable Name]** | [Description] |
 
 #### 6.1 — [Step title]
 
@@ -276,9 +295,9 @@
 
 #### Phase 7 Deliverables
 
-| # | Deliverable | Description |
-|---|-------------|-------------|
-| 1 | **[Deliverable Name]** | [Description] |
+| #   | Deliverable            | Description   |
+| --- | ---------------------- | ------------- |
+| 1   | **[Deliverable Name]** | [Description] |
 
 #### 7.1 — [Step title]
 
@@ -301,9 +320,9 @@
 
 #### Phase 8 Deliverables
 
-| # | Deliverable | Description |
-|---|-------------|-------------|
-| 1 | **[Deliverable Name]** | [Description] |
+| #   | Deliverable            | Description   |
+| --- | ---------------------- | ------------- |
+| 1   | **[Deliverable Name]** | [Description] |
 
 #### 8.1 — [Step title]
 
@@ -326,9 +345,9 @@
 
 #### Phase 9 Deliverables
 
-| # | Deliverable | Description |
-|---|-------------|-------------|
-| 1 | **[Deliverable Name]** | [Description] |
+| #   | Deliverable            | Description   |
+| --- | ---------------------- | ------------- |
+| 1   | **[Deliverable Name]** | [Description] |
 
 #### 9.1 — [Step title]
 
@@ -351,9 +370,9 @@
 
 #### Phase 10 Deliverables
 
-| # | Deliverable | Description |
-|---|-------------|-------------|
-| 1 | **[Deliverable Name]** | [Description] |
+| #   | Deliverable            | Description   |
+| --- | ---------------------- | ------------- |
+| 1   | **[Deliverable Name]** | [Description] |
 
 #### 10.1 — [Step title]
 
