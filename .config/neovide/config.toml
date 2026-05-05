@@ -1,6 +1,0 @@
-[font]
-normal = ["Mononoki Nerd Font Mono"] # Will use the bundled Fira Code Nerd Font by default
-italic = ["Mononoki Nerd Font Mono"]
-bold = ["Mononoki Nerd Font Mono"]
-bold_italic = ["Mononoki Nerd Font Mono"]
-size = 12
