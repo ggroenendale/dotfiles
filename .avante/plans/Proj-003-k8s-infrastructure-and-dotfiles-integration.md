@@ -1,5 +1,24 @@
 # Project Plan: Kubernetes Cluster Infrastructure & Dotfiles Integration
 
+> **⚠️ AGENT SAFETY LOCK — READ BEFORE PROCEEDING**
+>
+> **DO NOT EXECUTE ANY WORK ON THIS PROJECT WITHOUT EXPLICIT USER AUTHORIZATION.**
+>
+> This project plan is a reference document only. No work may be performed on any phase, step, or deliverable unless the user has given a clear, unambiguous instruction to do so in the current conversation.
+>
+> **Rules for AI agents:**
+>
+> 1. **Do not** start, continue, or resume any work on this project autonomously.
+> 2. **Do not** create, modify, or delete any files related to this project unless the user explicitly asks you to.
+> 3. **Do not** assume that because this file exists, work is authorized — it is not.
+> 4. **Do not** offer to begin working on any phase or step. Wait for the user to ask.
+> 5. If the user asks a general question about this plan (e.g., "what's in Phase 3?"), answer the question only — do not offer to execute it.
+> 6. If the user gives a specific instruction to modify or execute part of this plan, proceed only with that exact instruction.
+>
+> **Why this exists:** AI agents lose context between sessions. Without this lock, an agent could resume a previous conversation's context and start modifying files or running commands without the user's knowledge or consent. This lock ensures the user remains in control at all times.
+>
+> **To authorize work:** The user will explicitly say something like "Start Phase 0" or "Work on step 1.1". Until then, do nothing.
+
 ## Table of Contents
 
 - [Project Overview](#project-overview)
@@ -140,21 +159,21 @@
 
 ### Deliverables
 
-| # | Phase Name | Description | Completed By |
-|---|------------|-------------|--------------|
-| 1 | Monitoring & Observability | Prometheus + Grafana with pre-configured dashboards and alerting | Phase 2 |
-| 2 | Foundation: MetalLB, Ingress & TLS | All services accessible via `*.home.lan` with automatic certificates | Phase 1 |
-| 3 | AI Platform & Developer Tools | Local LLM API endpoint for avante.nvim integration | Phase 4 |
-| 4 | AI Platform & Developer Tools | ChatGPT-like chat interface for Ollama models | Phase 4 |
-| 5 | AI Platform & Developer Tools | AI workflow automation platform with Ollama integration | Phase 4 |
-| 6 | AI Platform & Developer Tools | LLM application development with RAG capabilities | Phase 4 |
-| 7 | AI Platform & Developer Tools | Headlamp for visual cluster management | Phase 4 |
-| 8 | Storage & Data Services | Automated PVC backups with retention policy | Phase 3 |
-| 9 | Centralized Logging | Loki + Promtail for centralized log aggregation | Phase 5 |
-| 10 | Foundation: MetalLB, Ingress & TLS | LoadBalancer IP pool for LAN services | Phase 1 |
-| 11 | Storage & Data Services | S3-compatible object storage for backups and artifacts | Phase 3 |
-| 12 | Storage & Data Services | Local container image cache for faster deployments | Phase 3 |
-| 13 | Dotfiles Integration | Neovim tools, SSH port-forward scripts, bash aliases, avante rules | Phase 6 |
+| #   | Phase Name                         | Description                                                          | Completed By |
+| --- | ---------------------------------- | -------------------------------------------------------------------- | ------------ |
+| 1   | Monitoring & Observability         | Prometheus + Grafana with pre-configured dashboards and alerting     | Phase 2      |
+| 2   | Foundation: MetalLB, Ingress & TLS | All services accessible via `*.home.lan` with automatic certificates | Phase 1      |
+| 3   | AI Platform & Developer Tools      | Local LLM API endpoint for avante.nvim integration                   | Phase 4      |
+| 4   | AI Platform & Developer Tools      | ChatGPT-like chat interface for Ollama models                        | Phase 4      |
+| 5   | AI Platform & Developer Tools      | AI workflow automation platform with Ollama integration              | Phase 4      |
+| 6   | AI Platform & Developer Tools      | LLM application development with RAG capabilities                    | Phase 4      |
+| 7   | AI Platform & Developer Tools      | Headlamp for visual cluster management                               | Phase 4      |
+| 8   | Storage & Data Services            | Automated PVC backups with retention policy                          | Phase 3      |
+| 9   | Centralized Logging                | Loki + Promtail for centralized log aggregation                      | Phase 5      |
+| 10  | Foundation: MetalLB, Ingress & TLS | LoadBalancer IP pool for LAN services                                | Phase 1      |
+| 11  | Storage & Data Services            | S3-compatible object storage for backups and artifacts               | Phase 3      |
+| 12  | Storage & Data Services            | Local container image cache for faster deployments                   | Phase 3      |
+| 13  | Dotfiles Integration               | Neovim tools, SSH port-forward scripts, bash aliases, avante rules   | Phase 6      |
 
 ## Dependencies
 
@@ -223,10 +242,10 @@
 
 #### Phase 1 Deliverables
 
-| # | Deliverable | Description |
-|---|-------------|-------------|
-| 2 | **Ingress + TLS** | All services accessible via `*.home.lan` with automatic certificates |
-| 10 | **MetalLB** | LoadBalancer IP pool for LAN services |
+| #   | Deliverable       | Description                                                          |
+| --- | ----------------- | -------------------------------------------------------------------- |
+| 2   | **Ingress + TLS** | All services accessible via `*.home.lan` with automatic certificates |
+| 10  | **MetalLB**       | LoadBalancer IP pool for LAN services                                |
 
 #### 1.1 — Deploy MetalLB with IP address pool
 
@@ -294,9 +313,9 @@
 
 #### Phase 2 Deliverables
 
-| # | Deliverable | Description |
-|---|-------------|-------------|
-| 1 | **Monitoring Stack** | Prometheus + Grafana with pre-configured dashboards and alerting |
+| #   | Deliverable          | Description                                                      |
+| --- | -------------------- | ---------------------------------------------------------------- |
+| 1   | **Monitoring Stack** | Prometheus + Grafana with pre-configured dashboards and alerting |
 
 #### 2.1 — Deploy kube-prometheus-stack via Helm
 
@@ -348,11 +367,11 @@
 
 #### Phase 3 Deliverables
 
-| # | Deliverable | Description |
-|---|-------------|-------------|
-| 8 | **Backup System** | Automated PVC backups with retention policy |
-| 11 | **MinIO** | S3-compatible object storage for backups and artifacts |
-| 12 | **Registry Mirror** | Local container image cache for faster deployments |
+| #   | Deliverable         | Description                                            |
+| --- | ------------------- | ------------------------------------------------------ |
+| 8   | **Backup System**   | Automated PVC backups with retention policy            |
+| 11  | **MinIO**           | S3-compatible object storage for backups and artifacts |
+| 12  | **Registry Mirror** | Local container image cache for faster deployments     |
 
 #### 3.1 — Deploy MinIO with persistent storage
 
@@ -417,13 +436,13 @@
 
 #### Phase 4 Deliverables
 
-| # | Deliverable | Description |
-|---|-------------|-------------|
-| 3 | **Ollama Service** | Local LLM API endpoint for avante.nvim integration |
-| 4 | **Open WebUI** | ChatGPT-like chat interface for Ollama models |
-| 5 | **n8n Automation** | AI workflow automation platform with Ollama integration |
-| 6 | **Dify Platform** | LLM application development with RAG capabilities |
-| 7 | **Cluster Dashboard** | Headlamp for visual cluster management |
+| #   | Deliverable           | Description                                             |
+| --- | --------------------- | ------------------------------------------------------- |
+| 3   | **Ollama Service**    | Local LLM API endpoint for avante.nvim integration      |
+| 4   | **Open WebUI**        | ChatGPT-like chat interface for Ollama models           |
+| 5   | **n8n Automation**    | AI workflow automation platform with Ollama integration |
+| 6   | **Dify Platform**     | LLM application development with RAG capabilities       |
+| 7   | **Cluster Dashboard** | Headlamp for visual cluster management                  |
 
 #### 4.1 — Deploy Ollama with PVC for model storage
 
@@ -566,9 +585,9 @@
 
 #### Phase 5 Deliverables
 
-| # | Deliverable | Description |
-|---|-------------|-------------|
-| 9 | **Logging Stack** | Loki + Promtail for centralized log aggregation |
+| #   | Deliverable       | Description                                     |
+| --- | ----------------- | ----------------------------------------------- |
+| 9   | **Logging Stack** | Loki + Promtail for centralized log aggregation |
 
 #### 5.1 — Deploy Grafana Loki via Helm
 
@@ -618,9 +637,9 @@
 
 #### Phase 6 Deliverables
 
-| # | Deliverable | Description |
-|---|-------------|-------------|
-| 13 | **Dotfiles Integration** | Neovim tools, SSH port-forward scripts, bash aliases, avante rules |
+| #   | Deliverable              | Description                                                        |
+| --- | ------------------------ | ------------------------------------------------------------------ |
+| 13  | **Dotfiles Integration** | Neovim tools, SSH port-forward scripts, bash aliases, avante rules |
 
 #### 6.1 — Create bash aliases for common cluster operations
 
@@ -908,8 +927,6 @@
 - Document how to add new test scenarios and services
 - Provide guidance on interpreting test results and setting performance baselines
 
-
-
 ## Resources
 
 ### Infrastructure Requirements
@@ -1003,8 +1020,6 @@
    - **Status:** Open
    - **Next Steps:** MetalLB deployment will resolve this
 
-
-
 ## Notes
 
 - All infrastructure is local — no cloud costs involved
@@ -1018,10 +1033,10 @@
 
 ## Revision History
 
-| Version | Date       | Changes                                                            |
-| ------- | ---------- | ------------------------------------------------------------------ |
-| 1.0     | 2026-05-04 | Initial version — full project plan for K3s infrastructure upgrade |
-| 1.1     | 2026-05-04 | Expanded Phase 4 with Open WebUI, n8n, Dify; added h4 headings for each step; updated scope, deliverables, dependencies, and notes |
+| Version | Date       | Changes                                                                                                                                                  |
+| ------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.0     | 2026-05-04 | Initial version — full project plan for K3s infrastructure upgrade                                                                                       |
+| 1.1     | 2026-05-04 | Expanded Phase 4 with Open WebUI, n8n, Dify; added h4 headings for each step; updated scope, deliverables, dependencies, and notes                       |
 | 1.2     | 2026-05-04 | Standardized all phases to detailed h4 format; added Phases 9 (Browser Automation) and 10 (Load Testing); updated TOC with sub-items for Phases 4, 9, 10 |
 
 ---

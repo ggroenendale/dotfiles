@@ -1,5 +1,23 @@
 # Project Plan: Dotfiles Ansible Migration
 
+> **⚠️ AGENT SAFETY LOCK — READ BEFORE PROCEEDING**
+>
+> **DO NOT EXECUTE ANY WORK ON THIS PROJECT WITHOUT EXPLICIT USER AUTHORIZATION.**
+>
+> This project plan is a reference document only. No work may be performed on any phase, step, or deliverable unless the user has given a clear, unambiguous instruction to do so in the current conversation.
+>
+> **Rules for AI agents:**
+> 1. **Do not** start, continue, or resume any work on this project autonomously.
+> 2. **Do not** create, modify, or delete any files related to this project unless the user explicitly asks you to.
+> 3. **Do not** assume that because this file exists, work is authorized — it is not.
+> 4. **Do not** offer to begin working on any phase or step. Wait for the user to ask.
+> 5. If the user asks a general question about this plan (e.g., "what's in Phase 3?"), answer the question only — do not offer to execute it.
+> 6. If the user gives a specific instruction to modify or execute part of this plan, proceed only with that exact instruction.
+>
+> **Why this exists:** AI agents lose context between sessions. Without this lock, an agent could resume a previous conversation's context and start modifying files or running commands without the user's knowledge or consent. This lock ensures the user remains in control at all times.
+>
+> **To authorize work:** The user will explicitly say something like "Start Phase 0" or "Work on step 1.1". Until then, do nothing.
+
 ## Table of Contents
 
 - [Project Overview](#project-overview)
@@ -103,20 +121,20 @@
 
 ### Deliverables
 
-| # | Phase Name | Description | Completed By |
-|---|------------|-------------|--------------|
-| 1 | Audit & Inventory | Complete inventory of all dotfiles, scripts, and configurations | Phase 0 |
-| 2 | Repository Restructure | `.config/` and `.local/` moved into `stow/`, root cleaned up | Phase 1 |
-| 3 | Ansible Foundation | Modular Ansible project structure with inventory, playbooks, and vars | Phase 2 |
-| 4 | Package Management Role | Cross-platform package installation with OS detection | Phase 2 |
-| 5 | Dotfiles Symlink Role | Ansible tasks invoking GNU Stow for all config files | Phase 3 |
-| 6 | System Configuration Role | Hostname, locale, SSH config, environment variables | Phase 4 |
-| 7 | Desktop Environment Role | Hyprland, Waybar, kitty, mako, fuzzel, wezterm, starship | Phase 5 |
-| 8 | Scripts & Tooling Role | `~/.local/bin/` scripts deployment | Phase 6 |
-| 9 | Bootstrap Installer | Rewritten `install-laptop.sh` using `ansible-pull` | Phase 7 |
-| 10 | Additional Install Scripts | `install-server.sh`, `install-workstation.sh` | Phase 8 |
-| 11 | Testing & Validation | Idempotency checks, file verification, dry-run testing | Phase 9 |
-| 12 | Documentation | Complete documentation of all roles, scripts, and procedures | Phase 10 |
+| #   | Phase Name                 | Description                                                           | Completed By |
+| --- | -------------------------- | --------------------------------------------------------------------- | ------------ |
+| 1   | Audit & Inventory          | Complete inventory of all dotfiles, scripts, and configurations       | Phase 0      |
+| 2   | Repository Restructure     | `.config/` and `.local/` moved into `stow/`, root cleaned up          | Phase 1      |
+| 3   | Ansible Foundation         | Modular Ansible project structure with inventory, playbooks, and vars | Phase 2      |
+| 4   | Package Management Role    | Cross-platform package installation with OS detection                 | Phase 2      |
+| 5   | Dotfiles Symlink Role      | Ansible tasks invoking GNU Stow for all config files                  | Phase 3      |
+| 6   | System Configuration Role  | Hostname, locale, SSH config, environment variables                   | Phase 4      |
+| 7   | Desktop Environment Role   | Hyprland, Waybar, kitty, mako, fuzzel, wezterm, starship              | Phase 5      |
+| 8   | Scripts & Tooling Role     | `~/.local/bin/` scripts deployment                                    | Phase 6      |
+| 9   | Bootstrap Installer        | Rewritten `install-laptop.sh` using `ansible-pull`                    | Phase 7      |
+| 10  | Additional Install Scripts | `install-server.sh`, `install-workstation.sh`                         | Phase 8      |
+| 11  | Testing & Validation       | Idempotency checks, file verification, dry-run testing                | Phase 9      |
+| 12  | Documentation              | Complete documentation of all roles, scripts, and procedures          | Phase 10     |
 
 ## Dependencies
 
@@ -145,38 +163,57 @@
 
 ### Phase 0 — Audit & Inventory
 
-**Goal:** Create a complete inventory of all dotfiles, scripts, and configurations currently in the repository, documenting their purpose, dependencies, and current management method (Stow vs loose file).
+#### Phase 0 Status
+
+| Item | Status |
+|------|--------|
+| **Phase Complete** | ✅ Yes |
+| **Completed By** | DeepSeek (AI Agent) |
+| **Completion Date** | 2026-05-05 |
+| **Deliverable Location** | `.avante/context/project_deliverables/proj-002/Deliverable 1 - File Inventory.md` |
+| **Next Phase** | [Phase 1 — Repository Restructure](#phase-1--repository-restructure) |
+
+**Goal:** Create a complete inventory of all dotfiles, scripts, and configurations in the repository, documenting their purpose, dependencies, and stow package location.
+
+> **Note:** The files from `.config/` and `.local/` have already been moved into `stow/` subdirectories. The inventory should be created by analyzing the current `stow/` directory structure rather than the original locations — the stow packages are the authoritative source.
 
 #### Phase 0 Deliverables
 
-| # | Deliverable | Description |
-|---|-------------|-------------|
-| 1 | **Complete Inventory** | Documented list of every file in `.config/`, `.local/`, and root-level dotfiles |
+| #   | Deliverable            | Description                                                                     | Location                                                                 |
+| --- | ---------------------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| 1   | **Complete Inventory** | Documented list of every file in `stow/` packages and at repository root, organized by stow package with purpose, cross-platform status, and notes | `.avante/context/project_deliverables/proj-002/Deliverable 1 - File Inventory.md` |
 
-#### 0.1 — Inventory `.config/` directory
+#### 0.1 — Inventory `stow/` packages (replaces original `.config/`)
 
-- List every file and subdirectory under `.config/`
+- Analyze each stow package directory under `stow/` and list every file
 - Document the purpose of each config file/directory
 - Note which applications/packages each config belongs to
 - Identify any files that should not be migrated (e.g., `.env` with secrets)
+- **Format:** Markdown table with columns: File, Purpose, Cross-Platform, Notes
+- **Sections:** One table per stow package (`bash/`, `desktop_environment/`, `neovim_neovide/`, `aur_helper/`, `app_desktop_files/`)
 
-#### 0.2 — Inventory `.local/` directory
+#### 0.2 — Inventory `stow/` packages (replaces original `.local/`)
 
-- List every file and subdirectory under `.local/`
+- Analyze each stow package directory under `stow/` for `.local/` content and list every file
 - Document the purpose of each script and tool
 - Note any scripts that have external dependencies (e.g., fuzzel for GUI menus)
+- **Format:** Same markdown table format as 0.1, integrated into the per-package tables
+- **Sections:** `stow/bash/` (screenshot-scripts, ssh-scripts), `stow/neovim_neovide/` (neovide-workspace), `stow/app_desktop_files/` (.desktop files)
 
 #### 0.3 — Inventory root-level dotfiles
 
-- List all files at repository root (`.bashrc`, `.gitignore`, `AGENTS.md`, `README.md`, etc.)
+- List all files at repository root (`.gitignore`, `AGENTS.md`, `README.md`, etc.)
 - Determine which should remain at root and which should move into `stow/`
 - Document the `.stow-local-ignore` patterns and their purpose
+- **`nvim-plugins-source/`** — a copy of Neovim plugin source files for code analysis. This directory should NOT be symlinked (it's already in `.stow-local-ignore`) and should NOT be migrated into any stow package. It exists at root purely for reference and is machine-specific.
 
-#### 0.4 — Document current Stow structure
+#### 0.4 — Analyze `fix-symlinks.sh` script
 
-- Analyze the existing `stow/` directory and its subdirectory layout
-- Document how GNU Stow is currently invoked (manual commands, aliases)
-- Identify any issues with the current Stow setup (missing ignores, broken symlinks)
+- Review the existing `bootstrap/fix-symlinks.sh` script
+- Document what it does: which stow packages it targets, what flags it uses, any error handling
+- Identify what the script does that should be replicated in the Ansible stow role (Phase 3) — the script itself stays, but its behavior should be reproduced in Ansible for automated provisioning
+- Note any hardcoded paths or assumptions that need to be updated
+- Use the script's logic as reference when creating the Ansible stow role (Phase 3) — do not delete or deprecate the script
 
 #### 0.5 — Identify cross-platform concerns
 
@@ -186,13 +223,23 @@
 
 ### Phase 1 — Repository Restructure
 
+#### Phase 1 Status
+
+| Item | Status |
+|------|--------|
+| **Phase Complete** | ❌ No |
+| **Completed By** | — |
+| **Completion Date** | — |
+| **Deliverable Location** | — |
+| **Next Phase** | [Phase 2 — Ansible Foundation & Package Role](#phase-2--ansible-foundation--package-role) |
+
 **Goal:** Move `.config/` and `.local/` into `stow/` subdirectories, clean up root-level files, and establish the canonical repository layout.
 
 #### Phase 1 Deliverables
 
-| # | Deliverable | Description |
-|---|-------------|-------------|
-| 1 | **Restructured Repository** | `.config/` and `.local/` moved into `stow/`, root cleaned to core folders only |
+| #   | Deliverable                 | Description                                                                    |
+| --- | --------------------------- | ------------------------------------------------------------------------------ |
+| 1   | **Restructured Repository** | `.config/` and `.local/` moved into `stow/`, root cleaned to core folders only |
 
 #### 1.1 — Distribute `.config/` contents into appropriate stow packages
 
@@ -204,10 +251,10 @@
   - No additional items from `.config/` need to go here (bash config is already in place)
 - **`stow/neovim_neovide/.config/`** already contains: neovide/, nvim/
   - No additional items from `.config/` need to go here (neovim/neovide config is already in place)
-- **`stow/aur-helper/`** — new stow package for AUR helper configuration
-  - Move `.config/paru.conf` into `stow/aur-helper/.config/paru.conf`
+- **`stow/aur_helper/`** — new stow package for AUR helper configuration
+  - Move `.config/paru.conf` into `stow/aur_helper/.config/paru.conf`
   - Paru is a package manager, not a desktop environment component — it needs its own dedicated stow package
-  - **Naming note:** The package is called `aur-helper` rather than `paru` because it describes the *purpose* (AUR helper configuration), not the specific tool. If you switch to a different AUR helper (e.g., yay) in the future, the stow package name remains meaningful.
+  - **Naming note:** The package is called `aur_helper` rather than `paru` because it describes the _purpose_ (AUR helper configuration), not the specific tool. If you switch to a different AUR helper (e.g., yay) in the future, the stow package name remains meaningful.
 - **`fonts/` at repo root** — do NOT migrate into stow. Fonts are binary files (`.ttf`) that need to be installed to `~/.local/share/fonts/` and registered with `fc-cache`, not symlinked. They also bloat the git repo at 125MB. Instead, handle font installation through Ansible's package role (see Phase 2.4) or the system/fonts role (see Step 1.6).
 - **New stow packages** may be needed for configs that don't fit existing categories
 - Verify each config file is correctly placed in its target stow package directory
@@ -265,14 +312,24 @@
 
 ### Phase 2 — Ansible Foundation & Package Role
 
+#### Phase 2 Status
+
+| Item | Status |
+|------|--------|
+| **Phase Complete** | ❌ No |
+| **Completed By** | — |
+| **Completion Date** | — |
+| **Deliverable Location** | — |
+| **Next Phase** | [Phase 3 — Dotfiles Symlink Migration (Stow)](#phase-3--dotfiles-symlink-migration-stow) |
+
 **Goal:** Establish the modular Ansible project structure and create the cross-platform package management role that handles OS detection and package installation.
 
 #### Phase 2 Deliverables
 
-| # | Deliverable | Description |
-|---|-------------|-------------|
-| 1 | **Ansible Project Structure** | Inventory, playbooks, group_vars, host_vars, and role directories |
-| 2 | **Package Management Role** | Cross-platform package installation with OS detection |
+| #   | Deliverable                   | Description                                                       |
+| --- | ----------------------------- | ----------------------------------------------------------------- |
+| 1   | **Ansible Project Structure** | Inventory, playbooks, group_vars, host_vars, and role directories |
+| 2   | **Package Management Role**   | Cross-platform package installation with OS detection             |
 
 #### 2.1 — Design Ansible project structure
 
@@ -321,13 +378,23 @@
 
 ### Phase 3 — Dotfiles Symlink Migration (Stow)
 
+#### Phase 3 Status
+
+| Item | Status |
+|------|--------|
+| **Phase Complete** | ❌ No |
+| **Completed By** | — |
+| **Completion Date** | — |
+| **Deliverable Location** | — |
+| **Next Phase** | [Phase 4 — System Configuration Role](#phase-4--system-configuration-role) |
+
 **Goal:** Create Ansible roles that invoke GNU Stow to manage symlinks for all dotfiles, replacing manual Stow commands with idempotent Ansible tasks.
 
 #### Phase 3 Deliverables
 
-| # | Deliverable | Description |
-|---|-------------|-------------|
-| 1 | **Stow Symlink Role** | Ansible role that runs `stow` for each package directory |
+| #   | Deliverable           | Description                                              |
+| --- | --------------------- | -------------------------------------------------------- |
+| 1   | **Stow Symlink Role** | Ansible role that runs `stow` for each package directory |
 
 #### 3.1 — Create the stow role
 
@@ -360,13 +427,23 @@
 
 ### Phase 4 — System Configuration Role
 
+#### Phase 4 Status
+
+| Item | Status |
+|------|--------|
+| **Phase Complete** | ❌ No |
+| **Completed By** | — |
+| **Completion Date** | — |
+| **Deliverable Location** | — |
+| **Next Phase** | [Phase 5 — Desktop Environment Role](#phase-5--desktop-environment-role) |
+
 **Goal:** Create an Ansible role for system-level configuration — hostname, locale, timezone, SSH config, and environment variables.
 
 #### Phase 4 Deliverables
 
-| # | Deliverable | Description |
-|---|-------------|-------------|
-| 1 | **System Configuration Role** | Hostname, locale, SSH config, environment variables |
+| #   | Deliverable                   | Description                                         |
+| --- | ----------------------------- | --------------------------------------------------- |
+| 1   | **System Configuration Role** | Hostname, locale, SSH config, environment variables |
 
 #### 4.1 — Create the system role
 
@@ -401,9 +478,9 @@
 
 #### Phase 5 Deliverables
 
-| # | Deliverable | Description |
-|---|-------------|-------------|
-| 1 | **Desktop Environment Role** | Hyprland, Waybar, kitty, mako, fuzzel, wezterm, starship, neovide |
+| #   | Deliverable                  | Description                                                       |
+| --- | ---------------------------- | ----------------------------------------------------------------- |
+| 1   | **Desktop Environment Role** | Hyprland, Waybar, kitty, mako, fuzzel, wezterm, starship, neovide |
 
 #### 5.1 — Create the desktop role
 
@@ -449,9 +526,9 @@
 
 #### Phase 6 Deliverables
 
-| # | Deliverable | Description |
-|---|-------------|-------------|
-| 1 | **Scripts & Tooling Role** | `~/.local/bin/` scripts deployment with correct permissions |
+| #   | Deliverable                | Description                                                 |
+| --- | -------------------------- | ----------------------------------------------------------- |
+| 1   | **Scripts & Tooling Role** | `~/.local/bin/` scripts deployment with correct permissions |
 
 #### 6.1 — Create the scripts role
 
@@ -492,9 +569,9 @@
 
 #### Phase 7 Deliverables
 
-| # | Deliverable | Description |
-|---|-------------|-------------|
-| 1 | **Bootstrap Installer** | Rewritten `install-laptop.sh` using `ansible-pull` |
+| #   | Deliverable             | Description                                        |
+| --- | ----------------------- | -------------------------------------------------- |
+| 1   | **Bootstrap Installer** | Rewritten `install-laptop.sh` using `ansible-pull` |
 
 #### 7.1 — Analyze current bootstrap installer
 
@@ -549,9 +626,9 @@
 
 #### Phase 8 Deliverables
 
-| # | Deliverable | Description |
-|---|-------------|-------------|
-| 1 | **Additional Install Scripts** | `install-server.sh`, `install-workstation.sh` |
+| #   | Deliverable                    | Description                                   |
+| --- | ------------------------------ | --------------------------------------------- |
+| 1   | **Additional Install Scripts** | `install-server.sh`, `install-workstation.sh` |
 
 #### 8.1 — Define system type profiles
 
@@ -594,9 +671,9 @@
 
 #### Phase 9 Deliverables
 
-| # | Deliverable | Description |
-|---|-------------|-------------|
-| 1 | **Validation Playbook** | Idempotency checks, file presence verification, service status checks |
+| #   | Deliverable             | Description                                                           |
+| --- | ----------------------- | --------------------------------------------------------------------- |
+| 1   | **Validation Playbook** | Idempotency checks, file presence verification, service status checks |
 
 #### 9.1 — Create validation playbook
 
@@ -641,9 +718,9 @@
 
 #### Phase 10 Deliverables
 
-| # | Deliverable | Description |
-|---|-------------|-------------|
-| 1 | **Complete Documentation** | README files, role documentation, and procedure guides |
+| #   | Deliverable                | Description                                            |
+| --- | -------------------------- | ------------------------------------------------------ |
+| 1   | **Complete Documentation** | README files, role documentation, and procedure guides |
 
 #### 10.1 — Document the Ansible project structure
 
@@ -684,7 +761,6 @@
 - Cover cross-platform issues (package name differences, path differences)
 - Include diagnostic commands for each category of issue
 - Document how to gather debug information for reporting issues
-
 
 ## Resources
 
@@ -781,11 +857,45 @@
 - The existing `bootstrap/bootstrap.yaml` playbook references roles (`base`, `python`, `dotfiles`) that may need to be updated or replaced
 - **Stow is OS-agnostic:** Stow creates symlinks regardless of whether the target software is installed. An unused config file (e.g., `paru.conf` on Debian) is completely harmless — it just sits there inert. This means the stow role can run unconditionally on any OS without needing OS detection logic. Ansible's package role handles OS-specific installations separately.
 
+## Agent Execution Instructions
+
+**These instructions are mandatory for any AI agent working on this project plan.**
+
+### Sequential Phase Execution
+
+1. **Phases MUST be executed in strict numeric order** — Phase 0 first, then Phase 1, then Phase 2, and so on through Phase 10.
+2. **Within each phase, steps MUST be executed in numeric order** — e.g., 0.1 before 0.2, 0.2 before 0.3, etc.
+3. **Do NOT skip ahead** to a later phase or step, even if it seems independent or self-contained.
+4. **Do NOT rearrange steps** — follow the order as written in this document.
+5. **Do NOT work on multiple phases simultaneously** — complete one phase entirely before moving to the next.
+
+### Phase Completion Requirement
+
+- A phase is only complete when **all** of its deliverables are finished and verified.
+- Before moving to the next phase, mark the current phase as complete in the project tracking.
+- If a phase depends on output from a prior phase, that prior phase must be fully complete before starting.
+
+### Exception Handling
+
+- If a step cannot be completed (e.g., missing information, external blocker), document the issue in the relevant phase notes and move to the next step within the same phase.
+- If an entire phase is blocked, document the blocker and pause work on this project until the blocker is resolved.
+- Do not skip a blocked phase to work on a later phase — this creates ordering issues and breaks dependencies.
+
+### Rationale
+
+Each phase builds on the deliverables of the previous phases. Working out of order will:
+
+- Break internal dependencies (e.g., Phase 3 needs Phase 1's restructured paths)
+- Create rework when earlier changes invalidate later work
+- Make it impossible to verify idempotency and correctness
+- Confuse the project tracking and progress reporting
+
 ## Revision History
 
-| Version | Date       | Changes                                                  |
-| ------- | ---------- | -------------------------------------------------------- |
-| 1.0     | 2026-05-04 | Initial version — full project plan for Ansible migration |
+| Version | Date       | Changes                                                            |
+| ------- | ---------- | ------------------------------------------------------------------ |
+| 1.0     | 2026-05-04 | Initial version — full project plan for Ansible migration          |
+| 1.1     | 2026-05-05 | Added Agent Execution Instructions for sequential phase processing |
 
 ---
 
