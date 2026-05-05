@@ -553,9 +553,11 @@ return {
 						local duration = params.duration or "1 hour"
 
 						-- Parse tags into array format
-						local tags = {}
-						for tag in tags_input:gmatch("[^,]+") do
-							table.insert(tags, tag:gsub("^%s*(.-)%s*$", "%1"))
+						local parsed_tags = {}
+						if tags_input then
+							for tag in tags_input:gmatch("[^,]+") do
+								table.insert(parsed_tags, (tag:gsub("^%s*(.-)%s*$", "%1")))
+							end
 						end
 
 						-- Get current timestamp
@@ -571,7 +573,7 @@ return {
 						-- Check if .avante/context/sessions directory exists
 						local current_dir = vim.fn.getcwd()
 						local sessions_dir = current_dir .. "/.avante/context/sessions"
-						local template_path = sessions_dir .. "/session-template.md"
+						local template_path = vim.fn.stdpath("config") .. "/avante/templates/session-template.md"
 						local filepath = sessions_dir .. "/" .. filename
 
 						-- Check if .avante structure exists
@@ -612,7 +614,7 @@ return {
 							:gsub("%[X hours/minutes%]", duration)
 							:gsub("%[Names/Roles%]", participants)
 							:gsub("%[Project Name/ID%]", project)
-							:gsub("%[session, log, meeting, work%-session%]", table.concat(tags, ", "))
+							:gsub("%[session, log, meeting, work%-session%]", table.concat(parsed_tags, ", "))
 							:gsub("%[YYYY%-MM%-DD HH:MM:SS%]", date_str .. " " .. time_str)
 
 						-- Write session log file
@@ -627,9 +629,499 @@ return {
 						-- Notify user
 						vim.notify("Session log created: " .. filename, vim.log.levels.INFO)
 
-						return filepath, true, nil
+						return filepath, nil
 					end,
 				},
+				{
+					name = "k8s_status",
+					description = "Get a quick overview of the Kubernetes cluster: node health, pod counts per namespace, any non-running pods, and recent events",
+					param = {
+						type = "table",
+						fields = {
+							{
+								name = "namespace",
+								description = "Filter to a specific namespace (optional, shows all namespaces by default)",
+								type = "string",
+								optional = true,
+							},
+							{
+								name = "show_events",
+								description = "Show recent cluster events (default: true)",
+								type = "boolean",
+								optional = true,
+								default = true,
+							},
+						},
+					},
+					returns = {
+						{
+							name = "output",
+							description = "Formatted cluster status overview",
+							type = "string",
+						},
+						{
+							name = "error",
+							description = "Error message if the command failed",
+							type = "string",
+							optional = true,
+						},
+					},
+					func = function(params, on_log, on_complete)
+						local namespace = params.namespace or ""
+						local show_events = params.show_events
+						if show_events == nil then
+							show_events = true
+						end
+						local ns_flag = ""
+						if namespace ~= "" then
+							ns_flag = " -n " .. vim.fn.shellescape(namespace)
+						end
+						local result = {}
+						table.insert(result, "=== KUBERNETES CLUSTER STATUS ===")
+						table.insert(result, "")
+						table.insert(result, "--- Nodes ---")
+						local node_handle = io.popen("kubectl get nodes -o wide 2>&1", "r")
+						if node_handle then
+							local node_output = node_handle:read("*a")
+							node_handle:close()
+							if node_output:match("command not found") then
+								return nil, "kubectl is not installed or not in PATH"
+							end
+							table.insert(result, node_output)
+						end
+						table.insert(result, "")
+						table.insert(result, "--- Pod Summary ---")
+						local pod_cmd = "kubectl get pods" .. ns_flag .. " --all-namespaces --no-headers 2>&1"
+						local pod_handle = io.popen(pod_cmd, "r")
+						if pod_handle then
+							local pod_output = pod_handle:read("*a")
+							pod_handle:close()
+							local ns_pods = {}
+							local non_running = {}
+							local total_pods = 0
+							for line in pod_output:gmatch("[^\r\n]+") do
+								local ns, name, ready, status, restarts, age = line:match("^(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)")
+								if ns then
+									ns_pods[ns] = (ns_pods[ns] or 0) + 1
+									total_pods = total_pods + 1
+									if status ~= "Running" and status ~= "Completed" then
+										table.insert(non_running, line)
+									end
+								end
+							end
+							table.insert(result, "Total pods: " .. total_pods)
+							table.insert(result, "")
+							table.insert(result, "Pods per namespace:")
+							for ns, count in pairs(ns_pods) do
+								table.insert(result, "  " .. ns .. ": " .. count)
+							end
+							if #non_running > 0 then
+								table.insert(result, "")
+								table.insert(result, "Non-running pods:")
+								for _, line in ipairs(non_running) do
+									table.insert(result, "  " .. line)
+								end
+							else
+								table.insert(result, "")
+								table.insert(result, "All pods are running or completed.")
+							end
+						end
+						table.insert(result, "")
+						if show_events then
+							table.insert(result, "--- Recent Events (last 15) ---")
+							local events_cmd = "kubectl get events" .. ns_flag .. " --all-namespaces --sort-by='.lastTimestamp' --no-headers 2>&1 | tail -15"
+							local events_handle = io.popen(events_cmd, "r")
+							if events_handle then
+								local events_output = events_handle:read("*a")
+								events_handle:close()
+								if events_output ~= "" then
+									table.insert(result, events_output)
+								else
+									table.insert(result, "  No recent events.")
+								end
+							end
+						end
+						return table.concat(result, "\n")
+					end,
+				},
+
+				{
+					name = "k8s_logs",
+					description = "Tail logs from a Kubernetes pod with namespace and container selection",
+					param = {
+						type = "table",
+						fields = {
+							{
+								name = "namespace",
+								description = "Namespace of the pod (required)",
+								type = "string",
+							},
+							{
+								name = "pod",
+								description = "Name of the pod (required)",
+								type = "string",
+							},
+							{
+								name = "container",
+								description = "Container name within the pod (optional, for multi-container pods)",
+								type = "string",
+								optional = true,
+							},
+							{
+								name = "tail",
+								description = "Number of recent log lines to show (default: 50, use 0 for all)",
+								type = "integer",
+								optional = true,
+								default = 50,
+							},
+							{
+								name = "previous",
+								description = "Show logs from the previous instance of the pod (default: false)",
+								type = "boolean",
+								optional = true,
+								default = false,
+							},
+						},
+					},
+					returns = {
+						{
+							name = "output",
+							description = "Log output from the pod",
+							type = "string",
+						},
+						{
+							name = "error",
+							description = "Error message if the command failed",
+							type = "string",
+							optional = true,
+						},
+					},
+					func = function(params, on_log, on_complete)
+						local namespace = params.namespace or ""
+						local pod = params.pod or ""
+						local container = params.container or ""
+						local tail = params.tail
+						if tail == nil then
+							tail = 50
+						end
+						local previous = params.previous or false
+						if namespace == "" then
+							return nil, "Namespace is required"
+						end
+						if pod == "" then
+							return nil, "Pod name is required"
+						end
+						local cmd = "kubectl logs -n " .. vim.fn.shellescape(namespace) .. " " .. vim.fn.shellescape(pod)
+						if container ~= "" then
+							cmd = cmd .. " -c " .. vim.fn.shellescape(container)
+						end
+						if tail > 0 then
+							cmd = cmd .. " --tail=" .. tail
+						end
+						if previous then
+							cmd = cmd .. " --previous"
+						end
+						cmd = cmd .. " 2>&1"
+						local handle = io.popen(cmd, "r")
+						if not handle then
+							return nil, "Failed to execute kubectl logs command"
+						end
+						local output = handle:read("*a")
+						handle:close()
+						if output:match("command not found") then
+							return nil, "kubectl is not installed or not in PATH"
+						end
+						if output == "" then
+							return "No log output returned. The pod may not have started or may have no logs yet."
+						end
+						return output
+					end,
+				},
+
+				{
+					name = "k8s_describe",
+					description = "Describe a Kubernetes resource (pod, service, deployment, node, pvc, etc.) with detailed information",
+					param = {
+						type = "table",
+						fields = {
+							{
+								name = "resource",
+								description = "Resource type (e.g., pod, service, deployment, node, pvc, ingress, configmap, secret, namespace)",
+								type = "string",
+							},
+							{
+								name = "name",
+								description = "Name of the resource",
+								type = "string",
+							},
+							{
+								name = "namespace",
+								description = "Namespace of the resource (optional, not needed for cluster-scoped resources like nodes)",
+								type = "string",
+								optional = true,
+							},
+						},
+					},
+					returns = {
+						{
+							name = "output",
+							description = "Detailed resource description",
+							type = "string",
+						},
+						{
+							name = "error",
+							description = "Error message if the command failed",
+							type = "string",
+							optional = true,
+						},
+					},
+					func = function(params, on_log, on_complete)
+						local resource = params.resource or ""
+						local name = params.name or ""
+						local namespace = params.namespace or ""
+						if resource == "" then
+							return nil, "Resource type is required (e.g., pod, service, deployment, node, pvc)"
+						end
+						if name == "" then
+							return nil, "Resource name is required"
+						end
+						local cmd = "kubectl describe " .. vim.fn.shellescape(resource) .. " " .. vim.fn.shellescape(name)
+						if namespace ~= "" then
+							cmd = cmd .. " -n " .. vim.fn.shellescape(namespace)
+						end
+						cmd = cmd .. " 2>&1"
+						local handle = io.popen(cmd, "r")
+						if not handle then
+							return nil, "Failed to execute kubectl describe command"
+						end
+						local output = handle:read("*a")
+						handle:close()
+						if output:match("command not found") then
+							return nil, "kubectl is not installed or not in PATH"
+						end
+						return output
+					end,
+				},
+
+				{
+					name = "k8s_events",
+					description = "Show recent Kubernetes cluster events sorted by time, filterable by namespace and severity",
+					param = {
+						type = "table",
+						fields = {
+							{
+								name = "namespace",
+								description = "Filter to a specific namespace (optional, shows all namespaces by default)",
+								type = "string",
+								optional = true,
+							},
+							{
+								name = "tail",
+								description = "Number of recent events to show (default: 20)",
+								type = "integer",
+								optional = true,
+								default = 20,
+							},
+							{
+								name = "warnings_only",
+								description = "Show only warning and error events (default: false)",
+								type = "boolean",
+								optional = true,
+								default = false,
+							},
+						},
+					},
+					returns = {
+						{
+							name = "output",
+							description = "Formatted event list",
+							type = "string",
+						},
+						{
+							name = "error",
+							description = "Error message if the command failed",
+							type = "string",
+							optional = true,
+						},
+					},
+					func = function(params, on_log, on_complete)
+						local namespace = params.namespace or ""
+						local tail = params.tail
+						if tail == nil then
+							tail = 20
+						end
+						local warnings_only = params.warnings_only or false
+						local ns_flag = ""
+						if namespace ~= "" then
+							ns_flag = " -n " .. vim.fn.shellescape(namespace)
+						end
+						local type_filter = ""
+						if warnings_only then
+							type_filter = " --field-selector type=Warning"
+						end
+						local cmd = "kubectl get events" .. ns_flag .. " --all-namespaces --sort-by='.lastTimestamp'" .. type_filter .. " --no-headers 2>&1 | tail -" .. tail
+						local handle = io.popen(cmd, "r")
+						if not handle then
+							return nil, "Failed to execute kubectl get events command"
+						end
+						local output = handle:read("*a")
+						handle:close()
+						if output:match("command not found") then
+							return nil, "kubectl is not installed or not in PATH"
+						end
+						if output == "" then
+							return "No events found."
+						end
+						return output
+					end,
+				},
+
+				{
+					name = "k8s_helm",
+					description = "List Helm releases and their status across namespaces",
+					param = {
+						type = "table",
+						fields = {
+							{
+								name = "namespace",
+								description = "Filter to a specific namespace (optional, shows all namespaces by default)",
+								type = "string",
+								optional = true,
+							},
+							{
+								name = "all",
+								description = "Show all releases including failed and uninstalled (default: false)",
+								type = "boolean",
+								optional = true,
+								default = false,
+							},
+						},
+					},
+					returns = {
+						{
+							name = "output",
+							description = "Formatted Helm release list",
+							type = "string",
+						},
+						{
+							name = "error",
+							description = "Error message if the command failed",
+							type = "string",
+							optional = true,
+						},
+					},
+					func = function(params, on_log, on_complete)
+						local namespace = params.namespace or ""
+						local all = params.all or false
+						local ns_flag = ""
+						if namespace ~= "" then
+							ns_flag = " -n " .. vim.fn.shellescape(namespace)
+						else
+							ns_flag = " --all-namespaces"
+						end
+						local all_flag = ""
+						if all then
+							all_flag = " --all"
+						end
+						local cmd = "helm list" .. ns_flag .. all_flag .. " 2>&1"
+						local handle = io.popen(cmd, "r")
+						if not handle then
+							return nil, "Failed to execute helm list command"
+						end
+						local output = handle:read("*a")
+						handle:close()
+						if output:match("command not found") then
+							return nil, "helm is not installed or not in PATH"
+						end
+						if output == "" or output:match("No resources found") then
+							return "No Helm releases found."
+						end
+						return output
+					end,
+				},
+
+				{
+					name = "k8s_storage",
+					description = "Show Kubernetes storage overview: PersistentVolumeClaims and PersistentVolumes with status and capacity",
+					param = {
+						type = "table",
+						fields = {
+							{
+								name = "namespace",
+								description = "Filter PVCs to a specific namespace (optional, shows all namespaces by default)",
+								type = "string",
+								optional = true,
+							},
+							{
+								name = "show_pv",
+								description = "Show PersistentVolumes as well (default: true)",
+								type = "boolean",
+								optional = true,
+								default = true,
+							},
+						},
+					},
+					returns = {
+						{
+							name = "output",
+							description = "Formatted storage overview",
+							type = "string",
+						},
+						{
+							name = "error",
+							description = "Error message if the command failed",
+							type = "string",
+							optional = true,
+						},
+					},
+					func = function(params, on_log, on_complete)
+						local namespace = params.namespace or ""
+						local show_pv = params.show_pv
+						if show_pv == nil then
+							show_pv = true
+						end
+						local result = {}
+						table.insert(result, "=== KUBERNETES STORAGE OVERVIEW ===")
+						table.insert(result, "")
+						local ns_flag = ""
+						if namespace ~= "" then
+							ns_flag = " -n " .. vim.fn.shellescape(namespace)
+						end
+						table.insert(result, "--- PersistentVolumeClaims ---")
+						local pvc_cmd = "kubectl get pvc" .. ns_flag .. " --all-namespaces 2>&1"
+						local pvc_handle = io.popen(pvc_cmd, "r")
+						if pvc_handle then
+							local pvc_output = pvc_handle:read("*a")
+							pvc_handle:close()
+							if pvc_output:match("command not found") then
+								return nil, "kubectl is not installed or not in PATH"
+							end
+							table.insert(result, pvc_output)
+						end
+						table.insert(result, "")
+						if show_pv then
+							table.insert(result, "--- PersistentVolumes ---")
+							local pv_cmd = "kubectl get pv 2>&1"
+							local pv_handle = io.popen(pv_cmd, "r")
+							if pv_handle then
+								local pv_output = pv_handle:read("*a")
+								pv_handle:close()
+								table.insert(result, pv_output)
+							end
+							table.insert(result, "")
+						end
+						table.insert(result, "--- Storage Classes ---")
+						local sc_cmd = "kubectl get storageclass 2>&1"
+						local sc_handle = io.popen(sc_cmd, "r")
+						if sc_handle then
+							local sc_output = sc_handle:read("*a")
+							sc_handle:close()
+							table.insert(result, sc_output)
+						end
+						return table.concat(result, "\n")
+					end,
+				},
+
 			},
 
 			-- Rules configuration for avante.nvim
