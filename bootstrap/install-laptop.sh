@@ -271,13 +271,21 @@ arch_setup() {
         _cmd "sudo pacman -S --noconfirm openssh"
     fi
 
+    # Install gopass 
+    if ! [ -x "$(command -v gopass)" ]; then
+        __task "Installing gopass"
+        _cmd "sudo pacman -S gopass gnupg"
+        if ! [ -x "$(gpg --list-secret-keys)" ]; then
+            _cmd "gpg --full-generate-key"
+        fi
+        # Initialize gopass
+        _cmd "gopass init"
+    fi
+
+
     # Install Ansible Python dependencies
     __task "Installing Ansible Python dependencies"
     _cmd "sudo pacman -S --noconfirm python-passlib python-kubernetes python-docker python-jmespath"
-
-    # Install Ansible collections
-    __task "Installing Ansible collections"
-    _cmd "ansible-galaxy collection install community.general ansible.posix"
 
     # Set Locale
     if ! locale -a 2>/dev/null | grep -q "en_US.utf8"; then
@@ -386,9 +394,7 @@ opensuse_setup() {
     __task "Installing Ansible Python dependencies"
     _cmd "sudo zypper --non-interactive install python3-passlib python3-kubernetes python3-docker python3-jmespath"
 
-    # Install Ansible collections
-    __task "Installing Ansible collections"
-    _cmd "ansible-galaxy collection install community.general ansible.posix"
+
 
     # Set Locale
     if ! locale -a 2>/dev/null | grep -q "en_US.utf8"; then
@@ -465,6 +471,10 @@ case $dotfiles_os in
     ;;
 esac 
 
+# Install Ansible dependencies
+# Install Ansible collections
+__task "Installing Ansible collections"
+_cmd "ansible-galaxy collection install community.general ansible.posix kubernetes.core"
 
 #if ! [[ -d "$DOTFILES_DIR" ]]; then
 #  __task "Downloading dotfiles repository (This may take a minute)"
