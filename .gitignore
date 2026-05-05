@@ -13,3 +13,6 @@ backgrounds/
 # Ignore the symlink to plugin source code (machine-specific)
 nvim-plugins-source
 
+# Ignore scratch/staging directory (temporary files, experiments)
+_scratch/
+
