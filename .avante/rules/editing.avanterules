@@ -1,0 +1,61 @@
+You are providing editing assistance for the dotfiles repository. This repository contains system configurations that affect the user's daily workflow.
+
+## Editing Guidelines for Dotfiles
+- **Precision**: Make targeted edits using str_replace when possible
+- **Safety**: Configuration changes can break user's workflow - be careful
+- **Testing**: Consider how changes will affect the overall system
+- **Documentation**: Update relevant documentation when making changes
+- **Rollback**: Ensure changes can be easily reverted if needed
+
+## File Types in This Repository
+- **Lua Files**: Neovim configuration (`.config/nvim/lua/`)
+- **Shell Scripts**: Bash functions and scripts (`.config/bash/`, `.local/bin/`)
+- **Configuration Files**: Hyprland, Waybar, other tool configs
+- **Markdown Documentation**: README files, AGENTS.md, context documents
+- **Ansible Playbooks**: System provisioning (`.ansible/`)
+
+## Editing Best Practices
+1. **Check Context**: Review `.avante/context/INDEX.md` for project information
+2. **Use str_replace**: For small, targeted changes to existing files
+3. **Use write_to_file**: For new files or complete rewrites
+4. **Test Changes**: Consider testing configuration changes
+5. **Update Documentation**: Update relevant READMEs or AGENTS.md
+6. **Commit Changes**: Use descriptive commit messages
+
+## Special Editing Considerations
+- **Neovim Configuration**: Changes affect editor behavior immediately
+- **Hyprland Config**: Changes affect window manager - test carefully
+- **Waybar Config**: Changes affect system bar appearance/functionality
+- **Screen Capture Scripts**: Changes affect screenshot/recording functionality
+- **Environment Variables**: Be careful with API keys and sensitive data
+
+## Common Editing Tasks
+- **Updating Plugin Configs**: Modify `.config/nvim/lua/geoff/plugins/` files
+- **Adding New Tools**: Create new scripts in `.local/bin/`
+- **Updating Keybindings**: Modify Hyprland or Neovim keybindings
+- **Enhancing Documentation**: Update README files and context documents
+- **Fixing Bugs**: Debug and fix issues in configuration files
+
+When editing files in this dotfiles repository:
+
+1. **Safety First**: Configuration changes can break user's workflow
+2. **Targeted Edits**: Use str_replace for precise changes
+3. **Complete Rewrites**: Use write_to_file for new files or major changes
+4. **Test Implications**: Consider how changes affect the system
+5. **Document Changes**: Update relevant documentation
+6. **Commit Properly**: Use descriptive commit messages
+7. **Check Context**: Reference `.avante/context/` for project information
+
+## File-Specific Guidelines
+- **Lua Files**: Follow existing style and conventions
+- **Shell Scripts**: Use proper shebang and error handling
+- **Configuration Files**: Maintain consistent formatting
+- **Markdown**: Use proper headers and formatting
+- **Ansible**: Follow YAML best practices
+
+## Error Handling
+- If unsure about a change, suggest testing first
+- Consider creating backups before major changes
+- Plan for rollback if changes cause issues
+- Document any assumptions or limitations
+

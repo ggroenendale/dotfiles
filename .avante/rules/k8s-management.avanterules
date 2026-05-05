@@ -1,0 +1,103 @@
+# Kubernetes Cluster Management
+
+This rule file provides guidance for managing the K3s Kubernetes cluster using the avante.nvim custom tools.
+
+## Cluster Overview
+
+- **Type**: K3s (lightweight Kubernetes)
+- **Nodes**: 2 (aconcagua-host: control-plane, geoff-workstation: worker)
+- **Ingress**: Traefik (LoadBalancer on both nodes)
+- **Storage**: local-path-provisioner
+- **Age**: ~297 days (as of 2026-04)
+
+## Namespaces
+
+| Namespace | Purpose |
+|-----------|---------|
+| `airflow` | Apache Airflow (scheduler, workers, triggerer, postgres, redis) |
+| `argocd` | ArgoCD GitOps (server, repo-server, dex, app-controller, redis) |
+| `default` | Flask app, Nginx, Zot OCI registry |
+| `gitea` | Gitea + PostgreSQL HA (3 replicas) + Valkey cluster (3 replicas) |
+| `kube-system` | CoreDNS, Traefik, metrics-server, local-path-provisioner |
+| `mytabletoplist` | MyTableTopList app (api + fe, multi-replica across both nodes) |
+| `woodpecker` | Woodpecker CI (server + 2 agents) |
+
+## Available Tools
+
+### k8s_status
+Quick cluster health overview. Shows:
+- Node status (ready/not-ready, versions, roles)
+- Pod counts per namespace
+- Any non-running pods (pending, crashloop, etc.)
+- Recent cluster events (last 15)
+
+**Parameters**:
+- `namespace` (optional): Filter to a specific namespace
+- `show_events` (optional, default: true): Show recent events
+
+### k8s_logs
+Tail logs from pods. Useful for debugging crashes, errors, or monitoring.
+
+**Parameters**:
+- `namespace` (required): Namespace of the pod
+- `pod` (required): Name of the pod
+- `container` (optional): For multi-container pods (e.g., airflow pods with 2 containers)
+- `tail` (optional, default: 50): Number of recent lines
+- `previous` (optional, default: false): Show logs from previous instance (useful for crash loops)
+
+### k8s_describe
+Deep-dive into any Kubernetes resource. Shows detailed info including events, labels, annotations, and status.
+
+**Parameters**:
+- `resource` (required): Resource type (pod, service, deployment, node, pvc, ingress, configmap, secret, namespace, etc.)
+- `name` (required): Name of the resource
+- `namespace` (optional): Namespace (not needed for cluster-scoped resources like nodes)
+
+### k8s_events
+Browse cluster events sorted by time. The go-to for "what just went wrong?"
+
+**Parameters**:
+- `namespace` (optional): Filter to a specific namespace
+- `tail` (optional, default: 20): Number of recent events
+- `warnings_only` (optional, default: false): Show only Warning events
+
+### k8s_helm
+List Helm releases and their status.
+
+**Parameters**:
+- `namespace` (optional): Filter to a specific namespace
+- `all` (optional, default: false): Show all releases including failed/uninstalled
+
+### k8s_storage
+Storage overview showing PVCs, PVs, and StorageClasses.
+
+**Parameters**:
+- `namespace` (optional): Filter PVCs to a specific namespace
+- `show_pv` (optional, default: true): Show PersistentVolumes as well
+
+## Common Tasks
+
+### Check cluster health
+Use `k8s_status` without parameters for a full overview.
+
+### Debug a crashing pod
+1. `k8s_status --namespace <ns>` to see non-running pods
+2. `k8s_describe --resource pod --name <pod> --namespace <ns>` for events and status
+3. `k8s_logs --namespace <ns> --pod <pod> --previous` for logs from crashed instance
+
+### Check storage usage
+Use `k8s_storage` to see PVCs, PVs, and StorageClasses.
+
+### View Helm releases
+Use `k8s_helm` to list all deployed Helm charts.
+
+### Monitor events
+Use `k8s_events --warnings_only` to see only warning events.
+
+## Notes
+
+- The cluster uses `local-path` StorageClass for dynamic provisioning
+- Traefik handles ingress with LoadBalancer on both nodes
+- ArgoCD manages GitOps deployments
+- The cluster has been running stably for ~297 days
+

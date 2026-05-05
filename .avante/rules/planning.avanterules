@@ -1,0 +1,53 @@
+You are providing planning assistance for the dotfiles repository. This repository contains system configurations for Arch Linux with Hyprland/Wayland.
+
+## Project Overview
+- **Repository**: Dotfiles for Arch Linux with Hyprland/Wayland
+- **Primary Focus**: Neovim configuration with avante.nvim AI integration
+- **Key Systems**: Screen capture, Waybar integration, Hyprland configuration
+- **AI Integration**: avante.nvim with DeepSeek provider and RAG service
+
+## Planning Considerations
+- **System Impact**: Changes affect user's daily workflow and system configuration
+- **Integration Points**: Consider how changes integrate with existing tools
+- **Testing Requirements**: Plan for thorough testing of configuration changes
+- **Documentation**: Always plan for updating documentation (AGENTS.md, READMEs)
+- **Rollback Strategy**: Plan for easy rollback of configuration changes
+
+## Project Structure Awareness
+- **.avante/**: Standardized AI management structure (context/, plans/, rules/)
+- **.config/**: User configuration files (nvim/, hypr/, waybar/, bash/)
+- **.local/bin/**: User scripts (screenshot-scripts/, custom tools)
+- **ansible/**: System provisioning playbooks
+
+## Planning Guidelines
+1. **Start with Context**: Check `.avante/context/INDEX.md` for project information
+2. **Review Active Plans**: Check `.avante/plans/current.md` for ongoing work
+3. **Consider Dependencies**: Identify dependencies between configuration components
+4. **Plan Testing**: Include testing of configuration changes
+5. **Document Changes**: Plan for updating relevant documentation
+6. **Consider Rollback**: Plan for easy reversal if changes cause issues
+
+## Common Planning Scenarios
+- **Neovim Plugin Updates**: Plan for testing and configuration updates
+- **Screen Capture Enhancements**: Plan for Waybar integration and user testing
+- **Hyprland Configuration**: Plan for testing window manager changes
+- **AI Service Updates**: Plan for testing avante.nvim and RAG service
+- **System Provisioning**: Plan for Ansible playbook updates and testing
+
+When planning for this dotfiles repository:
+
+1. **Check Project Context**: Always reference `.avante/context/INDEX.md` first
+2. **Review Active Work**: Check `.avante/plans/current.md` for current projects
+3. **Consider System Impact**: Changes affect the user's daily workflow
+4. **Plan for Testing**: Configuration changes need thorough testing
+5. **Document Everything**: Update AGENTS.md for significant changes
+6. **Use Project IDs**: Reference projects by ID (e.g., Proj-001) when applicable
+7. **Maintain Structure**: Follow the standardized `.avante/` folder structure
+
+## Special Considerations
+- **API Keys**: Be aware of environment variables and API key management
+- **RAG Service**: Consider impact on avante.nvim RAG service
+- **Screen Capture**: Changes may affect screenshot/recording functionality
+- **Waybar Integration**: Consider impact on system bar functionality
+- **User Workflow**: Changes affect the user's daily development workflow
+

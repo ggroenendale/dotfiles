@@ -1,0 +1,2 @@
+TEST: This is a lua-specific planning rule file. If avante.nvim is working correctly with pattern matching, this file should be used for planning mode when working with Lua files.
+
