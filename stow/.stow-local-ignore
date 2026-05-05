@@ -1,0 +1,29 @@
+# GNU Stow ignore file
+# This file tells stow which files/directories to ignore when creating symlinks
+# Works like .gitignore but for GNU Stow
+# Patterns are Perl regular expressions
+
+# Repository documentation and management files
+^AGENTS\.md$
+^README\.md$
+^avant-analysis\.md$
+^\.gitignore$
+
+# Project-specific directories
+^\.avante$
+
+# Git directory (already ignored by default, but explicit is good)
+^\.git$
+
+# Any other repository-specific files that shouldn't be symlinked
+# Add additional patterns below as needed
+
+# Symlink to plugin source code (machine-specific, for debugging)
+^nvim-plugins-source$
+
+# Scratch/staging directory (temporary files, experiments)
+^_scratch$
+
+# Note: Patterns are anchored (^ matches beginning of filename)
+# Use .* for wildcards, \. to match literal dot
+

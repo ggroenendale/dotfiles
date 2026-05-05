@@ -1,0 +1,96 @@
+{# Global rule for project consistency and .avante/ folder structure #}
+{# This applies to all projects to ensure consistent AI-assisted development workflow #}
+
+{% block custom_prompt %}
+You are working with a project that follows the standardized .avante/ folder structure for AI-assisted development. This global rule ensures consistency across all projects.
+
+## .avante/ Folder Structure Standard
+
+Every project MUST have a `.avante/` folder at the root with the following structure:
+
+```
+.avante/
+├── context/           # Project context and information
+│   ├── INDEX.md      # Central index of project information (REQUIRED)
+│   ├── ARCHITECTURE.md # Detailed technical architecture (REQUIRED)
+│   └── [other files] # Additional context files as needed
+├── plans/            # Project plans and task management
+│   ├── current.md    # Active work log with project tracking (REQUIRED)
+│   ├── [project-name].md # Individual project plans
+│   └── [phase-plans] # Phase-specific plans
+└── rules/            # Project-specific rules for avante.nvim
+    ├── [rule-name].avanterules # Project-specific rules
+    └── [other rules] # Additional rule files
+```
+
+## Folder Purposes and Requirements
+
+### 1. context/ Folder
+- **Purpose**: Central repository for project information and context
+- **Required Files**:
+  - `INDEX.md` - Must contain comprehensive project information
+  - `ARCHITECTURE.md` - Must contain detailed technical architecture documentation
+- **Usage**: avante.nvim should reference this folder for project context
+- **Content**: Should include project overview, goals, architecture, key files, dependencies, team members, etc.
+
+### 2. plans/ Folder
+- **Purpose**: Manage project plans, phases, and AI agent task tracking
+- **Required File**: `current.md` - Active work log with project tracking
+- **Structure**:
+  - Projects identified by name and ID (e.g., "Proj-001: Feature Implementation")
+  - Phases with clear steps and milestones
+  - Validation and testing requirements
+  - Progress tracking and completion status
+- **Usage**: AI agents should reference and update this folder to stay on task
+
+### 3. rules/ Folder
+- **Purpose**: Project-specific rules for avante.nvim behavior
+- **Files**: `.avanterules` files that override or supplement global rules
+- **Usage**: Hierarchical rule loading (project rules override global rules)
+- **Content**: Project-specific guidelines, constraints, and best practices
+
+## Implementation Guidelines
+
+### Creating the Structure
+1. **New Projects**: Always create `.avante/` folder with the three subfolders
+2. **Existing Projects**: Add the structure if missing
+3. **Templates**: Use provided templates for `INDEX.md` and `current.md`
+
+### Using the Structure
+1. **Context Access**: Always check `.avante/context/INDEX.md` first for project information
+2. **Plan Management**: Update `.avante/plans/current.md` when starting new work
+3. **Rule Integration**: Load project-specific rules from `.avante/rules/` folder
+
+### avante.nvim Integration
+1. **Auto-detection**: avante.nvim should detect and use the `.avante/` structure
+2. **Context Loading**: Load project context from `INDEX.md` when available
+3. **Plan Awareness**: Reference active plans in `current.md` for task guidance
+4. **Rule Hierarchy**: Apply project rules from `.avante/rules/` folder
+
+## Best Practices
+1. **Consistency**: Maintain the same structure across all projects
+2. **Documentation**: Keep `INDEX.md` updated as the project evolves
+3. **Tracking**: Log all significant work in `current.md`
+4. **Version Control**: Include `.avante/` in version control (except sensitive data)
+5. **Collaboration**: Structure supports team collaboration and AI agent coordination
+
+## Templates and Examples
+- `INDEX.md` template includes sections for project overview, architecture, key files, etc.
+- `current.md` template includes project ID system, phase tracking, validation requirements
+- Rule files follow the `.avanterules` format with custom_prompt and extra_prompt blocks
+{% endblock %}
+
+{% block extra_prompt %}
+When working with any project, always:
+
+1. **Check for .avante/ folder**: Look for the standardized structure at project root
+2. **Read INDEX.md first**: Load project context from `.avante/context/INDEX.md`
+3. **Review current plans**: Check `.avante/plans/current.md` for active work and project IDs
+4. **Apply project rules**: Load and apply rules from `.avante/rules/` folder
+5. **Update documentation**: Keep context and plans updated as work progresses
+6. **Use project IDs**: Reference projects by their ID (e.g., Proj-001) in all communications
+7. **Maintain structure**: Ensure the three-folder structure is complete and properly organized
+
+If the `.avante/` structure is missing, guide the user to create it with the required folders and templates.
+{% endblock %}
+

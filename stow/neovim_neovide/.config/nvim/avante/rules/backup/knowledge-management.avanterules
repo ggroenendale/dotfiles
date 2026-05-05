@@ -1,0 +1,193 @@
+{# Global rule for knowledge management and documentation #}
+{# This applies to all projects when avante.nvim is used #}
+
+{% block custom_prompt %}
+You are working with a project that uses the standardized .avante/ structure for knowledge management. This global rule provides guidance on documentation, session logging, and lessons learned.
+
+## Knowledge Management Structure
+All projects should follow the standardized .avante/ folder structure:
+```
+.avante/
+├── context/           # Project context and information
+│   ├── INDEX.md      # Central project index (REQUIRED)
+│   ├── ARCHITECTURE.md # Detailed technical architecture (REQUIRED)
+│   ├── LESSONS_LEARNED.md  # Collection of insights and best practices
+│   └── sessions/     # Timestamped session logs
+│       └── session-template.md  # Template for new sessions
+├── plans/            # Project plans and task management
+│   ├── current.md    # Active work log with project tracking
+│   └── project-plan.md # Comprehensive project planning
+└── rules/            # Project-specific rules for avante.nvim
+    └── *.avanterules # Project-specific rule files
+```
+
+## Documentation Guidelines
+
+### When to Document
+1. **Lessons Learned**: When discovering insights, best practices, or solutions to problems
+2. **Session Logs**: For meetings, work sessions, debugging sessions, or important discussions
+3. **Context Updates**: When project architecture, dependencies, or goals change
+4. **Troubleshooting**: When solving non-trivial problems or debugging issues
+
+### Documentation Triggers
+- User says: "We should probably make a note in our Lessons Learned about our findings"
+- User says: "Create a session log" or "Log this session"
+- User says: "Document this" or "Make a note of this"
+- After solving a complex problem or discovering an important insight
+- At the end of significant work sessions or meetings
+
+## Lessons Learned Documentation
+
+### Purpose
+- Capture institutional knowledge and insights
+- Document best practices and patterns
+- Record solutions to common problems
+- Share knowledge across sessions and team members
+
+### How to Add Lessons
+1. Open the LESSONS_LEARNED.md file in the project's .avante/context/ directory
+2. Use the template provided in the document
+3. Add the lesson to the appropriate category section
+4. Include specific details, examples, and context
+5. Update the revision history if needed
+
+### Lesson Template
+```markdown
+### Lesson [Number]: [Brief Description]
+**Insight**: [One-sentence summary of the lesson]
+
+**Details**:
+- [Specific detail 1]
+- [Specific detail 2]
+- [Specific detail 3]
+
+**Example**: [Concrete example or code snippet]
+
+**Date Learned**: [YYYY-MM-DD]
+**Context**: [What situation led to this learning]
+```
+
+## Session Logging
+
+### Purpose
+- Create historical record of work and decisions
+- Document discussions, action items, and outcomes
+- Track progress and context over time
+- Support accountability and follow-up
+
+### How to Create Session Logs
+1. Copy the session-template.md from .avante/context/sessions/
+2. Name the file: YYYYMMDD-HHMMSS-session-title.md
+3. Fill in the YAML frontmatter metadata
+4. Document the session details using the template structure
+5. Save in the .avante/context/sessions/ directory
+
+### Session Metadata
+- **session_id**: YYYYMMDD-HHMMSS format
+- **date**: Session date (YYYY-MM-DD)
+- **start_time/end_time**: Session timing
+- **duration**: Total session duration
+- **participants**: Who was involved
+- **project**: Related project name/ID
+- **tags**: Relevant tags for searching
+
+### Key Session Sections
+1. **Agenda**: What was planned for the session
+2. **Discussion Notes**: What was actually discussed
+3. **Decisions Made**: Important decisions that were reached
+4. **Action Items**: Specific tasks with assignees and due dates
+5. **Outcomes**: What was achieved or delivered
+6. **Next Steps**: Follow-up actions and future work
+7. **Lessons Learned**: Insights gained during the session
+
+## Integration with AI Assistance
+
+### Context Awareness
+- AI should reference existing documentation when appropriate
+- Use lessons learned to inform solutions to similar problems
+- Reference session logs for historical context
+- Update documentation based on new insights
+
+### Proactive Documentation
+- Suggest documentation when valuable insights are discovered
+- Remind users to update lessons learned after solving problems
+- Encourage session logging for significant work sessions
+- Maintain documentation as a living resource
+
+## Best Practices
+
+### Documentation Quality
+1. **Be Specific**: Include concrete examples and details
+2. **Be Actionable**: Lessons should lead to practical improvements
+3. **Be Organized**: Use consistent structure and formatting
+4. **Be Current**: Update documentation as things change
+5. **Be Accessible**: Make documentation easy to find and use
+
+### Maintenance
+1. **Regular Review**: Periodically review and update documentation
+2. **Pruning**: Remove outdated or irrelevant information
+3. **Organization**: Keep documentation well-structured
+4. **Integration**: Connect related documents and information
+
+### Collaboration
+1. **Shared Understanding**: Documentation creates common knowledge
+2. **Onboarding**: New team members can learn from documentation
+3. **Continuity**: Knowledge persists beyond individual involvement
+4. **Improvement**: Documentation supports continuous improvement
+{% endblock %}
+
+{% block extra_prompt %}
+## Immediate Actions for Documentation Triggers
+
+### When User Mentions "Lessons Learned"
+1. **Acknowledge**: "Yes, that's a valuable insight that should be documented."
+2. **Suggest**: "Would you like me to add this to the LESSONS_LEARNED.md file?"
+3. **Execute**: If agreed, open the file and add the lesson using the template.
+4. **Confirm**: Show the added lesson and ask for any refinements.
+
+### When User Mentions "Session Log"
+1. **Acknowledge**: "I'll help you create a session log for this."
+2. **Gather Information**: Ask for session details (title, participants, date/time).
+3. **Create**: Generate a new session log file using the template.
+4. **Populate**: Fill in the session details based on the discussion.
+5. **Review**: Present the created session log for review and editing.
+
+### When Significant Insights Are Discovered
+1. **Recognize**: Identify that an important insight has been gained.
+2. **Suggest**: "This seems like a valuable lesson. Should we add it to LESSONS_LEARNED.md?"
+3. **Document**: If agreed, document the lesson immediately while fresh.
+4. **Reference**: Note where the lesson was documented for future reference.
+
+## File Locations and Commands
+
+### Standard Locations
+- **Lessons Learned**: `.avante/context/LESSONS_LEARNED.md`
+- **Session Template**: `.avante/context/sessions/session-template.md`
+- **Session Logs**: `.avante/context/sessions/YYYYMMDD-HHMMSS-*.md`
+
+### Common Commands (if available)
+- View lessons: `cat .avante/context/LESSONS_LEARNED.md`
+- List sessions: `ls -la .avante/context/sessions/`
+- Create session: `cp .avante/context/sessions/session-template.md .avante/context/sessions/$(date +%Y%m%d-%H%M%S)-session-title.md`
+
+## Integration with Project Workflow
+
+### Daily Work
+- Start sessions by checking existing context
+- Log significant work sessions
+- Add lessons as they are learned
+- Reference documentation when facing similar challenges
+
+### Project Transitions
+- Document lessons at project milestones
+- Create session logs for important meetings
+- Update context as project evolves
+- Archive completed project documentation
+
+### Team Collaboration
+- Share documentation with team members
+- Use session logs for meeting minutes
+- Reference lessons in discussions
+- Maintain shared understanding through documentation
+{% endblock %}
+

@@ -1,0 +1,146 @@
+{# Global rule for coding standards and documentation #}
+{# This applies to all projects when avante.nvim is used #}
+
+{% block custom_prompt %}
+You are working with code that must follow specific coding standards. This is a global rule that applies to all projects using avante.nvim.
+
+## Coding Standards Overview
+
+These standards must be followed for all code and documentation you write or modify. Pay special attention to markdown formatting and Python documentation requirements.
+
+## Markdown Standards
+
+### Heading and Table Spacing
+- **REQUIRED**: When a heading is immediately followed by a table, there MUST be a blank line between the heading and the table
+- **Rationale**: The markdown render tool used creates a border that requires this spacing for proper rendering
+- **Example**:
+
+```markdown
+# Section Title
+
+| Column 1 | Column 2 |
+|----------|----------|
+| Data 1   | Data 2   |
+```
+
+- **INCORRECT** (no blank line):
+```markdown
+# Section Title
+| Column 1 | Column 2 |
+|----------|----------|
+| Data 1   | Data 2   |
+```
+
+- **CORRECT** (with blank line):
+```markdown
+# Section Title
+
+| Column 1 | Column 2 |
+|----------|----------|
+| Data 1   | Data 2   |
+```
+
+### Application
+- Apply this rule to ALL markdown files you create or modify
+- Check existing markdown files and fix any violations
+- This includes README files, documentation, and any other markdown content
+
+## Python Documentation Standards
+
+### Function Docstrings
+- **REQUIRED**: Every Python function MUST have a docstring
+- **Format**: Docstrings must follow the reStructuredText (reST) format
+- **Required Elements**:
+  1. Function description
+  2. All parameters with types
+  3. Return value with type
+  4. Any exceptions raised
+
+### Docstring Template
+```python
+def function_name(param1: type1, param2: type2) -> return_type:
+    """Brief description of the function.
+
+    :param param1: Description of param1
+    :type param1: type1
+    :param param2: Description of param2
+    :type param2: type2
+    :return: Description of return value
+    :rtype: return_type
+    :raises ExceptionType: When and why this exception is raised
+    """
+    # Function implementation
+```
+
+### Complete Example
+```python
+def calculate_total(items: list[float], tax_rate: float) -> float:
+    """Calculate the total cost including tax.
+
+    :param items: List of item prices
+    :type items: list[float]
+    :param tax_rate: Tax rate as decimal (e.g., 0.08 for 8%)
+    :type tax_rate: float
+    :return: Total cost including tax
+    :rtype: float
+    :raises ValueError: If tax_rate is negative
+    """
+    if tax_rate < 0:
+        raise ValueError("Tax rate cannot be negative")
+
+    subtotal = sum(items)
+    return subtotal * (1 + tax_rate)
+```
+
+### Requirements
+1. **Every parameter must be documented** with both `:param:` and `:type:`
+2. **Return value must be documented** with both `:return:` and `:rtype:`
+3. **Exceptions must be documented** with `:raises:` when applicable
+4. **Type hints in function signature** must match docstring types
+5. **Descriptions should be clear and concise**
+
+### Application
+- Apply this rule to ALL Python code you write or modify
+- Check existing Python files and add missing docstrings
+- Update incomplete docstrings to meet the standard
+- This includes scripts, modules, packages, and any Python code
+
+## General Standards
+
+### Consistency
+- Apply standards consistently across all files
+- When modifying existing code, update documentation to meet standards
+- Use the same formatting and style throughout
+
+### Verification
+- Before completing work, verify that all standards are met
+- Check markdown files for proper heading-table spacing
+- Check Python files for complete docstrings
+- Fix any violations before considering work complete
+
+### Priority
+These standards are HIGH PRIORITY and must be followed for all work.
+{% endblock %}
+
+{% block extra_prompt %}
+When writing or modifying code, remember to:
+
+## For Markdown:
+1. Check if a heading is immediately followed by a table
+2. If yes, ensure there is a blank line between them
+3. This is REQUIRED for proper rendering with the markdown tool
+
+## For Python:
+1. Every function MUST have a docstring
+2. Docstrings MUST use reStructuredText format
+3. Document ALL parameters with `:param:` and `:type:`
+4. Document return value with `:return:` and `:rtype:`
+5. Document exceptions with `:raises:` when applicable
+
+## Enforcement:
+- These are non-negotiable standards
+- Always check your work against these standards
+- Fix any violations before completing tasks
+- Apply to both new code and modifications to existing code
+{% endblock %}
+

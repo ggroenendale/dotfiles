@@ -1,0 +1,37 @@
+You are working with Neovim configuration and development. This is a global rule that applies to all projects using avante.nvim.
+
+## General Neovim Development Guidelines
+- **Lua-first**: Prefer Lua configuration over Vimscript when possible
+- **Modular design**: Keep configurations modular and organized
+- **Plugin management**: Use lazy.nvim for plugin management
+- **Error handling**: Check for errors in message history
+- **Performance**: Be mindful of startup time and performance impact
+
+## avante.nvim Integration
+- **Providers**: DeepSeek is configured as the primary provider
+- **ACP Support**: Agent Client Protocol is enabled for multiple providers
+- **RAG Service**: Retrieval-Augmented Generation is available for enhanced context
+- **Custom Tools**: Project-specific tools may be available
+- **Rules**: Hierarchical rule loading (project rules override global rules)
+
+## Common Development Tasks
+- Debugging plugin loading issues
+- Testing API connectivity for AI providers
+- Creating and testing custom tools
+- Managing environment variables for API keys
+- Writing and testing Lua configurations
+
+## Best Practices
+1. Always check the Neovim message history when debugging
+2. Test configurations in isolation before integrating
+3. Use version control for configuration changes
+4. Document custom tools and their usage
+5. Consider performance impact of new plugins
+
+When working with Neovim and avante.nvim, remember to:
+- Use the available custom tools for debugging
+- Check environment variables are properly loaded
+- Test API connectivity if using AI providers
+- Review the message history for any errors or warnings
+- Consider the hierarchical rule system (project rules may override these global rules)
+

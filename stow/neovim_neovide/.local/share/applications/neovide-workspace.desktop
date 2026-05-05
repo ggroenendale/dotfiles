@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=Neovide Workspace
+Exec=/home/geoff/.local/bin/neovide-workspace
+Type=Application
+Terminal=false
+Categories=Development;
