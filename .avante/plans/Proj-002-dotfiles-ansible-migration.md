@@ -208,7 +208,7 @@
   - Move `.config/paru.conf` into `stow/aur-helper/.config/paru.conf`
   - Paru is a package manager, not a desktop environment component — it needs its own dedicated stow package
   - **Naming note:** The package is called `aur-helper` rather than `paru` because it describes the *purpose* (AUR helper configuration), not the specific tool. If you switch to a different AUR helper (e.g., yay) in the future, the stow package name remains meaningful.
-- **`fonts/` at repo root** — do NOT migrate into stow. Fonts are binary files (`.ttf`) that need to be installed to `~/.local/share/fonts/` and registered with `fc-cache`, not symlinked. They also bloat the git repo at 125MB. Instead, handle font installation through Ansible's package role (see Phase 2.4).
+- **`fonts/` at repo root** — do NOT migrate into stow. Fonts are binary files (`.ttf`) that need to be installed to `~/.local/share/fonts/` and registered with `fc-cache`, not symlinked. They also bloat the git repo at 125MB. Instead, handle font installation through Ansible's package role (see Phase 2.4) or the system/fonts role (see Step 1.6).
 - **New stow packages** may be needed for configs that don't fit existing categories
 - Verify each config file is correctly placed in its target stow package directory
 - Ensure the `.config/` directory at repo root is removed after all files are distributed
@@ -250,6 +250,18 @@
 - Verify all expected symlinks are created in `~/.config/` and `~/.local/`
 - Check that no broken symlinks exist
 - Confirm the system still works as before (open terminal, launch Hyprland, etc.)
+
+#### 1.6 — Create Ansible role for font installation
+
+- Create `ansible/roles/system/fonts/tasks/main.yaml` with tasks to install font files
+- The role should copy font files from a designated source directory (e.g., `ansible/roles/system/fonts/files/`) to `~/.local/share/fonts/`
+- After copying, run `fc-cache -fv` to register the fonts with the fontconfig system
+- Use the `copy` module with `mode: 0644` to deploy `.ttf` and `.otf` font files
+- Ensure idempotency — only copy files that have changed, and only run `fc-cache` when new fonts are added
+- Support both user-level font installation (`~/.local/share/fonts/`) and system-level (`/usr/local/share/fonts/`) via an Ansible variable
+- Add a `fonts` tag to allow selective execution of font tasks
+- Document the font source directory structure and how to add new fonts
+- **Note:** The `fonts/` directory at the repository root (containing 125MB of `.ttf` files) should NOT be symlinked via Stow. Instead, font files should be stored in `ansible/roles/system/fonts/files/` and deployed via Ansible's `copy` module, which handles binary files correctly and avoids bloating the stow symlink tree.
 
 ### Phase 2 — Ansible Foundation & Package Role
 
