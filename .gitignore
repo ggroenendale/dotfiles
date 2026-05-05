@@ -1,5 +1,5 @@
-.config/nvim/lua/geoff/plugins/credentials/db_credentials.lua
-.config/nvim/lazy-lock.json
+# Ignore the db_credentials file which contains database secrets
+db_credentials.lua
 
 # Ignore environment files
 .env
@@ -16,3 +16,6 @@ nvim-plugins-source
 # Ignore scratch/staging directory (temporary files, experiments)
 _scratch/
 
+# Ignore lazy lock json file, should be machine specific, if we 
+# want to pin plugin versions later we can.
+lazy-lock.json
