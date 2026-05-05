@@ -243,10 +243,12 @@
 
 #### 1.1 — Distribute `.config/` contents into appropriate stow packages
 
+> **Current state: ✅ Already done.** `.config/` has been removed from the repo root. All config files are distributed across stow packages. The wezterm config was intentionally deleted (user switched to kitty). The broken `~/.config/wezterm` symlink (pointing to the deleted directory) needs to be removed as cleanup.
+
 - Audit all items in `.config/` at the repo root and map each to the correct stow package
 - **`stow/desktop_environment/.config/`** already contains: backgrounds, fuzzel, hypr, kitty, mako, starship.toml, Thunar, waybar, waypaper, xfce4
   - No additional items from `.config/` need to go here (desktop env config is already in place)
-  - **Note:** Wezterm is deprecated — the user now uses kitty as the primary terminal emulator. Do not migrate `.config/wezterm/` into any stow package. It can be removed or left as-is for reference.
+  - **Note:** Wezterm config was deleted — the user now uses kitty as the primary terminal emulator. The broken `~/.config/wezterm` symlink (leftover from the old structure) should be removed. No wezterm config should be added to any stow package.
 - **`stow/bash/.config/`** already contains: bash/ directory with shell config files
   - No additional items from `.config/` need to go here (bash config is already in place)
 - **`stow/neovim_neovide/.config/`** already contains: neovide/, nvim/
@@ -264,6 +266,8 @@
 
 #### 1.2 — Distribute `.local/` contents into appropriate stow packages
 
+> **Current state: ✅ Already done.** `.local/` has been removed from the repo root. All local files are distributed across stow packages.
+
 - Audit all items in `.local/` at the repo root and map each to the correct stow package
 - **`stow/bash/.local/`** already contains: `bin/screenshot-scripts/`, `bin/ssh-scripts/`
   - Move `.local/bin/` (all custom scripts and tools) into `stow/bash/.local/bin/`
@@ -271,6 +275,9 @@
 - **`stow/app_desktop_files/.local/`** already contains: `share/applications/` with .desktop files
   - Move `.local/share/applications/` into `stow/app_desktop_files/.local/share/applications/`
   - Desktop files are already organized in their own stow package — no changes needed to the existing structure
+- **`stow/neovim_neovide/.local/`** contains: `bin/neovide-workspace` and `share/applications/neovide-workspace.desktop`
+  - The `.desktop` file intentionally lives in the `neovim_neovide` stow package alongside the Neovide-related script it references
+  - **Exception:** This creates a stow package overlap — both `neovim_neovide` and `app_desktop_files` manage `.local/share/applications/`. This is intentional because `neovide-workspace.desktop` is a Neovide-specific file that belongs with its associated tool. The `app_desktop_files` package manages all other `.desktop` files. Stow handles this correctly because `neovim_neovide` is stowed first, creating individual symlinks for its files, and `app_desktop_files` is stowed second, creating a directory symlink for `.local/share/applications/` (which includes the neovide-workspace.desktop entry via the directory).
 - **Items needing new packages:**
   - `.local/share/vlc/` — VLC skin/config may need its own stow package (e.g., `stow/vlc/`)
 - Verify each file is correctly placed in its target stow package directory
@@ -280,10 +287,13 @@
 
 #### 1.3 — Clean up root-level files
 
-- Move `.bashrc` into `stow/` (it's a dotfile that should be symlinked)
-- Move `.config/starship.toml` into `stow/.config/` if not already there
-- Move `.config/paru.conf` into `stow/.config/` if not already there
+> **Current state: ✅ Already done.** `.bashrc` is in `stow/bash/.bashrc`, `.config/starship.toml` is in `stow/desktop_environment/.config/starship.toml`, `.config/paru.conf` is in `stow/aur_helper/.config/paru.conf`. Root contains only core infrastructure.
+
+- Move `.bashrc` into `stow/` (it's a dotfile that should be symlinked) — **done**
+- Move `.config/starship.toml` into `stow/.config/` if not already there — **done**
+- Move `.config/paru.conf` into `stow/.config/` if not already there — **done**
 - Ensure only core infrastructure remains at root: `.git/`, `.avante/`, `_scratch/`, `ansible/`, `stow/`, `bootstrap/`, `.gitignore`, `AGENTS.md`, `README.md`
+- **`nvim-plugins-source/`** at root is intentional — it's a local reference for avante.nvim code analysis, excluded from git via `.gitignore` and from stow via `.stow-local-ignore`
 
 #### 1.4 — Update `.stow-local-ignore`
 
