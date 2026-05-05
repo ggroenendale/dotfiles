@@ -24,6 +24,12 @@
 # Scratch/staging directory (temporary files, experiments)
 ^_scratch$
 
+# Ansible project structure (not a stow package)
+^ansible$
+
+# Bootstrap scripts (not a stow package)
+^bootstrap$
+
 # Note: Patterns are anchored (^ matches beginning of filename)
 # Use .* for wildcards, \. to match literal dot
 
