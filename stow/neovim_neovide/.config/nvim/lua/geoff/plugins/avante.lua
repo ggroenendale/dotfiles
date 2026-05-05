@@ -573,7 +573,7 @@ return {
 						-- Check if .avante/context/sessions directory exists
 						local current_dir = vim.fn.getcwd()
 						local sessions_dir = current_dir .. "/.avante/context/sessions"
-						local template_path = vim.fn.stdpath("config") .. "/avante/templates/session-template.md"
+						local template_path = vim.fn.stdpath("config") .. "/avante/templates/session-log_TEMPLATE.md"
 						local filepath = sessions_dir .. "/" .. filename
 
 						-- Check if .avante structure exists
@@ -700,7 +700,8 @@ return {
 							local non_running = {}
 							local total_pods = 0
 							for line in pod_output:gmatch("[^\r\n]+") do
-								local ns, name, ready, status, restarts, age = line:match("^(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)")
+								local ns, name, ready, status, restarts, age =
+									line:match("^(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)%s+(%S+)")
 								if ns then
 									ns_pods[ns] = (ns_pods[ns] or 0) + 1
 									total_pods = total_pods + 1
@@ -729,7 +730,9 @@ return {
 						table.insert(result, "")
 						if show_events then
 							table.insert(result, "--- Recent Events (last 15) ---")
-							local events_cmd = "kubectl get events" .. ns_flag .. " --all-namespaces --sort-by='.lastTimestamp' --no-headers 2>&1 | tail -15"
+							local events_cmd = "kubectl get events"
+								.. ns_flag
+								.. " --all-namespaces --sort-by='.lastTimestamp' --no-headers 2>&1 | tail -15"
 							local events_handle = io.popen(events_cmd, "r")
 							if events_handle then
 								local events_output = events_handle:read("*a")
@@ -811,7 +814,10 @@ return {
 						if pod == "" then
 							return nil, "Pod name is required"
 						end
-						local cmd = "kubectl logs -n " .. vim.fn.shellescape(namespace) .. " " .. vim.fn.shellescape(pod)
+						local cmd = "kubectl logs -n "
+							.. vim.fn.shellescape(namespace)
+							.. " "
+							.. vim.fn.shellescape(pod)
 						if container ~= "" then
 							cmd = cmd .. " -c " .. vim.fn.shellescape(container)
 						end
@@ -885,7 +891,10 @@ return {
 						if name == "" then
 							return nil, "Resource name is required"
 						end
-						local cmd = "kubectl describe " .. vim.fn.shellescape(resource) .. " " .. vim.fn.shellescape(name)
+						local cmd = "kubectl describe "
+							.. vim.fn.shellescape(resource)
+							.. " "
+							.. vim.fn.shellescape(name)
 						if namespace ~= "" then
 							cmd = cmd .. " -n " .. vim.fn.shellescape(namespace)
 						end
@@ -959,7 +968,12 @@ return {
 						if warnings_only then
 							type_filter = " --field-selector type=Warning"
 						end
-						local cmd = "kubectl get events" .. ns_flag .. " --all-namespaces --sort-by='.lastTimestamp'" .. type_filter .. " --no-headers 2>&1 | tail -" .. tail
+						local cmd = "kubectl get events"
+							.. ns_flag
+							.. " --all-namespaces --sort-by='.lastTimestamp'"
+							.. type_filter
+							.. " --no-headers 2>&1 | tail -"
+							.. tail
 						local handle = io.popen(cmd, "r")
 						if not handle then
 							return nil, "Failed to execute kubectl get events command"
@@ -1121,16 +1135,15 @@ return {
 						return table.concat(result, "\n")
 					end,
 				},
-
 			},
 
 			-- Rules configuration for avante.nvim
-					rules = {
-						-- Project-specific rules directory (in current working directory)
-						project_dir = ".avante/rules",
-						-- Global rules directory (in Neovim config directory)
-						global_dir = vim.fn.expand("~/.config/nvim/avante/rules"),
-					},
+			rules = {
+				-- Project-specific rules directory (in current working directory)
+				project_dir = ".avante/rules",
+				-- Global rules directory (in Neovim config directory)
+				global_dir = vim.fn.expand("~/.config/nvim/avante/rules"),
+			},
 		},
 
 		-- LazyVim will handle the keys specification
@@ -1156,7 +1169,9 @@ return {
 						-- Override get_rag_service_runner to treat podman as docker
 						local orig_get_runner = rag.get_rag_service_runner
 						rag.get_rag_service_runner = function()
-							local runner = (require("avante.config").rag_service and require("avante.config").rag_service.runner) or "docker"
+							local runner = (
+								require("avante.config").rag_service and require("avante.config").rag_service.runner
+							) or "docker"
 							if runner == "podman" then
 								return "docker"
 							end
