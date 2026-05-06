@@ -394,19 +394,43 @@
 
 **Decision:** No inventory file or directory. This is a single-machine dotfiles setup using `ansible-pull` with `-i localhost,`. An inventory adds complexity without benefit. If remote server management is ever needed in the future, an inventory can be added then.
 
-- Create `ansible/playbooks/` with main playbook and component playbooks
-- Create `ansible/group_vars/` for OS-specific variables (package names, paths)
-- Create `ansible/host_vars/` for host-specific overrides
-- Create `ansible/roles/` directory structure for all planned roles
-- Create `ansible/ansible.cfg` with project-wide Ansible configuration
+| #   | Task                                        | Status         | Notes                                                                                                                                                             |
+| --- | ------------------------------------------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Create `ansible/playbooks/` directory       | ✅ Complete    | Exists with legacy playbooks (arch_desktop, debian_router, debian_server, desktop, home_theater_pc_debian, test, ubuntu_server) — will be reorganized in step 2.2 |
+| 2   | Create `ansible/group_vars/` directory      | ✅ Complete    | Directory exists (empty) — content deferred until OS-specific variable needs arise                                                                                |
+| 3   | Create `ansible/host_vars/` directory       | ✅ Complete    | Directory exists (empty) — content deferred until host-specific variable needs arise                                                                              |
+| 4   | Create `ansible/roles/` directory structure | ✅ Complete    | Exists with roles: common, desktop, graphics, storage, network_storage, dotfiles — each has sub-role structure with tasks, handlers, and READMEs                  |
+| 5   | Create `ansible/ansible.cfg`                | ✅ Complete    | Exists with roles_path, collections_path, interpreter_python configured                                                                                           |
+
+**Notes:**
+
+- The existing roles (common, desktop, graphics, storage, network_storage) are legacy from a prior Ansible project structure (OmniProvisioner). They will need significant adjustments to work with the new dotfiles-focused layout, but that work is deferred to later phases.
+- The `dotfiles` role already exists at `ansible/roles/dotfiles/main.yaml` with dynamic stow logic — this is a good foundation for Phase 3.
+- The `system` role exists at `ansible/roles/system/` with `fonts/` and `networking/` sub-roles (fonts role was implemented in Phase 1.6).
+- The `bootstrap` role exists at `ansible/roles/bootstrap/tasks/main.yaml` (empty placeholder — will be populated in Phase 7).
+- The `ai` role exists at `ansible/roles/ai/` — purpose TBD, deferred until Phase 2 implementation.
+- The `dev` role exists at `ansible/roles/dev/` — purpose TBD, deferred until Phase 2 implementation.
+- The `cluster` role exists at `ansible/roles/cluster/` — purpose TBD, deferred until Phase 2 implementation.
+- `group_vars/` and `host_vars/` are deferred — they can be created when OS-specific variable needs arise during role implementation.
 
 #### 2.2 — Create base playbook structure
 
-- Create `ansible/playbooks/main.yaml` as the main entry point
-- Create `ansible/playbooks/bootstrap.yaml` for initial system setup
-- Create `ansible/playbooks/desktop.yaml` for desktop systems
-- Create `ansible/playbooks/server.yaml` for server systems
-- Create `ansible/playbooks/laptop.yaml` for laptop systems
+| #   | Task                                      | Status           | Notes                                                                                                                                        |
+| --- | ----------------------------------------- | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Create `ansible/playbooks/bootstrap.yaml` | ❌ Not started   | Lightweight validation playbook — environment checks, SSH config, collection verification                                                    |
+| 2   | Create `ansible/playbooks/desktop.yaml`   | ⚠️ Skeleton only | File exists but is empty (0 content) — needs full implementation                                                                             |
+| 3   | Create `ansible/playbooks/server.yaml`    | ❌ Not started   | Does not exist yet                                                                                                                           |
+| 4   | Create `ansible/playbooks/laptop.yaml`    | ❌ Not started   | Does not exist yet                                                                                                                           |
+| 5   | Create `ansible/playbooks/test.yaml`      | ✅ Complete      | Exists and is functional — simple validation playbook that prints debug messages. Used only for testing install scripts work with filepaths. |
+
+**Notes:**
+
+- Legacy playbooks exist (`arch_desktop.yaml`, `debian_router.yaml`, `debian_server.yaml`, `ubuntu_server.yaml`, `home_theater_pc_debian.yaml`) and will remain and be refactored or updated.
+- `desktop.yaml` exists as an empty file placeholder — it needs to be populated with the desktop role and component includes.
+- `bootstrap.yaml` is intentionally lean — it runs before the machine-specific playbook as part of a two-phase `ansible-pull` flow:
+  1. **Install script** → Installs prerequisites (git, python, ansible), clones repo
+  2. **`ansible-pull bootstrap.yaml`** → Validates environment (Python/Ansible versions, network to GitHub), sets up `~/.ssh/` permissions and deploys SSH config, verifies installed Ansible collections are functional
+  3. **`ansible-pull laptop.yaml`** (or workstation/server) → Full system configuration
 
 #### 2.3 — Create Paru AUR helper role
 
@@ -415,6 +439,7 @@
 - Clone Paru from AUR and build/install with `makepkg -si --noconfirm`
 - Ensure idempotency — check if `paru` binary exists before building
 - Only runs on Arch Linux systems (skip on Debian/Ubuntu/openSUSE)
+- Is part of the bootstrap.yaml playbook as installs on Arch Systems require this package manager.
 
 ### Phase 3 — Dotfiles Symlink Migration (Stow)
 
