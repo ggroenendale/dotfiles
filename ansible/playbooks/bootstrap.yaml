@@ -1,0 +1,174 @@
+---
+- name: Bootstrap — Environment Validation and Prerequisites
+  hosts: localhost
+  connection: local
+  become: false
+  gather_facts: true
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+    # Minimum required versions
+    min_python_version: "3.8"
+    min_ansible_version: "2.14"
+    # GitHub connectivity check
+    github_url: "https://github.com"
+    github_timeout_seconds: 10
+
+  tasks:
+    - name: Display bootstrap start
+      ansible.builtin.debug:
+        msg: "=== Bootstrap Playbook Started ==="
+
+    # ── OS Detection ──────────────────────────────────────────────
+    - name: Detect operating system
+      ansible.builtin.debug:
+        msg: "Detected OS: {{ ansible_distribution }} {{ ansible_distribution_version }} ({{ ansible_os_family }})"
+
+    - name: Set OS family fact
+      ansible.builtin.set_fact:
+        os_family: "{{ ansible_os_family }}"
+        os_distribution: "{{ ansible_distribution }}"
+
+    # ── Environment Validation ────────────────────────────────────
+    - name: Check Python version
+      ansible.builtin.assert:
+        that:
+          - ansible_python_version is version(min_python_version, ">=")
+        fail_msg: "Python {{ ansible_python_version }} is below minimum {{ min_python_version }}"
+        success_msg: "Python {{ ansible_python_version }} meets minimum {{ min_python_version }}"
+
+    - name: Check Ansible version
+      ansible.builtin.assert:
+        that:
+          - ansible_version.full is version(min_ansible_version, ">=")
+        fail_msg: "Ansible {{ ansible_version.full }} is below minimum {{ min_ansible_version }}"
+        success_msg: "Ansible {{ ansible_version.full }} meets minimum {{ min_ansible_version }}"
+
+    - name: Check git is available
+      ansible.builtin.command: git --version
+      register: git_version_result
+      changed_when: false
+      failed_when: false
+
+    - name: Assert git is installed
+      ansible.builtin.assert:
+        that:
+          - git_version_result.rc == 0
+        fail_msg: "git is not installed. Please install git first."
+        success_msg: "git is available: {{ git_version_result.stdout }}"
+
+    # ── Network Connectivity ──────────────────────────────────────
+    - name: Check network connectivity to GitHub
+      ansible.builtin.uri:
+        url: "{{ github_url }}"
+        method: HEAD
+        timeout: "{{ github_timeout_seconds }}"
+      register: github_check
+      ignore_errors: true
+      changed_when: false
+
+    - name: Report GitHub connectivity
+      ansible.builtin.debug:
+        msg: >-
+          {% if github_check.status is defined and github_check.status == 200 %}
+          ✅ GitHub reachable (HTTP {{ github_check.status }})
+          {% else %}
+          ⚠️ GitHub unreachable — ansible-pull will fail if repo is not already cloned locally
+          {% endif %}
+
+    # ── SSH Configuration ─────────────────────────────────────────
+    - name: Ensure ~/.ssh directory exists with correct permissions
+      ansible.builtin.file:
+        path: "{{ ansible_user_dir }}/.ssh"
+        state: directory
+        mode: "0700"
+
+    - name: Check if SSH config exists
+      ansible.builtin.stat:
+        path: "{{ ansible_user_dir }}/.ssh/config"
+      register: ssh_config_stat
+
+    - name: Create default SSH config if missing
+      ansible.builtin.copy:
+        dest: "{{ ansible_user_dir }}/.ssh/config"
+        content: |
+          # SSH Client Configuration — managed by dotfiles Ansible
+          # See ~/.dotfiles/ansible/playbooks/bootstrap.yaml
+
+          Host *
+              StrictHostKeyChecking accept-new
+              ServerAliveInterval 60
+              AddKeysToAgent yes
+        mode: "0600"
+      when: not ssh_config_stat.stat.exists
+
+    - name: Ensure SSH config has correct permissions
+      ansible.builtin.file:
+        path: "{{ ansible_user_dir }}/.ssh/config"
+        mode: "0600"
+      when: ssh_config_stat.stat.exists
+
+    # ── Ansible Collections Verification ──────────────────────────
+    - name: Check if required Ansible collections are installed
+      ansible.builtin.command:
+        cmd: ansible-galaxy collection list --format json
+      register: collections_list
+      changed_when: false
+      failed_when: false
+
+    - name: Report collection status
+      ansible.builtin.debug:
+        msg: "Ansible collections are available"
+      when: collections_list.rc == 0
+
+    - name: Warn if collections check failed
+      ansible.builtin.debug:
+        msg: "⚠️ Could not verify Ansible collections. Run 'ansible-galaxy collection install community.general ansible.posix'"
+      when: collections_list.rc != 0
+
+    # ── Package Manager Setup (OS-specific) ───────────────────────
+    - name: Include package management role (Arch Linux — Paru AUR helper)
+      ansible.builtin.include_role:
+        name: package_management
+      when: os_distribution == "Archlinux"
+
+    - name: Verify package manager availability (Debian/Ubuntu)
+      ansible.builtin.command: apt --version
+      register: apt_check
+      changed_when: false
+      failed_when: false
+      when: os_distribution in ["Debian", "Ubuntu"]
+
+    - name: Assert apt is available (Debian/Ubuntu)
+      ansible.builtin.assert:
+        that:
+          - apt_check.rc == 0
+        fail_msg: "apt is not available on {{ os_distribution }}"
+        success_msg: "apt is available"
+      when: os_distribution in ["Debian", "Ubuntu"]
+
+    - name: Verify package manager availability (openSUSE)
+      ansible.builtin.command: zypper --version
+      register: zypper_check
+      changed_when: false
+      failed_when: false
+      when: os_distribution == "openSUSE"
+
+    - name: Assert zypper is available (openSUSE)
+      ansible.builtin.assert:
+        that:
+          - zypper_check.rc == 0
+        fail_msg: "zypper is not available on {{ os_distribution }}"
+        success_msg: "zypper is available"
+      when: os_distribution == "openSUSE"
+
+    # ── Summary ───────────────────────────────────────────────────
+    - name: Bootstrap summary
+      ansible.builtin.debug:
+        msg:
+          - "=== Bootstrap Complete ==="
+          - "OS: {{ os_distribution }} {{ ansible_distribution_version }}"
+          - "Python: {{ ansible_python_version }}"
+          - "Ansible: {{ ansible_version.full }}"
+          - "GitHub: {{ 'reachable' if github_check.status is defined and github_check.status == 200 else 'unreachable (check network)' }}"
+          - "Next: Run the machine-specific playbook (e.g., laptop.yaml, workstation.yaml, server.yaml)"
+
