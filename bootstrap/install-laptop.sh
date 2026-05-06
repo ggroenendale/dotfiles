@@ -43,6 +43,9 @@ SPINNER_PID=""
 REPO_URL="https://github.com/ggroenendale/dotfiles.git"
 BRANCH="main"
 
+# Specify location of ansible config to make sure it uses the dotfiles one
+export ANSIBLE_CONFIG="$HOME/.dotfiles/ansible/ansible.cfg"
+
 # ==============================================================
 #   Helper Functions                         
 # ==============================================================
