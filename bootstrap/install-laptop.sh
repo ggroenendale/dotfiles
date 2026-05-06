@@ -40,7 +40,7 @@ IS_FIRST_RUN="$HOME/.dotfiles_run"
 
 # Spinner PID tracking
 SPINNER_PID=""
-REPO_URL="https://github.com/yourname/infra.git"
+REPO_URL="https://github.com/ggroenendale/dotfiles.git"
 BRANCH="main"
 
 # ==============================================================
@@ -476,19 +476,19 @@ esac
 __task "Installing Ansible collections"
 _cmd "ansible-galaxy collection install community.general ansible.posix kubernetes.core"
 
-#if ! [[ -d "$DOTFILES_DIR" ]]; then
-#  __task "Downloading dotfiles repository (This may take a minute)"
-#  _cmd "git clone --quiet https://github.com/TechDufus/dotfiles.git $DOTFILES_DIR"
-#  _task_done
-#else
-#  __task "Updating dotfiles repository"
-#  _cmd "git -C $DOTFILES_DIR pull --quiet"
-#  _task_done
-#fi
+if ! [[ -d "$DOTFILES_DIR" ]]; then
+    __task "Downloading dotfiles repository (This may take a minute)"
+    _cmd "git clone --quiet $REPO_URL $DOTFILES_DIR"
+    _task_done
+else
+    __task "Updating dotfiles repository"
+    _cmd "git -C $DOTFILES_DIR pull --quiet"
+    _task_done
+fi
 
 # Run ansible-pull (this is the entire system)
-#ansible-pull \
-#  -U "$REPO_URL" \
-#  -C "$BRANCH" \
-#  -i localhost, \
-#  ansible/playbooks/bootstrap.yaml
+ansible-pull \
+    -U "$REPO_URL" \
+    -C "$BRANCH" \
+    -i localhost, \
+    ansible/playbooks/test.yaml
