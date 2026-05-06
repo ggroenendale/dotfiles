@@ -1,0 +1,28 @@
+---
+- name: Test Validation Playbook
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: Print a test message
+      ansible.builtin.debug:
+        msg: "Hello from Ansible! The test playbook is working correctly."
+
+    - name: Print system info
+      ansible.builtin.debug:
+        msg:
+          - "Playbook: test.yaml"
+          - "Host: {{ ansible_host | default('localhost', true) }}"
+          - "Status: Validation successful"
+          - "Timestamp: {{ ansible_date_time.iso8601 if ansible_date_time is defined else 'N/A' }}"
+      when: ansible_date_time is defined
+
+    - name: Print a separator
+      ansible.builtin.debug:
+        msg: "========================================"
+
+    - name: Print success indicator
+      ansible.builtin.debug:
+        msg: "✅ All tasks completed successfully!"
+
