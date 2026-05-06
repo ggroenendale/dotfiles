@@ -495,4 +495,11 @@ ansible-pull \
     -C "$BRANCH" \
     -i 127.0.0.1, \
     --limit=all \
+    ansible/playbooks/bootstrap.yaml
+
+ansible-pull \
+    -U "$REPO_URL" \
+    -C "$BRANCH" \
+    -i 127.0.0.1, \
+    --limit=all \
     ansible/playbooks/test.yaml
