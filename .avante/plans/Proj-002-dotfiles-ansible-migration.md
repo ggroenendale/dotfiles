@@ -404,9 +404,9 @@
 
 - Create `ansible/playbooks/main.yaml` as the main entry point
 - Create `ansible/playbooks/bootstrap.yaml` for initial system setup
-- Create `ansible/playbooks/desktop.yaml` for desktop environment setup
-- Create `ansible/playbooks/server.yaml` for headless server setup
-- Create `ansible/playbooks/validate.yaml` for post-provisioning validation
+- Create `ansible/playbooks/desktop.yaml` for desktop systems
+- Create `ansible/playbooks/server.yaml` for server systems
+- Create `ansible/playbooks/laptop.yaml` for laptop systems
 
 #### 2.3 — Create Paru AUR helper role
 
@@ -415,13 +415,6 @@
 - Clone Paru from AUR and build/install with `makepkg -si --noconfirm`
 - Ensure idempotency — check if `paru` binary exists before building
 - Only runs on Arch Linux systems (skip on Debian/Ubuntu/openSUSE)
-
-#### 2.4 — Test Paru role on Arch Linux
-
-- Test on Arch Linux (primary development machine)
-- Verify Paru is installed and functional
-- Verify idempotency — running the role twice produces no changes
-- Verify the role correctly skips on non-Arch systems (dry-run with `--check`)
 
 ### Phase 3 — Dotfiles Symlink Migration (Stow)
 
