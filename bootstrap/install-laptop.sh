@@ -490,5 +490,5 @@ fi
 ansible-pull \
     -U "$REPO_URL" \
     -C "$BRANCH" \
-    -i localhost, \
+    -i 127.0.0.1, \
     ansible/playbooks/test.yaml
