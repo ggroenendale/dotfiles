@@ -13,15 +13,26 @@
 
 Migrate the dotfiles repository from a mixed GNU Stow/loose-file state to a clean, modular Ansible-driven configuration management system with a standardized repository structure. See [Proj-002-dotfiles-ansible-migration.md](./Proj-002-dotfiles-ansible-migration.md) for full details.
 
-#### Current Phase: Phase 0 — Audit & Inventory
+#### Current Phase: Phase 1 — Repository Restructure
 
 **Phase Status:** Complete ✅
 **Steps:**
-- 0.1 — Inventory `stow/` packages (`.config/` origin) — Done ✅
-- 0.2 — Inventory `stow/` packages (`.local/` origin) — Done ✅
-- 0.3 — Inventory root-level dotfiles — Done ✅
-- 0.4 — Analyze `fix-symlinks.sh` script — Done ✅
-- 0.5 — Identify cross-platform concerns — Done ✅
+- 1.1 — Distribute `.config/` contents into stow packages — Done ✅
+- 1.2 — Distribute `.local/` contents into stow packages — Done ✅
+- 1.3 — Clean up root-level files — Done ✅
+- 1.4 — Update `.stow-local-ignore` — Done ✅
+- 1.5 — Test Stow still works after restructure — Done ✅ (348 symlinks, 0 conflicts, 0 errors)
+- 1.6 — Create Ansible role for font installation — Done ✅ (package-first, files-fallback)
+
+#### Next Phase: Phase 2 — Ansible Foundation & Package Role
+
+**Phase Status:** Pending ⏳
+**Steps:**
+- 2.1 — Design Ansible project structure
+- 2.2 — Create base playbook structure
+- 2.3 — Create package management role
+- 2.4 — Define package categories
+- 2.5 — Test package role on each OS
 
 ### [Proj-003]: Kubernetes Cluster Infrastructure & Dotfiles Integration
 
@@ -77,6 +88,23 @@ Transform the K3s cluster into a fully-featured development infrastructure with 
   - Created cross-platform strategy table (OS-specific vars, tagged roles, `when` conditions)
 - Updated `current.md` — Phase 0 marked as complete, work log entry added
 - Updated todos — All Phase 0 steps marked as done
+### 2026-05-05 (Session 3)
+
+**Session:** Proj-002 — Phase 1 completion
+
+**Activities:**
+- Verified Steps 1.1-1.3: `.config/` and `.local/` already distributed into stow packages, root cleaned
+- Verified Step 1.4: `.stow-local-ignore` properly configured with all exclusion patterns
+- Verified Step 1.5: Stow test passed — 348 symlinks across 5 packages, 0 conflicts, 0 errors
+- Completed Step 1.6: Implemented Ansible font role with package-first, files-fallback logic:
+  - `ansible/roles/system/fonts/main.yaml` — complete role with OS detection, package install, file fallback
+  - `ansible/roles/system/fonts/vars/` — 5 OS-specific variable files (Archlinux, Debian, Ubuntu, openSUSE, default)
+  - Syntax check passed with `ansible-playbook --syntax-check`
+- Updated project plan — Phase 1 status table marked complete
+- Updated `current.md` — Phase 1 marked complete, Phase 2 listed as next
+
+**Phase 1 Status:** Complete ✅
+**Next Phase:** Phase 2 — Ansible Foundation & Package Role
 
 **Phase 0 Status:** Complete ✅
 **Next Phase:** Phase 1 — Repository Restructure (ready to begin when authorized)

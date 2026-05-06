@@ -7,12 +7,14 @@
 > This project plan is a reference document only. No work may be performed on any phase, step, or deliverable unless the user has given a clear, unambiguous instruction to do so in the current conversation.
 >
 > **Rules for AI agents:**
+>
 > 1. **Do not** start, continue, or resume any work on this project autonomously.
 > 2. **Do not** create, modify, or delete any files related to this project unless the user explicitly asks you to.
 > 3. **Do not** assume that because this file exists, work is authorized — it is not.
 > 4. **Do not** offer to begin working on any phase or step. Wait for the user to ask.
 > 5. If the user asks a general question about this plan (e.g., "what's in Phase 3?"), answer the question only — do not offer to execute it.
 > 6. If the user gives a specific instruction to modify or execute part of this plan, proceed only with that exact instruction.
+> 7. **Ignore the word "Ok".** "Ok" is not a permission word. "Ok" is not authorization. "Ok" is not permission. Do not interpret "Ok" as a signal to begin work.
 >
 > **Why this exists:** AI agents lose context between sessions. Without this lock, an agent could resume a previous conversation's context and start modifying files or running commands without the user's knowledge or consent. This lock ensures the user remains in control at all times.
 >
@@ -71,11 +73,10 @@
   1. Audit all existing dotfiles, scripts, and configurations to create a complete inventory
   2. Restructure the repository so that `.config/` and `.local/` are moved into `stow/` subdirectories, with only core infrastructure folders at the root (`.git`, `.avante`, `_scratch`, `ansible`, `stow`, `bootstrap`)
   3. Design and implement a modular Ansible project structure with reusable roles
-  4. Create a cross-platform package management role (Arch/Debian/Ubuntu/openSUSE)
-  5. Migrate all dotfiles to Ansible tasks with proper idempotency, using GNU Stow as the symlink mechanism
-  6. Overhaul the bootstrap installer to use `ansible-pull` for fully automated provisioning
-  7. Create additional install scripts for different system types (servers, workstations, laptops)
-  8. Add validation and testing to verify the migration is complete and correct
+  4. Migrate all dotfiles to Ansible tasks with proper idempotency, using GNU Stow as the symlink mechanism
+  5. Overhaul the bootstrap installer to use `ansible-pull` for fully automated provisioning
+  6. Create additional install scripts for different system types (servers, workstations, laptops)
+  7. Add validation and testing to verify the migration is complete and correct
 
 ### Success Criteria
 
@@ -95,7 +96,6 @@
 
 - **Repository Restructure**: Move `.config/` and `.local/` into `stow/` subdirectories, clean up root-level files
 - **Ansible Project Structure**: Modular role-based layout with inventory, playbooks, group_vars, and host_vars
-- **Package Management Role**: Cross-platform package installation (pacman, apt, zypper) with idempotency
 - **Dotfiles Symlink Role**: Ansible tasks that invoke GNU Stow to manage symlinks for all config files
 - **System Configuration Role**: Hostname, locale, timezone, SSH config, environment variables
 - **Desktop Environment Role**: Hyprland, Waybar, kitty, mako, fuzzel, waypaper, wezterm, starship, neovide
@@ -126,15 +126,14 @@
 | 1   | Audit & Inventory          | Complete inventory of all dotfiles, scripts, and configurations       | Phase 0      |
 | 2   | Repository Restructure     | `.config/` and `.local/` moved into `stow/`, root cleaned up          | Phase 1      |
 | 3   | Ansible Foundation         | Modular Ansible project structure with inventory, playbooks, and vars | Phase 2      |
-| 4   | Package Management Role    | Cross-platform package installation with OS detection                 | Phase 2      |
-| 5   | Dotfiles Symlink Role      | Ansible tasks invoking GNU Stow for all config files                  | Phase 3      |
-| 6   | System Configuration Role  | Hostname, locale, SSH config, environment variables                   | Phase 4      |
-| 7   | Desktop Environment Role   | Hyprland, Waybar, kitty, mako, fuzzel, wezterm, starship              | Phase 5      |
-| 8   | Scripts & Tooling Role     | `~/.local/bin/` scripts deployment                                    | Phase 6      |
-| 9   | Bootstrap Installer        | Rewritten `install-laptop.sh` using `ansible-pull`                    | Phase 7      |
-| 10  | Additional Install Scripts | `install-server.sh`, `install-workstation.sh`                         | Phase 8      |
-| 11  | Testing & Validation       | Idempotency checks, file verification, dry-run testing                | Phase 9      |
-| 12  | Documentation              | Complete documentation of all roles, scripts, and procedures          | Phase 10     |
+| 4   | Dotfiles Symlink Role      | Ansible tasks invoking GNU Stow for all config files                  | Phase 3      |
+| 5   | System Configuration Role  | Hostname, locale, SSH config, environment variables                   | Phase 4      |
+| 6   | Desktop Environment Role   | Hyprland, Waybar, kitty, mako, fuzzel, wezterm, starship              | Phase 5      |
+| 7   | Scripts & Tooling Role     | `~/.local/bin/` scripts deployment                                    | Phase 6      |
+| 8   | Bootstrap Installer        | Rewritten `install-laptop.sh` using `ansible-pull`                    | Phase 7      |
+| 9   | Additional Install Scripts | `install-server.sh`, `install-workstation.sh`                         | Phase 8      |
+| 10  | Testing & Validation       | Idempotency checks, file verification, dry-run testing                | Phase 9      |
+| 11  | Documentation              | Complete documentation of all roles, scripts, and procedures          | Phase 10     |
 
 ## Dependencies
 
@@ -143,7 +142,6 @@
 - **Phase 0 (Audit) → All Phases**: The audit output drives the scope of every subsequent phase
 - **Phase 1 (Restructure) → Phases 2-8**: Repository must be restructured before Ansible roles can reference correct paths
 - **Phase 2 (Ansible Foundation) → Phases 3-8**: Ansible project structure must exist before roles can be created
-- **Phase 2 (Packages) → Phases 3-6**: Package installation must work before config files can reference installed tools
 - **Phase 3 (Stow Migration) → Phase 7**: Stow structure must be in place before bootstrap can use it
 - **Phase 7 (Bootstrap) → Phases 2-6**: Bootstrap installer depends on all roles being complete
 - **Phase 8 (Install Scripts) → Phase 7**: Additional scripts build on the bootstrap pattern
@@ -165,13 +163,13 @@
 
 #### Phase 0 Status
 
-| Item | Status |
-|------|--------|
-| **Phase Complete** | ✅ Yes |
-| **Completed By** | DeepSeek (AI Agent) |
-| **Completion Date** | 2026-05-05 |
+| Item                     | Status                                                                            |
+| ------------------------ | --------------------------------------------------------------------------------- |
+| **Phase Complete**       | ✅ Yes                                                                            |
+| **Completed By**         | DeepSeek (AI Agent)                                                               |
+| **Completion Date**      | 2026-05-05                                                                        |
 | **Deliverable Location** | `.avante/context/project_deliverables/proj-002/Deliverable 1 - File Inventory.md` |
-| **Next Phase** | [Phase 1 — Repository Restructure](#phase-1--repository-restructure) |
+| **Next Phase**           | [Phase 1 — Repository Restructure](#phase-1--repository-restructure)              |
 
 **Goal:** Create a complete inventory of all dotfiles, scripts, and configurations in the repository, documenting their purpose, dependencies, and stow package location.
 
@@ -179,8 +177,8 @@
 
 #### Phase 0 Deliverables
 
-| #   | Deliverable            | Description                                                                     | Location                                                                 |
-| --- | ---------------------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| #   | Deliverable            | Description                                                                                                                                        | Location                                                                          |
+| --- | ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
 | 1   | **Complete Inventory** | Documented list of every file in `stow/` packages and at repository root, organized by stow package with purpose, cross-platform status, and notes | `.avante/context/project_deliverables/proj-002/Deliverable 1 - File Inventory.md` |
 
 #### 0.1 — Inventory `stow/` packages (replaces original `.config/`)
@@ -225,13 +223,13 @@
 
 #### Phase 1 Status
 
-| Item | Status |
-|------|--------|
-| **Phase Complete** | ❌ No |
-| **Completed By** | — |
-| **Completion Date** | — |
-| **Deliverable Location** | — |
-| **Next Phase** | [Phase 2 — Ansible Foundation & Package Role](#phase-2--ansible-foundation--package-role) |
+| Item                     | Status                                                                                           |
+| ------------------------ | ------------------------------------------------------------------------------------------------ |
+| **Phase Complete**       | ✅ Yes                                                                                           |
+| **Completed By**         | DeepSeek (AI Agent)                                                                              |
+| **Completion Date**      | 2026-05-05                                                                                       |
+| **Deliverable Location** | Repository root — `.config/` and `.local/` moved into `stow/`, root cleaned to core folders only |
+| **Next Phase**           | [Phase 2 — Ansible Foundation & Package Role](#phase-2--ansible-foundation)                      |
 
 **Goal:** Move `.config/` and `.local/` into `stow/` subdirectories, clean up root-level files, and establish the canonical repository layout.
 
@@ -257,7 +255,7 @@
   - Move `.config/paru.conf` into `stow/aur_helper/.config/paru.conf`
   - Paru is a package manager, not a desktop environment component — it needs its own dedicated stow package
   - **Naming note:** The package is called `aur_helper` rather than `paru` because it describes the _purpose_ (AUR helper configuration), not the specific tool. If you switch to a different AUR helper (e.g., yay) in the future, the stow package name remains meaningful.
-- **`fonts/` at repo root** — do NOT migrate into stow. Fonts are binary files (`.ttf`) that need to be installed to `~/.local/share/fonts/` and registered with `fc-cache`, not symlinked. They also bloat the git repo at 125MB. Instead, handle font installation through Ansible's package role (see Phase 2.4) or the system/fonts role (see Step 1.6).
+- **`fonts/` at repo root** — do NOT migrate into stow. Fonts are binary files (`.ttf`) that need to be installed to `~/.local/share/fonts/` and registered with `fc-cache`, not symlinked. They also bloat the git repo at 125MB. Instead, handle font installation through the system/fonts role (see Step 1.6).
 - **New stow packages** may be needed for configs that don't fit existing categories
 - Verify each config file is correctly placed in its target stow package directory
 - Ensure the `.config/` directory at repo root is removed after all files are distributed
@@ -297,53 +295,105 @@
 
 #### 1.4 — Update `.stow-local-ignore`
 
+> **Current state: ✅ Complete.** Verified on 2026-05-05.
+
 - Add patterns for files that should never be symlinked: `AGENTS.md`, `README.md`, `.avante/*`, `.gitignore`, `.git/*`, `.stow-local-ignore`, `_scratch/*`, `ansible/*`
 - Test that `stow .` from repository root produces the correct symlinks
 - Verify no unintended files are symlinked
+- **Note on `.env` file:** `stow/neovim_neovide/.config/nvim/.env` is intentionally tracked in git and symlinked by stow to `~/.config/nvim/.env`. This is the current behavior and is correct — stow should deploy this file. However, this is a **future removal target**: secrets, passwords, and API tokens will eventually be handled through a proper secrets management solution (e.g., Ansible vault, pass, gopass), eliminating the need for a tracked `.env` file. When that migration happens, the `.gitignore` `.env` rule will prevent it from being re-added.
 
 #### 1.5 — Test Stow still works after restructure
+
+> **Current state: ✅ Complete.** Verified on 2026-05-05.
 
 - Run `stow --adopt -v .` from repository root (or `stow -v config local` for targeted stow)
 - Verify all expected symlinks are created in `~/.config/` and `~/.local/`
 - Check that no broken symlinks exist
 - Confirm the system still works as before (open terminal, launch Hyprland, etc.)
 
+**Verification results (2026-05-05):**
+
+- `stow --no -v -d stow -t $HOME --no-folding .` — 348 symlinks across 5 packages, 0 conflicts, 0 errors
+- All `.config/` symlinks (hypr, kitty, waybar, fuzzel, mako, bash, paru.conf, neovide, nvim, Thunar, xfce4, backgrounds, waypaper, starship.toml) — correct
+- All `.local/bin/` symlinks (screenshot-scripts, ssh-scripts, neovide-workspace, docker, wal) — correct
+- All `.local/share/applications/` symlinks — correct
+- `.bashrc` symlink — correct
+- Wezterm config — confirmed deleted, no broken symlink
+- `fix-symlinks.sh` — functional, handles old→new path migration
+- `ansible/roles/dotfiles/main.yaml` — already exists with dynamic stow logic
+
 #### 1.6 — Create Ansible role for font installation
 
-- Create `ansible/roles/system/fonts/tasks/main.yaml` with tasks to install font files
-- The role should copy font files from a designated source directory (e.g., `ansible/roles/system/fonts/files/`) to `~/.local/share/fonts/`
-- After copying, run `fc-cache -fv` to register the fonts with the fontconfig system
-- Use the `copy` module with `mode: 0644` to deploy `.ttf` and `.otf` font files
-- Ensure idempotency — only copy files that have changed, and only run `fc-cache` when new fonts are added
-- Support both user-level font installation (`~/.local/share/fonts/`) and system-level (`/usr/local/share/fonts/`) via an Ansible variable
-- Add a `fonts` tag to allow selective execution of font tasks
-- Document the font source directory structure and how to add new fonts
-- **Note:** The `fonts/` directory at the repository root (containing 125MB of `.ttf` files) should NOT be symlinked via Stow. Instead, font files should be stored in `ansible/roles/system/fonts/files/` and deployed via Ansible's `copy` module, which handles binary files correctly and avoids bloating the stow symlink tree.
+#### Step 1.6 Status
 
-### Phase 2 — Ansible Foundation & Package Role
+| Item                | Status              |
+| ------------------- | ------------------- |
+| **Step Complete**   | ✅ Yes              |
+| **Completed By**    | DeepSeek (AI Agent) |
+| **Completion Date** | 2026-05-05          |
+
+> **Note on `fonts/` directory:** There is no `fonts/` directory at the repository root. The 125MB concern mentioned in earlier drafts does not apply — font files were never stored at root level.
+
+> **Current structure (already exists):**
+>
+> - `ansible/roles/system/fonts/main.yaml` — **implemented** with package-first, files-fallback logic
+> - `ansible/roles/system/fonts/vars/` — **created** with OS-specific variable files
+> - `ansible/roles/system/fonts/files/Mononoki/` — 10 TTF files + LICENSE + README
+> - `ansible/roles/system/fonts/files/NerdFontsSymbolsOnly/` — 2 TTF files + fontconfig conf + LICENSE + README
+> - `ansible/roles/system/fonts/files/SourceCodePro/` — 44 TTF files + LICENSE + README
+> - **Total:** 56 TTF files, ~125MB
+
+> **⚠️ Duplication concern:** On Arch Linux, both Mononoki and SauceCodePro fonts are already available as system packages (installed in `/usr/share/fonts/TTF/`). The font files in the Ansible role are duplicates of what's already provided by pacman. However, the role is still valuable for cross-platform support (Debian/Ubuntu may not have these specific nerd-font packages).
+
+**Implementation details:**
+
+- `ansible/roles/system/fonts/main.yaml` — Complete role with:
+  - OS detection via `include_vars` with `with_first_found` (Archlinux, Debian, Ubuntu, openSUSE, default)
+  - Package manager installation using `ansible.builtin.package` (pacman/apt/zypper)
+  - System font check via `stat` on `/usr/share/fonts/TTF/MononokiNerdFont-Regular.ttf`
+  - File copy fallback using `ansible.builtin.copy` with directory_mode
+  - Fontconfig conf deployment for Nerd Fonts Symbols
+  - `fc-cache -fv` execution after fallback copy
+  - Tags: `fonts`, `fonts-packages`, `fonts-files`
+- `ansible/roles/system/fonts/vars/` — OS-specific variable files:
+  - `Archlinux.yml` — `ttf-mononoki-nerd`, `ttf-sourcecodepro-nerd`, `nerd-fonts-symbols`, `ttf-nerd-fonts-symbols-mono`
+  - `Debian.yml` — `fonts-firacode` (fallback only)
+  - `Ubuntu.yml` — `fonts-firacode` (fallback only)
+  - `openSUSE.yml` — `fetch-git` (fallback only)
+  - `default.yml` — empty list (fallback only)
+- **Decision (2026-05-05):** **Option C** — package manager first, font files as fallback.
+  - **Priority order:** Package manager → font files from role
+  - **Arch Linux:** Install via pacman (`ttf-mononoki-nerd`, `ttf-sourcecodepro-nerd`, `nerd-fonts-symbols`, etc.)
+  - **Debian/Ubuntu:** Install via apt (if packages exist in repos)
+  - **openSUSE:** Install via zypper (if packages exist in repos)
+  - **Fallback:** If the package manager doesn't have the fonts, copy from `ansible/roles/system/fonts/files/` and run `fc-cache`
+  - **Font files stay in the repo** — they serve as the cross-platform safety net
+- **Syntax check:** ✅ Passed with `ansible-playbook --syntax-check`
+
+### Phase 2 — Ansible Foundation
 
 #### Phase 2 Status
 
-| Item | Status |
-|------|--------|
-| **Phase Complete** | ❌ No |
-| **Completed By** | — |
-| **Completion Date** | — |
-| **Deliverable Location** | — |
-| **Next Phase** | [Phase 3 — Dotfiles Symlink Migration (Stow)](#phase-3--dotfiles-symlink-migration-stow) |
+| Item                     | Status                                                                                   |
+| ------------------------ | ---------------------------------------------------------------------------------------- |
+| **Phase Complete**       | ❌ No                                                                                    |
+| **Completed By**         | —                                                                                        |
+| **Completion Date**      | —                                                                                        |
+| **Deliverable Location** | —                                                                                        |
+| **Next Phase**           | [Phase 3 — Dotfiles Symlink Migration (Stow)](#phase-3--dotfiles-symlink-migration-stow) |
 
-**Goal:** Establish the modular Ansible project structure and create the cross-platform package management role that handles OS detection and package installation.
+**Goal:** Establish the modular Ansible project structure with inventory, playbooks, group_vars, host_vars, and role directories.
 
 #### Phase 2 Deliverables
 
 | #   | Deliverable                   | Description                                                       |
 | --- | ----------------------------- | ----------------------------------------------------------------- |
 | 1   | **Ansible Project Structure** | Inventory, playbooks, group_vars, host_vars, and role directories |
-| 2   | **Package Management Role**   | Cross-platform package installation with OS detection             |
 
 #### 2.1 — Design Ansible project structure
 
-- Create `ansible/inventory/` with host groups (laptops, workstations, servers)
+**Decision:** No inventory file or directory. This is a single-machine dotfiles setup using `ansible-pull` with `-i localhost,`. An inventory adds complexity without benefit. If remote server management is ever needed in the future, an inventory can be added then.
+
 - Create `ansible/playbooks/` with main playbook and component playbooks
 - Create `ansible/group_vars/` for OS-specific variables (package names, paths)
 - Create `ansible/host_vars/` for host-specific overrides
@@ -352,51 +402,38 @@
 
 #### 2.2 — Create base playbook structure
 
-- Create `ansible/playbooks/site.yaml` as the main entry point
+- Create `ansible/playbooks/main.yaml` as the main entry point
 - Create `ansible/playbooks/bootstrap.yaml` for initial system setup
 - Create `ansible/playbooks/desktop.yaml` for desktop environment setup
 - Create `ansible/playbooks/server.yaml` for headless server setup
 - Create `ansible/playbooks/validate.yaml` for post-provisioning validation
 
-#### 2.3 — Create package management role
+#### 2.3 — Create Paru AUR helper role
 
-- Create `ansible/roles/packages/tasks/main.yaml` with OS detection logic
-- Define package lists in `ansible/roles/packages/vars/` for each OS:
-  - `Arch.yml` — packages for pacman
-  - `Debian.yml` — packages for apt
-  - `Ubuntu.yml` — packages for apt (may inherit from Debian)
-  - `openSUSE.yml` — packages for zypper
-- Create `ansible/roles/packages/tasks/` sub-tasks for each package manager
-- Ensure idempotency — running multiple times produces the same result
+- Create `ansible/roles/package_management/tasks/main.yaml` with Arch Linux detection
+- Install build dependencies: `base-devel`, `git`
+- Clone Paru from AUR and build/install with `makepkg -si --noconfirm`
+- Ensure idempotency — check if `paru` binary exists before building
+- Only runs on Arch Linux systems (skip on Debian/Ubuntu/openSUSE)
 
-#### 2.4 — Define package categories
-
-- **Core system packages**: git, curl, wget, stow, openssh, python3
-- **Desktop packages**: hyprland, waybar, kitty, mako, fuzzel, waypaper, wezterm, starship
-- **Development packages**: neovim, nodejs, npm, python-pip, lazygit, k9s, kubectl, helm
-- **Media packages**: grim, slurp, wl-clipboard, wf-recorder, imagemagick
-- **Font packages**: ttf-jetbrains-mono, ttf-font-awesome, noto-fonts
-- Each category should be a separate variable list for composability
-
-#### 2.5 — Test package role on each OS
+#### 2.4 — Test Paru role on Arch Linux
 
 - Test on Arch Linux (primary development machine)
-- Test on Debian/Ubuntu (server VMs or containers)
-- Test on openSUSE (if available, otherwise document as untested)
-- Verify idempotency by running the playbook twice
-- Document any OS-specific issues or workarounds
+- Verify Paru is installed and functional
+- Verify idempotency — running the role twice produces no changes
+- Verify the role correctly skips on non-Arch systems (dry-run with `--check`)
 
 ### Phase 3 — Dotfiles Symlink Migration (Stow)
 
 #### Phase 3 Status
 
-| Item | Status |
-|------|--------|
-| **Phase Complete** | ❌ No |
-| **Completed By** | — |
-| **Completion Date** | — |
-| **Deliverable Location** | — |
-| **Next Phase** | [Phase 4 — System Configuration Role](#phase-4--system-configuration-role) |
+| Item                     | Status                                                                     |
+| ------------------------ | -------------------------------------------------------------------------- |
+| **Phase Complete**       | ❌ No                                                                      |
+| **Completed By**         | —                                                                          |
+| **Completion Date**      | —                                                                          |
+| **Deliverable Location** | —                                                                          |
+| **Next Phase**           | [Phase 4 — System Configuration Role](#phase-4--system-configuration-role) |
 
 **Goal:** Create Ansible roles that invoke GNU Stow to manage symlinks for all dotfiles, replacing manual Stow commands with idempotent Ansible tasks.
 
@@ -439,13 +476,13 @@
 
 #### Phase 4 Status
 
-| Item | Status |
-|------|--------|
-| **Phase Complete** | ❌ No |
-| **Completed By** | — |
-| **Completion Date** | — |
-| **Deliverable Location** | — |
-| **Next Phase** | [Phase 5 — Desktop Environment Role](#phase-5--desktop-environment-role) |
+| Item                     | Status                                                                   |
+| ------------------------ | ------------------------------------------------------------------------ |
+| **Phase Complete**       | ❌ No                                                                    |
+| **Completed By**         | —                                                                        |
+| **Completion Date**      | —                                                                        |
+| **Deliverable Location** | —                                                                        |
+| **Next Phase**           | [Phase 5 — Desktop Environment Role](#phase-5--desktop-environment-role) |
 
 **Goal:** Create an Ansible role for system-level configuration — hostname, locale, timezone, SSH config, and environment variables.
 
@@ -496,7 +533,6 @@
 
 - Create `ansible/roles/desktop/tasks/main.yaml`
 - Organize tasks into subdirectories for each component
-- Use the package role to ensure all desktop packages are installed first
 - Deploy config files via Stow (Phase 3) or template tasks
 
 #### 5.2 — Configure Hyprland
@@ -711,7 +747,7 @@
 
 - Simulate a broken symlink scenario and verify the validation playbook detects it
 - Test recovery by re-running the stow role to restore missing symlinks
-- Simulate a missing package scenario and verify the package role re-installs it
+- Simulate a missing package scenario and verify ansible re-installs it
 - Test bootstrap from scratch on a clean VM to verify full recovery
 - Document the recovery procedure for each failure scenario
 
@@ -756,7 +792,6 @@
 #### 10.4 — Document maintenance procedures
 
 - Create `ansible/MAINTENANCE.md` with common maintenance tasks
-- Document how to add new packages to the package role
 - Document how to add new dotfiles to the stow role
 - Document how to update the bootstrap installer for new OS versions
 - Include troubleshooting guidance for common maintenance issues
