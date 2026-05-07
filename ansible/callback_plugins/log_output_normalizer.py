@@ -86,7 +86,7 @@ class CallbackModule(CallbackBase):
         )
         self.log_file = self.get_option("custom_log_path")
 
-    def _log(self, data):
+    def _log(self, data, color=None):
         """
         Write a log
         :param category: The category
@@ -95,19 +95,19 @@ class CallbackModule(CallbackBase):
         entry = {}
 
         # Ensure directory exists
-        log.info(
-            f"Find super parent: {Path(__file__).parent.parent.parent.joinpath("logs","mydotfiles.log")}"
-        )
         log_file = Path(__file__).parent.parent.parent.joinpath(
             "logs", "mydotfiles.log"
         )
 
         os.makedirs(os.path.dirname(self.log_file), exist_ok=True)
-        log.info(f"log_file path: {self.log_file}")
-        log.info(f"dirname: {os.path.dirname(self.log_file)}")
+
+        if color is None:
+            color = "\x1b[38;20m"
+
+        reset = "\x1b[0m"
 
         with open(log_file, "a") as f:
-            f.write(f"Line \n")
+            f.write(f"{color}{data} {reset}\n")
 
     def v2_playbook_on_start(self, playbook):
         # self._display.display(
