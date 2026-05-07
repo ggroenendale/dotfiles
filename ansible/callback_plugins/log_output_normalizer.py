@@ -69,9 +69,9 @@ class CallbackModule(CallbackBase):
         # self._last_task_name = None
         # self._task_type_cache = {}
         super(CallbackModule, self).__init__()
-        self.log_file = os.environ.get(
-            "ANSIBLE_CUSTOM_LOG_FILE", "~/.dotfiles/logs/idunno_dotfiles.log"
-        )
+        # self.log_file = os.environ.get(
+        #    "ANSIBLE_CUSTOM_LOG_FILE", "~/.dotfiles/logs/idunno_dotfiles.log"
+        # )
         # log.propagate = False
 
         self.playbook_name = None
@@ -80,6 +80,13 @@ class CallbackModule(CallbackBase):
         # mylog = logging.getLogger("custom_ansible")
 
         # mylog.info("Testing log")
+
+    def set_options(self, task_keys=None, var_options=None, direct=None):
+        """Load options from configuration."""
+        super(CallbackModule, self).set_options(
+            task_keys=task_keys, var_options=var_options, direct=direct
+        )
+        self.log_file = self.get_option("custom_log_path")
 
     def _log(self, data):
         """
