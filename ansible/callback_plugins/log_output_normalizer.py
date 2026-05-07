@@ -95,12 +95,18 @@ class CallbackModule(CallbackBase):
         entry = {}
 
         # Ensure directory exists
-        log.info(f"Find super parent: {Path(__file__).parent.parent}")
+        log.info(
+            f"Find super parent: {Path(__file__).parent.parent.parent.joinpath("logs","mydotfiles.log")}"
+        )
+        log_file = Path(__file__).parent.parent.parent.joinpath(
+            "logs", "mydotfiles.log"
+        )
+
         os.makedirs(os.path.dirname(self.log_file), exist_ok=True)
         log.info(f"log_file path: {self.log_file}")
         log.info(f"dirname: {os.path.dirname(self.log_file)}")
 
-        with open(self.log_file, "a") as f:
+        with open(log_file, "a") as f:
             f.write(f"Line \n")
 
     def v2_playbook_on_start(self, playbook):
