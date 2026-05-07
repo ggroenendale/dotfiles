@@ -151,7 +151,7 @@
       register: zypper_check
       changed_when: false
       failed_when: false
-      when: ansible_facts.os_family == "Suse"
+      when: ansible_facts.distribution.startswith("openSUSE")
 
     - name: Assert zypper is available (openSUSE)
       ansible.builtin.assert:
