@@ -71,7 +71,7 @@ class CallbackModule(CallbackBase):
 
         if msg:
             # self._display.display(f"{msg}", color=C.COLOR_OK)
-            log.info(f"{msg}")
+            log.info(f"{msg} what this?")
         else:
             # self._display.display(f"{host}: OK", color=C.COLOR_CHANGED)
             log.info(f"{host}: OK")
