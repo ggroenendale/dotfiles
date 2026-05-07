@@ -15,6 +15,7 @@
 > 5. If the user asks a general question about this plan (e.g., "what's in Phase 3?"), answer the question only — do not offer to execute it.
 > 6. If the user gives a specific instruction to modify or execute part of this plan, proceed only with that exact instruction.
 > 7. **Ignore the word "Ok".** "Ok" is not a permission word. "Ok" is not authorization. "Ok" is not permission. Do not interpret "Ok" as a signal to begin work.
+> 8. **Small Changes** When using the write_to_file tool it will truncate after 200 lines. When writing more than 200 lines split small changes into a max of 50 line changes using str_replace
 >
 > **Why this exists:** AI agents lose context between sessions. Without this lock, an agent could resume a previous conversation's context and start modifying files or running commands without the user's knowledge or consent. This lock ensures the user remains in control at all times.
 >
@@ -36,10 +37,10 @@
   - [Phase 0 — Audit & Inventory](#phase-0--audit--inventory)
   - [Phase 1 — Repository Restructure](#phase-1--repository-restructure)
   - [Phase 2 — Ansible Foundation & Package Role](#phase-2--ansible-foundation--package-role)
-  - [Phase 3 — Dotfiles Symlink Migration (Stow)](#phase-3--dotfiles-symlink-migration-stow)
-  - [Phase 4 — System Configuration Role](#phase-4--system-configuration-role)
-  - [Phase 5 — Desktop Environment Role](#phase-5--desktop-environment-role)
-  - [Phase 6 — Scripts & Tooling Role](#phase-6--scripts--tooling-role)
+  - [Phase 3 — Dotfiles Symlink Migration (Stow) _(moved to Proj-002)_](#phase-3--dotfiles-symlink-migration-stow)
+  - [Phase 4 — System Configuration Role _(moved to Proj-002)_](#phase-4--system-configuration-role)
+  - [Phase 5 — Desktop Environment Role _(moved to Proj-002)_](#phase-5--desktop-environment-role)
+  - [Phase 6 — Scripts & Tooling Role _(moved to Proj-002)_](#phase-6--scripts--tooling-role)
   - [Phase 7 — Bootstrap Installer Overhaul](#phase-7--bootstrap-installer-overhaul)
   - [Phase 8 — Additional Install Scripts](#phase-8--additional-install-scripts)
   - [Phase 9 — Testing & Validation](#phase-9--testing--validation)
@@ -56,7 +57,7 @@
   - [Key Risks](#key-risks)
   - [Current Issues](#current-issues)
 - [Notes](#notes)
-- [Revision History](#revision-history)
+- [Revision History](#revhistory)
 
 ## Project Overview
 
@@ -87,7 +88,6 @@
 - Cross-platform support is maintained (Arch Linux, Debian, Ubuntu, openSUSE)
 - Package installations are managed through Ansible with proper OS detection
 - Multiple install scripts exist for different system types (laptop, workstation, server)
-- All Ansible roles are documented with clear purpose and usage
 - A dry-run mode exists for previewing changes before applying them
 
 ## Project Scope
@@ -96,11 +96,6 @@
 
 - **Repository Restructure**: Move `.config/` and `.local/` into `stow/` subdirectories, clean up root-level files
 - **Ansible Project Structure**: Modular role-based layout with inventory, playbooks, group_vars, and host_vars
-- **Dotfiles Symlink Role**: Ansible tasks that invoke GNU Stow to manage symlinks for all config files
-- **System Configuration Role**: Hostname, locale, timezone, SSH config, environment variables
-- **Desktop Environment Role**: Hyprland, Waybar, kitty, mako, fuzzel, waypaper, wezterm, starship, neovide
-- **Scripts & Tooling Role**: `~/.local/bin/` scripts (screenshot, SSH, neovide-workspace) deployment
-- **Bash Configuration Role**: `.bashrc`, `.config/bash/*.sh` files, aliases, paths, functions
 - **Bootstrap Installer Overhaul**: Rewrite `install-laptop.sh` to use `ansible-pull` with proper OS detection
 - **Additional Install Scripts**: Create `install-server.sh`, `install-workstation.sh` for different system types
 - **Validation Playbook**: Idempotency checks, file presence verification, service status checks
@@ -126,26 +121,21 @@
 | 1   | Audit & Inventory          | Complete inventory of all dotfiles, scripts, and configurations       | Phase 0      |
 | 2   | Repository Restructure     | `.config/` and `.local/` moved into `stow/`, root cleaned up          | Phase 1      |
 | 3   | Ansible Foundation         | Modular Ansible project structure with inventory, playbooks, and vars | Phase 2      |
-| 4   | Dotfiles Symlink Role      | Ansible tasks invoking GNU Stow for all config files                  | Phase 3      |
-| 5   | System Configuration Role  | Hostname, locale, SSH config, environment variables                   | Phase 4      |
-| 6   | Desktop Environment Role   | Hyprland, Waybar, kitty, mako, fuzzel, wezterm, starship              | Phase 5      |
-| 7   | Scripts & Tooling Role     | `~/.local/bin/` scripts deployment                                    | Phase 6      |
-| 8   | Bootstrap Installer        | Rewritten `install-laptop.sh` using `ansible-pull`                    | Phase 7      |
-| 9   | Additional Install Scripts | `install-server.sh`, `install-workstation.sh`                         | Phase 8      |
-| 10  | Testing & Validation       | Idempotency checks, file verification, dry-run testing                | Phase 9      |
-| 11  | Documentation              | Complete documentation of all roles, scripts, and procedures          | Phase 10     |
+| 4   | Bootstrap Installer        | Rewritten `install-laptop.sh` using `ansible-pull`                    | Phase 7      |
+| 5   | Additional Install Scripts | `install-server.sh`, `install-workstation.sh`                         | Phase 8      |
+| 6   | Testing & Validation       | Idempotency checks, file verification, dry-run testing                | Phase 9      |
+| 7   | Documentation              | Complete documentation of all roles, scripts, and procedures          | Phase 10     |
 
 ## Dependencies
 
 ### Internal Dependencies
 
 - **Phase 0 (Audit) → All Phases**: The audit output drives the scope of every subsequent phase
-- **Phase 1 (Restructure) → Phases 2-8**: Repository must be restructured before Ansible roles can reference correct paths
-- **Phase 2 (Ansible Foundation) → Phases 3-8**: Ansible project structure must exist before roles can be created
-- **Phase 3 (Stow Migration) → Phase 7**: Stow structure must be in place before bootstrap can use it
-- **Phase 7 (Bootstrap) → Phases 2-6**: Bootstrap installer depends on all roles being complete
-- **Phase 8 (Install Scripts) → Phase 7**: Additional scripts build on the bootstrap pattern
-- **Phase 9 (Testing) → Phases 2-8**: Testing can only begin after roles are implemented
+- **Phase 1 (Restructure) → Phases 2-10**: Repository must be restructured before Ansible roles can reference correct paths
+- **Phase 2 (Ansible Foundation) → Phases 7-10**: Ansible project structure must exist before bootstrap and scripts can be created
+- **Phase 7 (Bootstrap) → Phases 8-10**: Bootstrap installer must work before additional scripts can be created
+- **Phase 8 (Install Scripts) → Phase 9**: Additional scripts build on the bootstrap pattern
+- **Phase 9 (Testing) → Phases 7-8**: Testing can only begin after bootstrap and scripts are implemented
 - **Phase 10 (Docs) → All Phases**: Documentation is the final step after everything is verified
 
 ### External Dependencies
@@ -394,13 +384,13 @@
 
 **Decision:** No inventory file or directory. This is a single-machine dotfiles setup using `ansible-pull` with `-i localhost,`. An inventory adds complexity without benefit. If remote server management is ever needed in the future, an inventory can be added then.
 
-| #   | Task                                        | Status         | Notes                                                                                                                                                             |
-| --- | ------------------------------------------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | Create `ansible/playbooks/` directory       | ✅ Complete    | Exists with legacy playbooks (arch_desktop, debian_router, debian_server, desktop, home_theater_pc_debian, test, ubuntu_server) — will be reorganized in step 2.2 |
-| 2   | Create `ansible/group_vars/` directory      | ✅ Complete    | Directory exists (empty) — content deferred until OS-specific variable needs arise                                                                                |
-| 3   | Create `ansible/host_vars/` directory       | ✅ Complete    | Directory exists (empty) — content deferred until host-specific variable needs arise                                                                              |
-| 4   | Create `ansible/roles/` directory structure | ✅ Complete    | Exists with roles: common, desktop, graphics, storage, network_storage, dotfiles — each has sub-role structure with tasks, handlers, and READMEs                  |
-| 5   | Create `ansible/ansible.cfg`                | ✅ Complete    | Exists with roles_path, collections_path, interpreter_python configured                                                                                           |
+| #   | Task                                        | Status      | Notes                                                                                                                                                             |
+| --- | ------------------------------------------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Create `ansible/playbooks/` directory       | ✅ Complete | Exists with legacy playbooks (arch_desktop, debian_router, debian_server, desktop, home_theater_pc_debian, test, ubuntu_server) — will be reorganized in step 2.2 |
+| 2   | Create `ansible/group_vars/` directory      | ✅ Complete | Directory exists (empty) — content deferred until OS-specific variable needs arise                                                                                |
+| 3   | Create `ansible/host_vars/` directory       | ✅ Complete | Directory exists (empty) — content deferred until host-specific variable needs arise                                                                              |
+| 4   | Create `ansible/roles/` directory structure | ✅ Complete | Exists with roles: common, desktop, graphics, storage, network_storage, dotfiles — each has sub-role structure with tasks, handlers, and READMEs                  |
+| 5   | Create `ansible/ansible.cfg`                | ✅ Complete | Exists with roles_path, collections_path, interpreter_python configured                                                                                           |
 
 **Notes:**
 
@@ -415,13 +405,13 @@
 
 #### 2.2 — Create base playbook structure
 
-| #   | Task                                      | Status         | Notes                                                                                                                                        |
-| --- | ----------------------------------------- | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | Create `ansible/playbooks/bootstrap.yaml` | ✅ Complete    | Implemented with OS detection, environment validation, SSH config, and package manager verification                                          |
-| 2   | Create `ansible/playbooks/desktop.yaml`   | ⚠️ Skeleton    | File exists but is empty — needs full implementation (deferred to later phase)                                                               |
-| 3   | Create `ansible/playbooks/server.yaml`    | ⚠️ Skeleton    | File exists but is empty — needs full implementation (deferred to later phase)                                                               |
-| 4   | Create `ansible/playbooks/laptop.yaml`    | ⚠️ Skeleton    | File exists but is empty — needs full implementation (deferred to later phase)                                                               |
-| 5   | Create `ansible/playbooks/test.yaml`      | ✅ Complete    | Exists and is functional — simple validation playbook that prints debug messages. Used only for testing install scripts work with filepaths. |
+| #   | Task                                      | Status      | Notes                                                                                                                                        |
+| --- | ----------------------------------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Create `ansible/playbooks/bootstrap.yaml` | ✅ Complete | Implemented with OS detection, environment validation, SSH config, and package manager verification                                          |
+| 2   | Create `ansible/playbooks/desktop.yaml`   | ⚠️ Skeleton | File exists but is empty — needs full implementation (deferred to later phase)                                                               |
+| 3   | Create `ansible/playbooks/server.yaml`    | ⚠️ Skeleton | File exists but is empty — needs full implementation (deferred to later phase)                                                               |
+| 4   | Create `ansible/playbooks/laptop.yaml`    | ⚠️ Skeleton | File exists but is empty — needs full implementation (deferred to later phase)                                                               |
+| 5   | Create `ansible/playbooks/test.yaml`      | ✅ Complete | Exists and is functional — simple validation playbook that prints debug messages. Used only for testing install scripts work with filepaths. |
 
 **Notes:**
 
@@ -447,186 +437,99 @@
 
 | Item                     | Status                                                                     |
 | ------------------------ | -------------------------------------------------------------------------- |
-| **Phase Complete**       | ❌ No                                                                      |
+| **Phase Complete**       | ✅ Yes — moved to Proj-002                                                 |
 | **Completed By**         | —                                                                          |
 | **Completion Date**      | —                                                                          |
 | **Deliverable Location** | —                                                                          |
 | **Next Phase**           | [Phase 4 — System Configuration Role](#phase-4--system-configuration-role) |
 
-**Goal:** Create Ansible roles that invoke GNU Stow to manage symlinks for all dotfiles, replacing manual Stow commands.
+**Goal:** _(moved to Proj-002)_ Create Ansible roles that invoke GNU Stow to manage symlinks for all dotfiles, replacing manual Stow commands.
 
 #### Phase 3 Deliverables
 
-| #   | Deliverable           | Description                                              |
-| --- | --------------------- | -------------------------------------------------------- |
-| 1   | **Stow Symlink Role** | Ansible role that runs `stow` for each package directory |
+| #   | Deliverable        | Description    |
+| --- | ------------------ | -------------- |
+| 1   | **No Deliverable** | No deliverable |
 
-#### 3.1 — Create the stow role
+#### Work canceled and moved to Proj-002
 
-- Create `ansible/roles/stow/tasks/main.yaml`
-- Implement task that loops for each directory in stow/ to run `stow` (app_desktop_files, aur_helper, bash, desktop_environment, neovim_neovide,  etc.)
-- Use the `command` module to invoke `stow` with appropriate flags
-- Support both `stow` and `unstow` operations via Ansible tags
-
-#### 3.2 — Define stow packages in variables
-
-- Create `ansible/roles/stow/vars/main.yaml` with the list of stow packages
-- Each package maps to a subdirectory under `stow/`
-- Allow enabling/disabling specific packages via Ansible variables
-- Support for `--adopt` flag to handle existing files during initial setup
-
-#### 3.3 — Handle edge cases
-
-- Existing files that conflict with symlinks (use `--adopt` or backup strategy)
-- Files that should not be symlinked (use `.stow-local-ignore` patterns)
-- Permission preservation for executable scripts in `~/.local/bin/`
-- Dry-run mode using `--no` flag for previewing changes
-
-#### 3.4 — Test the stow role
-
-- Run the role on the current workstation and verify all symlinks are correct
-- Test unstow operation and verify files are removed
-- Test idempotency — running the role multiple times produces no changes
-- Test dry-run mode and verify no actual changes are made
-
-### Phase 4 — System Configuration Role
+### Phase 4 — System Configuration Role _(moved to Proj-002)_
 
 #### Phase 4 Status
 
 | Item                     | Status                                                                   |
 | ------------------------ | ------------------------------------------------------------------------ |
-| **Phase Complete**       | ❌ No                                                                    |
+| **Phase Complete**       | ✅ Yes — moved to Proj-002                                               |
 | **Completed By**         | —                                                                        |
 | **Completion Date**      | —                                                                        |
 | **Deliverable Location** | —                                                                        |
 | **Next Phase**           | [Phase 5 — Desktop Environment Role](#phase-5--desktop-environment-role) |
 
-**Goal:** Create an Ansible role for system-level configuration — hostname, locale, timezone, SSH config, and environment variables.
+**Goal:** _(moved to Proj-002)_ Create an Ansible role for system-level configuration — hostname, locale, timezone, SSH config, and environment variables.
 
 #### Phase 4 Deliverables
 
-| #   | Deliverable                   | Description                                         |
-| --- | ----------------------------- | --------------------------------------------------- |
-| 1   | **System Configuration Role** | Hostname, locale, SSH config, environment variables |
+| #   | Deliverable        | Description    |
+| --- | ------------------ | -------------- |
+| 1   | **No Deliverable** | No deliverable |
 
-#### 4.1 — Create the system role
+#### Work canceled and moved to Proj-002
 
-- Create `ansible/roles/system/tasks/main.yaml`
-- Implement tasks for hostname, locale, and timezone configuration
-- Use the `hostname` module for hostname, `locale_gen` for locale
-- Ensure idempotency with `when` conditions and `changed_when`
+### Phase 5 — Desktop Environment Role _(moved to Proj-002)_
 
-#### 4.2 — Configure SSH
+#### Phase 5 Status
 
-- Deploy `~/.ssh/config` via Ansible template (if not managed by Stow)
-- Set SSH defaults: `StrictHostKeyChecking accept-new`, `ServerAliveInterval 60`
-- Add host entries for known servers (node-01, node-02, gateway)
-- Ensure SSH directory has correct permissions (700)
+| Item                     | Status                                                              |
+| ------------------------ | ------------------------------------------------------------------- |
+| **Phase Complete**       | ✅ Yes — moved to Proj-002                                          |
+| **Completed By**         | —                                                                   |
+| **Completion Date**      | —                                                                   |
+| **Deliverable Location** | —                                                                   |
+| **Next Phase**           | [Phase 6 — Scripts & Tooling Role](#phase-6--scripts--tooling-role) |
 
-#### 4.3 — Configure environment variables
-
-- Deploy `~/.config/bash/00-env.sh` via Ansible template
-- Set common environment variables (EDITOR, BROWSER, TERMINAL, etc.)
-- Add PATH entries for `~/.local/bin/` and other custom paths
-- Support OS-specific environment variables
-
-#### 4.4 — Test the system role
-
-- Run on current workstation and verify all settings are applied
-- Test on a fresh system (VM or container) to verify from-scratch provisioning
-- Verify idempotency by running the role twice
-
-### Phase 5 — Desktop Environment Role
-
-**Goal:** Create an Ansible role that deploys and configures the Hyprland/Wayland desktop environment — window manager, bar, terminal, notifications, launcher, wallpaper, and shell prompt.
+**Goal:** _(moved to Proj-002)_ Create an Ansible role that deploys and configures the Hyprland/Wayland desktop environment — window manager, bar, terminal, notifications, launcher, wallpaper, and shell prompt.
 
 #### Phase 5 Deliverables
 
-| #   | Deliverable                  | Description                                                       |
-| --- | ---------------------------- | ----------------------------------------------------------------- |
-| 1   | **Desktop Environment Role** | Hyprland, Waybar, kitty, mako, fuzzel, wezterm, starship, neovide |
+| #   | Deliverable        | Description    |
+| --- | ------------------ | -------------- |
+| 1   | **No Deliverable** | No deliverable |
 
-#### 5.1 — Create the desktop role
+#### Work canceled and moved to Proj-002
 
-- Create `ansible/roles/desktop/tasks/main.yaml`
-- Organize tasks into subdirectories for each component
-- Deploy config files via Stow (Phase 3) or template tasks
+### Phase 6 — Scripts & Tooling Role _(moved to Proj-002)_
 
-#### 5.2 — Configure Hyprland
+#### Phase 6 Status
 
-- Deploy `hyprland.conf` with keybindings, monitors, and workspace settings
-- Deploy `hyprpaper.conf` for wallpaper management
-- Deploy `hyprlock.conf` for screen locking
-- Ensure Hyprland starts correctly after deployment
+| Item                     | Status                                                                           |
+| ------------------------ | -------------------------------------------------------------------------------- |
+| **Phase Complete**       | ✅ Yes — moved to Proj-002                                                       |
+| **Completed By**         | —                                                                                |
+| **Completion Date**      | —                                                                                |
+| **Deliverable Location** | —                                                                                |
+| **Next Phase**           | [Phase 7 — Bootstrap Installer Overhaul](#phase-7--bootstrap-installer-overhaul) |
 
-#### 5.3 — Configure Waybar
-
-- Deploy `config.jsonc` with modules (workspaces, clock, system tray, screenshot button)
-- Deploy `style.css` with consistent theming
-- Verify all Waybar modules render correctly
-
-#### 5.4 — Configure terminal emulators
-
-- Deploy `kitty/kitty.conf` with Tokyo Night theme and font settings
-
-#### 5.5 — Configure desktop utilities
-
-- Deploy `mako/config` for notification daemon settings
-- Deploy `fuzzel/fuzzel.ini` for application launcher
-- Deploy `waypaper/config.ini` for wallpaper manager
-- Deploy `starship.toml` for shell prompt customization
-- Deploy `neovide/config.toml` for Neovide GUI settings
-
-#### 5.6 — Test the desktop role
-
-- Run on current workstation and verify all desktop components work
-- Test on a fresh system to verify from-scratch desktop provisioning
-- Verify idempotency by running the role twice
-
-### Phase 6 — Scripts & Tooling Role
-
-**Goal:** Create an Ansible role that deploys all custom scripts and tools from `~/.local/bin/`, ensuring they are executable and properly integrated into the system PATH.
+**Goal:** _(moved to Proj-002)_ Create an Ansible role that deploys all custom scripts and tools from `~/.local/bin/`, ensuring they are executable and properly integrated into the system PATH.
 
 #### Phase 6 Deliverables
 
-| #   | Deliverable                | Description                                                 |
-| --- | -------------------------- | ----------------------------------------------------------- |
-| 1   | **Scripts & Tooling Role** | `~/.local/bin/` scripts deployment with correct permissions |
+| #   | Deliverable        | Description    |
+| --- | ------------------ | -------------- |
+| 1   | **No Deliverable** | No deliverable |
 
-#### 6.1 — Create the scripts role
-
-- Create `ansible/roles/scripts/tasks/main.yaml`
-- Deploy scripts via Stow (from `stow/.local/bin/`) or copy tasks
-- Ensure all scripts have executable permissions (0755)
-- Verify scripts are accessible from `~/.local/bin/` in PATH
-
-#### 6.2 — Deploy screenshot scripts
-
-- Deploy all scripts from `stow/.local/bin/screenshot-scripts/`
-- Verify dependencies: grim, slurp, wl-clipboard, wf-recorder
-- Test each script: screenshot-full, screenshot-region, screenshot-window, screenshot-menu
-- Test each recording script: screenrecord-full, screenrecord-region, screenrecord-stop, screenrecord-status, screenrecord-menu
-
-#### 6.3 — Deploy SSH scripts
-
-- Deploy `ssh-connect.sh` and `ssh-list.sh` from `stow/.local/bin/ssh-scripts/`
-- Verify SSH config is properly set up (Phase 4)
-- Test `ssh-connect` interactive menu
-- Test `ssh-list` with table, simple, and json output formats
-
-#### 6.4 — Deploy other tools
-
-- Deploy `neovide-workspace` script from `stow/.local/bin/`
-- Verify any additional scripts in `~/.local/bin/` are deployed
-- Ensure all scripts have proper shebangs and are executable
-
-#### 6.5 — Test the scripts role
-
-- Run on current workstation and verify all scripts are present and executable
-- Test each script produces expected output
-- Verify PATH includes `~/.local/bin/`
+#### Work canceled and moved to Proj-002
 
 ### Phase 7 — Bootstrap Installer Overhaul
+
+#### Phase 7 Status
+
+| Item                     | Status       |
+| ------------------------ | ------------ |
+| **Phase Complete**       | -            |
+| **Completed By**         | —            |
+| **Completion Date**      | —            |
+| **Deliverable Location** | —            |
+| **Next Phase**           | [Phase 7 ]() |
 
 **Goal:** Rewrite the bootstrap installer to use `ansible-pull` for fully automated provisioning, with proper OS detection and dependency installation.
 
@@ -638,12 +541,23 @@
 
 #### 7.1 — Analyze current bootstrap installer
 
-- Review the existing `bootstrap/install-laptop.sh` script
-- Document what it currently does: OS detection, package installation, Ansible setup
-- Identify what works well and what needs improvement
-- Note any hardcoded paths or assumptions that need to be generalized
+> **Status:** ✅ Complete
+> **Completed By:** DeepSeek (AI Agent)
+> **Completion Date:** 2026-05-06
+> **Deliverable:** [Deliverable 2 - Bootstrap Installer Analysis.md](../context/project_deliverables/proj-001/Deliverable%202%20-%20Bootstrap%20Installer%20Analysis.md)
+
+- Reviewed the existing `bootstrap/install-laptop.sh` script (506 lines)
+- Documented what it currently does: OS detection, package installation, Ansible setup
+- Identified critical bugs: broken OS dispatch (only openSUSE works), empty `install-workstation.sh` and `install-server.sh` files
+- Noted hardcoded paths and assumptions that need to be generalized
+- Full analysis delivered in the deliverable document above
 
 #### 7.2 — Design the new bootstrap architecture
+
+> **Status:** ✅ Complete
+> **Completed By:** DeepSeek (AI Agent)
+> **Completion Date:** 2026-05-06
+> **Deliverable:** [Deliverable 3 - Bootstrap Architecture Design.md](../context/project_deliverables/proj-001/Deliverable%203%20-%20Bootstrap%20Architecture%20Design.md)
 
 - The install script should be minimal — just enough to bootstrap Ansible
 - Ansible handles everything else via `ansible-pull`
@@ -652,28 +566,48 @@
   - `install-workstation.sh` — development tools without full desktop
   - `install-server.sh` — minimal server setup
 - Each script sets the appropriate Ansible tags or variables
+- Full architecture design delivered in the document above
 
 #### 7.3 — Rewrite `install-laptop.sh`
 
-- Keep the OS detection logic (Arch, Debian, Ubuntu, openSUSE)
-- Install minimal prerequisites: git, python3, ansible
-- Clone the dotfiles repository (or use existing checkout)
-- Run `ansible-pull` with the appropriate playbook and tags
-- Add progress indicators and error handling
-- Support both interactive and non-interactive modes
+> **Status:** ✅ Complete
+> **Completed By:** DeepSeek (AI Agent)
+> **Completion Date:** 2026-05-06
+> **Deliverable:** `bootstrap/install-laptop.sh` — rewritten with two-phase `ansible-pull` flow
 
-#### 7.4 — Create `install-workstation.sh`
+**Goal:** Rewrite `install-laptop.sh` to implement the two-phase `ansible-pull` bootstrap architecture designed in Deliverable 3, with proper argument parsing.
 
-- Similar structure to `install-laptop.sh` but targets workstation role
-- Installs development tools but may skip desktop environment
-- Useful for setting up a secondary development machine
+**Key changes implemented:**
+
+1. **Added argument parsing** — `--help`, `--dry-run`, `--branch <name>`, `--non-interactive`
+2. **Rewrote `debian_setup()`** — Added git/openssh, removed version-gated pip install and watchdog
+3. **Rewrote `ubuntu_setup()`** — Same as `debian_setup()` (functionally identical)
+4. **Updated repo clone for `--branch`** — Passes `$BRANCH` to `git clone --branch`
+5. **Updated `ansible-pull` to two-phase flow** — Phase 1: `bootstrap.yaml`, Phase 2: `$SYSTEM_PLAYBOOK` (laptop.yaml), with `--clean` flag and `_cmd` error handling
+6. **Added completion message** — Prints summary at end of successful run
+
+**Dependencies:**
+
+- `ansible/playbooks/laptop.yaml` — ⚠️ Empty skeleton (Phase 2 will run but do nothing until populated)
+- `ansible/playbooks/bootstrap.yaml` — ✅ Implemented (175 lines)
+
+#### 7.4 — Create `install-desktop.sh`
+
+> **Status:** ✅ Complete
+> **Completed By:** User
+> **Completion Date:** 2026-05-06
+
+- Created as a copy of `install-laptop.sh` with `SYSTEM_PLAYBOOK` set to `desktop.yaml`
+- Located at `bootstrap/install-desktop.sh`
 
 #### 7.5 — Create `install-server.sh`
 
-- Minimal bootstrap for headless servers
-- Installs only core system packages and SSH configuration
-- No desktop environment, no GUI tools
-- Useful for setting up Kubernetes nodes or other servers
+> **Status:** ✅ Complete
+> **Completed By:** User
+> **Completion Date:** 2026-05-06
+
+- Created as a copy of `install-laptop.sh` with `SYSTEM_PLAYBOOK` set to `server.yaml`
+- Located at `bootstrap/install-server.sh`
 
 #### 7.6 — Test the bootstrap installer
 
@@ -684,6 +618,16 @@
 - Document any issues encountered during testing
 
 ### Phase 8 — Additional Install Scripts
+
+#### Phase 8 Status
+
+| Item                     | Status       |
+| ------------------------ | ------------ |
+| **Phase Complete**       | -            |
+| **Completed By**         | —            |
+| **Completion Date**      | —            |
+| **Deliverable Location** | —            |
+| **Next Phase**           | [Phase 9 ]() |
 
 **Goal:** Create install scripts for different system types beyond laptops — workstations and servers — each tailored to their specific role and package requirements.
 
@@ -729,6 +673,16 @@
 - Document any OS-specific issues or workarounds
 
 ### Phase 9 — Testing & Validation
+
+#### Phase 9 Status
+
+| Item                     | Status        |
+| ------------------------ | ------------- |
+| **Phase Complete**       | -             |
+| **Completed By**         | —             |
+| **Completion Date**      | —             |
+| **Deliverable Location** | —             |
+| **Next Phase**           | [Phase 10 ]() |
 
 **Goal:** Create a comprehensive testing and validation framework to verify the migration is complete, idempotent, and produces the correct system configuration.
 
@@ -776,6 +730,16 @@
 - Create a checklist for future testing after repository changes
 
 ### Phase 10 — Documentation & Handover
+
+#### Phase 10 Status
+
+| Item                     | Status |
+| ------------------------ | ------ |
+| **Phase Complete**       | -      |
+| **Completed By**         | —      |
+| **Completion Date**      | —      |
+| **Deliverable Location** | —      |
+| **Next Phase**           | N/A    |
 
 **Goal:** Create comprehensive documentation for the entire Ansible-based dotfiles management system, covering all roles, scripts, procedures, and troubleshooting.
 
@@ -897,16 +861,16 @@
 ### Current Issues
 
 1. **Mixed Repository State**: `.config/` and `.local/` exist at root level alongside `stow/`, `ansible/`, and `bootstrap/`
-   - **Status:** Open
-   - **Next Steps:** Phase 1 will move these into `stow/` subdirectories
+   - **Status:** ✅ Resolved (Phase 1 completed 2026-05-05)
+   - **Resolution:** `.config/` and `.local/` contents distributed into `stow/` subdirectories. Root now contains only core infrastructure folders.
 
 2. **Bootstrap Installer Not Functional**: `install-laptop.sh` has commented-out `ansible-pull` commands and incomplete OS setup functions
    - **Status:** Open
    - **Next Steps:** Phase 7 will rewrite the installer to properly use `ansible-pull`
 
 3. **Ansible Roles Incomplete**: Existing `ansible/roles/` have only skeleton structures (dotfiles, system/networking)
-   - **Status:** Open
-   - **Next Steps:** Phases 2-6 will flesh out all roles with complete implementations
+   - **Status:** ✅ Moved to Proj-002
+   - **Next Steps:** The comprehensive role implementations (dotfiles symlink migration, system configuration, desktop environment, scripts & tooling) have been moved to **Proj-002** for implementation. Phase 2 established the Ansible project structure and package management role as the foundation.
 
 ## Notes
 
@@ -925,7 +889,7 @@
 
 ### Sequential Phase Execution
 
-1. **Phases MUST be executed in strict numeric order** — Phase 0 first, then Phase 1, then Phase 2, and so on through Phase 10.
+1. **Phases MUST be executed in strict numeric order** — Phase 0 first, then Phase 1, then Phase 2, then Phase 7, then Phase 8, then Phase 9, then Phase 10.
 2. **Within each phase, steps MUST be executed in numeric order** — e.g., 0.1 before 0.2, 0.2 before 0.3, etc.
 3. **Do NOT skip ahead** to a later phase or step, even if it seems independent or self-contained.
 4. **Do NOT rearrange steps** — follow the order as written in this document.
