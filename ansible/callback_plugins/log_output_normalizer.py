@@ -25,7 +25,7 @@ class CallbackModule(CallbackBase):
     def v2_playbook_on_start(self, playbook):
         self._display.display(
             f"Starting Playbook.... | green is: {C.COLOR_OK}, red is: {C.COLOR_ERROR}",
-            color="blue",
+            color=C.COLOR_WARN,
         )
 
     def v2_runner_on_ok(self, result):
