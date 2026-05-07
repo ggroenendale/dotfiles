@@ -40,7 +40,7 @@ custom_file_handler.setFormatter(AnsibleFormatter())
 log = logging.getLogger("custom_ansible")
 log.handlers = [custom_stream_handler, custom_file_handler]
 
-log.info("Log Format Created")
+# log.info("Log Format Created")
 
 
 class CallbackModule(CallbackBase):
@@ -63,9 +63,9 @@ class CallbackModule(CallbackBase):
 
         # log.propagate = False
 
-        self.log = log
+        self.log = logging.getLogger("custom_ansible")
 
-        log.info("Testing log")
+        self.log.info("Testing log")
 
     def v2_playbook_on_start(self, playbook):
         # self._display.display(
