@@ -84,6 +84,7 @@ class CallbackModule(CallbackBase):
         # Ensure directory exists
         os.makedirs(os.path.dirname(self.log_file), exist_ok=True)
         log.info(f"log_file path: {self.log_file}")
+        log.info(f"dirname: {os.path.dirname(self.log_file)}")
 
         with open(self.log_file, "a") as f:
             f.write(f"Line \n")
