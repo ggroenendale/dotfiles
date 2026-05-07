@@ -7,8 +7,6 @@ import logging
 
 logging.basicConfig(format="%(message)s", level=logging.INFO)
 
-log = logging.getLogger("ansible")
-log.info("hello world")
 
 DOCUMENTATION = """
     name: log_output_normalizer
@@ -17,6 +15,27 @@ DOCUMENTATION = """
     description:
         - Custom log outputs
 """
+
+
+class AnsibleFormatter(logging.Formatter):
+    """
+    Define a custom formatter
+    """
+
+    def format(self, record):
+        level = record.levelname
+        msg = record.getMessage()
+        return f"MyFormat - {level}: {msg}"
+
+
+# Attach Custom Format to a handler
+custom_handler = logging.StreamHandler()
+custom_handler.setFormatter(AnsibleFormatter())
+
+# Assign Custom Format Handler to ansible logger
+log = logging.getLogger("ansible")
+log.handlers = [custom_handler]
+log.propagate = False
 
 
 class CallbackModule(CallbackBase):
