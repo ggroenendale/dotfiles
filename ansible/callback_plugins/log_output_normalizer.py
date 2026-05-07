@@ -61,6 +61,8 @@ class CallbackModule(CallbackBase):
         log.handlers = [custom_stream_handler, custom_file_handler]
         # log.propagate = False
 
+        self.log = log
+
         self.log.info("Testing log")
 
     def v2_playbook_on_start(self, playbook):
