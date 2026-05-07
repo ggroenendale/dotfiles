@@ -129,14 +129,14 @@
     - name: Include package management role (Arch Linux — Paru AUR helper)
       ansible.builtin.include_role:
         name: package_management
-      when: ansible_facts.os_distribution == "Archlinux"
+      when: ansible_facts.distribution == "Archlinux"
 
     - name: Verify package manager availability (Debian/Ubuntu)
       ansible.builtin.command: apt --version
       register: apt_check
       changed_when: false
       failed_when: false
-      when: ansible_facts.os_distribution in ["Debian", "Ubuntu"]
+      when: ansible_facts.distribution in ["Debian", "Ubuntu"]
 
     - name: Assert apt is available (Debian/Ubuntu)
       ansible.builtin.assert:
@@ -144,14 +144,14 @@
           - apt_check.rc == 0
         fail_msg: "apt is not available on {{ os_distribution }}"
         success_msg: "apt is available"
-      when: ansible_facts.os_distribution in ["Debian", "Ubuntu"]
+      when: ansible_facts.distribution in ["Debian", "Ubuntu"]
 
     - name: Verify package manager availability (openSUSE)
       ansible.builtin.command: zypper --version
       register: zypper_check
       changed_when: false
       failed_when: false
-      when: ansible_facts.os_distribution == "openSUSE"
+      when: ansible_facts.distribution == "openSUSE"
 
     - name: Assert zypper is available (openSUSE)
       ansible.builtin.assert:
@@ -159,7 +159,7 @@
           - zypper_check.rc == 0
         fail_msg: "zypper is not available on {{ os_distribution }}"
         success_msg: "zypper is available"
-      when: ansible_facts.os_distribution == "openSUSE"
+      when: ansible_facts.distribution == "openSUSE"
 
     # ── Summary ───────────────────────────────────────────────────
     - name: Bootstrap summary
