@@ -41,7 +41,7 @@ custom_file_handler.setFormatter(AnsibleFormatter())
 # Assign Custom Format Handler to ansible logger
 log = logging.getLogger("ansible")
 log.handlers = [custom_stream_handler, custom_file_handler]
-log.propagate = False
+# log.propagate = False
 
 log.info("Testing log")
 
