@@ -5,7 +5,9 @@ import urllib.request
 
 import logging
 
-logging.basicConfig(format="%(message)s", level=logging.INFO)
+logging.basicConfig(
+    filename=C.DEFAULT_LOG_PATH, format="%(message)s", level=logging.INFO
+)
 
 
 DOCUMENTATION = """
@@ -28,13 +30,16 @@ class AnsibleFormatter(logging.Formatter):
         return f"MyFormat - {level}: {msg}"
 
 
-# Attach Custom Format to a handler
-custom_handler = logging.StreamHandler()
-custom_handler.setFormatter(AnsibleFormatter())
+# Attach Custom Format to a stream handler
+custom_stream_handler = logging.StreamHandler()
+custom_stream_handler.setFormatter(AnsibleFormatter())
+
+# Attach custom format to a file handler
+custom_file_handler = logging.FileHandler("~/dotfiles.log")
 
 # Assign Custom Format Handler to ansible logger
 log = logging.getLogger("ansible")
-log.handlers = [custom_handler]
+log.handlers = [custom_stream_handler, custom_file_handler]
 log.propagate = False
 
 
