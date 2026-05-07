@@ -40,7 +40,7 @@ custom_file_handler.setFormatter(AnsibleFormatter())
 log = logging.getLogger("custom_ansible")
 log.handlers = [custom_stream_handler, custom_file_handler]
 
-# log.info("Log Format Created")
+log.info("Testing Ansible Logger")
 
 
 class CallbackModule(CallbackBase):
