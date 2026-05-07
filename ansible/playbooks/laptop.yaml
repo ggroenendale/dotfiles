@@ -12,6 +12,10 @@
     # GitHub connectivity check
     github_url: "https://github.com"
     github_timeout_seconds: 10
+    is_debian: "{{ 'Debian' in ansible_facts.distribution }}"
+    is_ubuntu: "{{ 'Ubuntu' in ansible_facts.distribution }}"
+    is_opensuse: "{{ ansible_facts.os_family == 'Suse' }}"
+    is_arch: "{{ 'Arch' in ansible_facts.distribution }}"
     system_roles_to_apply:
       - system/bootloader
     hardware_roles_to_apply:
