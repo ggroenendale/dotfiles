@@ -74,7 +74,7 @@ class CallbackModule(CallbackBase):
         # )
 
         mylog = logging.getLogger("custom_ansible")
-        mylog.info("Starting Playbook.....")
+        mylog.info("Is my custom logger getting overwritten Starting Playbook.....")
 
     def v2_runner_on_ok(self, result):
         host = result._host.get_name()
