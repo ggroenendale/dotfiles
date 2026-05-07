@@ -1,3 +1,4 @@
+import os
 from ansible.plugins.callback import CallbackBase
 from ansible import constants as C
 import json
@@ -55,17 +56,34 @@ class CallbackModule(CallbackBase):
 
     def __init__(self):
         """ """
-        self._play = None
-        self._last_task_banner = None
-        self._last_task_name = None
-        self._task_type_cache = {}
+        # self._play = None
+        # self._last_task_banner = None
+        # self._last_task_name = None
+        # self._task_type_cache = {}
         super(CallbackModule, self).__init__()
-
+        self.log_file = os.environ.get("ANSIBLE_CUSTOM_LOG_FILE", "~/dotfiles.log")
         # log.propagate = False
 
-        mylog = logging.getLogger("custom_ansible")
+        self.playbook_name = None
+        self.play_name = None
 
-        mylog.info("Testing log")
+        # mylog = logging.getLogger("custom_ansible")
+
+        # mylog.info("Testing log")
+
+    def _log(self, data):
+        """
+        Write a log
+        :param category: The category
+        :param data: The data
+        """
+        entry = {}
+
+        # Ensure directory exists
+        os.makedirs(os.path.dirname(self.log_file), exist_ok=True)
+
+        with open(self.log_file, "a") as f:
+            f.write(f"{data}\n")
 
     def v2_playbook_on_start(self, playbook):
         # self._display.display(
@@ -73,8 +91,7 @@ class CallbackModule(CallbackBase):
         #    color=C.COLOR_WARN,
         # )
 
-        mylog = logging.getLogger("custom_ansible")
-        mylog.info("Is my custom logger getting overwritten Starting Playbook.....")
+        self._log("Is my custom logger getting overwritten Starting Playbook.....")
 
     def v2_runner_on_ok(self, result):
         host = result._host.get_name()
@@ -83,21 +100,21 @@ class CallbackModule(CallbackBase):
 
         if msg:
             # self._display.display(f"{msg}", color=C.COLOR_OK)
-            mylog.info(f"{msg}?")
+            self._log(f"{msg}?")
         else:
             # self._display.display(f"{host}: OK", color=C.COLOR_CHANGED)
-            mylog.info(f"{host}: OK")
+            self._log(f"{host}: OK")
 
     def v2_runner_on_failed(self, result, ignore_errors=False):
         host = result._host.get_name()
         # self._display.display(f"{host}: FAILED", color=C.COLOR_ERROR)
 
         mylog = logging.getLogger("custom_ansible")
-        mylog.info(f"{host}: FAILED")
+        self._log(f"{host}: FAILED")
 
     def v2_runner_on_skipped(self, result):
         host = result._host.get_name()
         # self._display.display(f"{host}: SKIPPED", color=C.COLOR_ERROR)
 
         mylog = logging.getLogger("custom_ansible")
-        mylog.info(f"{host}: SKIPPED")
+        self._log(f"{host}: SKIPPED")
