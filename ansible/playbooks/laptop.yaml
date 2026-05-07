@@ -12,18 +12,54 @@
     # GitHub connectivity check
     github_url: "https://github.com"
     github_timeout_seconds: 10
+    system_roles_to_apply:
+      - system/bootloader
+    hardware_roles_to_apply:
+      - hardware/bluetooth
     core_roles_to_apply:
       - core/users
       - core/security
+    desktop_roles_to_apply:
+      - desktop/login_manager
+    dev_roles_to_apply:
+      - dev/build_tools
 
   tasks:
     - name: Display Laptop Playbook start
       ansible.builtin.debug:
         msg: "=== Laptop Playbook Started ==="
 
+    - name: Include System Roles
+      ansible.builtin.include_role:
+        name: "{{ role_item }}"
+      loop: "{{ system_roles_to_apply }}"
+      loop_control:
+        loop_var: role_item
+
+    - name: Include Hardware Roles
+      ansible.builtin.include_role:
+        name: "{{ role_item }}"
+      loop: "{{ hardware_roles_to_apply }}"
+      loop_control:
+        loop_var: role_item
+
     - name: Include Core Roles
       ansible.builtin.include_role:
         name: "{{ role_item }}"
       loop: "{{ core_roles_to_apply }}"
+      loop_control:
+        loop_var: role_item
+
+    - name: Include Desktop Roles
+      ansible.builtin.include_role:
+        name: "{{ role_item }}"
+      loop: "{{ desktop_roles_to_apply }}"
+      loop_control:
+        loop_var: role_item
+
+    - name: Include Developer Roles
+      ansible.builtin.include_role:
+        name: "{{ role_item }}"
+      loop: "{{ dev_roles_to_apply }}"
       loop_control:
         loop_var: role_item
