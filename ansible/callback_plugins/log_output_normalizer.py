@@ -30,6 +30,21 @@ class AnsibleFormatter(logging.Formatter):
         return f"MyFormat - {level}: {msg}"
 
 
+# Attach Custom Format to a stream handler
+custom_stream_handler = logging.StreamHandler()
+custom_stream_handler.setFormatter(AnsibleFormatter())
+
+# Attach custom format to a file handler
+custom_file_handler = logging.FileHandler(".dotfiles.log")
+custom_file_handler.setFormatter(AnsibleFormatter())
+
+# Assign Custom Format Handler to ansible logger
+log = logging.getLogger("custom_ansible")
+log.handlers = [custom_stream_handler, custom_file_handler]
+
+log.info("Log Format Created")
+
+
 class CallbackModule(CallbackBase):
     CALLBACK_VERSION = 2.0
     CALLBACK_TYPE = "stdout"
@@ -48,17 +63,6 @@ class CallbackModule(CallbackBase):
         self._task_type_cache = {}
         super(CallbackModule, self).__init__()
 
-        # Attach Custom Format to a stream handler
-        custom_stream_handler = logging.StreamHandler()
-        custom_stream_handler.setFormatter(AnsibleFormatter())
-
-        # Attach custom format to a file handler
-        custom_file_handler = logging.FileHandler(".dotfiles.log")
-        custom_file_handler.setFormatter(AnsibleFormatter())
-
-        # Assign Custom Format Handler to ansible logger
-        log = logging.getLogger("custom_ansible")
-        log.handlers = [custom_stream_handler, custom_file_handler]
         # log.propagate = False
 
         self.log = log
