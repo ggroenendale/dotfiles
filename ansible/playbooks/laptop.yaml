@@ -23,7 +23,7 @@
 
     - name: Include Core Roles
       ansible.builtin.include_role:
-        name: { { role_item } }
+        name: "{{ role_item }}"
       loop: "{{ core_roles_to_apply }}"
       loop_control:
         loop_var: role_item
