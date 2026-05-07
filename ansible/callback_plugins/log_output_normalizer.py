@@ -102,9 +102,11 @@ class CallbackModule(CallbackBase):
         os.makedirs(os.path.dirname(self.log_file), exist_ok=True)
 
         if color is None:
-            color = "\x1b[31m"
+            # color = "\x1b[31m"
+            color = ""
 
-        reset = "\x1b[0m"
+        # reset = "\x1b[0m"
+        reset = ""
 
         with open(log_file, "a") as f:
             f.write(f"{color}{data} {reset}\n")
@@ -115,7 +117,9 @@ class CallbackModule(CallbackBase):
         #    color=C.COLOR_WARN,
         # )
 
-        self._log("Is my custom logger getting overwritten Starting Playbook.....")
+        self._log(
+            "INFO: Is my custom logger getting overwritten Starting Playbook....."
+        )
 
     def v2_runner_on_ok(self, result):
         host = result._host.get_name()
