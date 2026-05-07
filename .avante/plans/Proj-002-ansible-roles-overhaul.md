@@ -413,6 +413,8 @@ ansible/roles/
 | **Deliverable Location** | -              |
 | **Next Phase**           | [Phase 4 - ]() |
 
+**Goal:**
+
 #### Phase 3 Deliverables
 
 | #   | Deliverable    | Description                                            | Location |
@@ -445,6 +447,11 @@ ansible/roles/
 
 #### 3.7 Add proper OS detection to all core roles
 
+- Arch Linux detection works uisng ansible_facts distribution
+- Opensuse detection works using ansible's os_family property `when: ansible_facts.os_family == "Suse"`
+- Debian detection works using ansible_facts distribution
+- Ubuntu detection works using ansible_facts distribution
+
 #### 3.8 Add proper tagging to all core roles
 
 ### Phase 4 — Hardware Roles (hardware/)
@@ -458,6 +465,8 @@ ansible/roles/
 | **Completion Date**      | -              |
 | **Deliverable Location** | -              |
 | **Next Phase**           | [Phase 5 - ]() |
+
+**Goal:**
 
 #### Phase 4 Deliverables
 
@@ -495,6 +504,8 @@ ansible/roles/
 | **Deliverable Location** | -              |
 | **Next Phase**           | [Phase 6 - ]() |
 
+**Goal:**
+
 #### Phase 5 Deliverables
 
 | #   | Deliverable      | Description                                          | Location |
@@ -530,6 +541,8 @@ ansible/roles/
 | **Completion Date**      | -              |
 | **Deliverable Location** | -              |
 | **Next Phase**           | [Phase 7 - ]() |
+
+**Goal:**
 
 #### Phase 6 Deliverables
 
@@ -589,17 +602,13 @@ ansible/roles/
 
 — consolidate from `desktop/_file_managers/`
 
-#### 6.14 — Create `desktop/apps/`
-
-— consolidate from `desktop/_apps/`
-
-#### 6.15 — Fix all empty main.yaml files
+#### 6.14 — Fix all empty main.yaml files
 
 — implement or remove
 
-#### 6.16 — Add proper OS detection and tagging to all desktop roles
+#### 6.15 — Add proper OS detection and tagging to all desktop roles
 
-### Phase 7 — Dev Roles (dev/)
+### Phase 7 — Desktop Applications Roles (desktop_applications/)
 
 #### Phase 7 Status
 
@@ -611,31 +620,19 @@ ansible/roles/
 | **Deliverable Location** | -              |
 | **Next Phase**           | [Phase 8 - ]() |
 
+**Goal:** Refactor roles from desktop/\_apps/ into desktop_applications/ roles for various applications (gimp, blender, brave, firefox, VLC Media Player, Steam, etc.)
+
 #### Phase 7 Deliverables
 
 | #   | Deliverable   | Description                                     | Location |
 | --- | ------------- | ----------------------------------------------- | -------- |
 | 1   | **Dev Roles** | Rebuild git, ide, build_tools, containers roles | —        |
 
-#### 7.1 — Create `dev/build_tools/`
+#### 7.1 — Create `desktop_apps/`
 
-— consolidate from `dev/_build_tools/`
+— consolidate from `desktop/_apps/`
 
-#### 7.2 — Create `dev/ide/`
-
-— consolidate from `dev/_ide/`
-
-#### 7.3 — Create `dev/version_control/`
-
-— consolidate from `dev/_version_control/git/`
-
-#### 7.4 — Create `dev/containers/`
-
-— consolidate from `dev/_containers/`
-
-#### 7.5 — Add proper OS detection and tagging to all dev roles
-
-### Phase 8 — Server Roles (server/)
+### Phase 8 — Dev Roles (dev/)
 
 #### Phase 8 Status
 
@@ -645,47 +642,87 @@ ansible/roles/
 | **Completed By**         | -              |
 | **Completion Date**      | -              |
 | **Deliverable Location** | -              |
-| **Next Phase**           | [Phase 9 - ]() |
+| **Next Phase**           | [Phase 8 - ]() |
+
+**Goal:**
 
 #### Phase 8 Deliverables
+
+| #   | Deliverable   | Description                                     | Location |
+| --- | ------------- | ----------------------------------------------- | -------- |
+| 1   | **Dev Roles** | Rebuild git, ide, build_tools, containers roles | —        |
+
+#### 8.1 — Create `dev/build_tools/`
+
+— consolidate from `dev/_build_tools/`
+
+#### 8.2 — Create `dev/ide/`
+
+— consolidate from `dev/_ide/`
+
+#### 8.3 — Create `dev/version_control/`
+
+— consolidate from `dev/_version_control/git/`
+
+#### 8.4 — Create `dev/containers/`
+
+— consolidate from `dev/_containers/`
+
+#### 8.5 — Add proper OS detection and tagging to all dev roles
+
+### Phase 9 — Server Roles (server/)
+
+#### Phase 9 Status
+
+| Item                     | Status         |
+| ------------------------ | -------------- |
+| **Phase Complete**       | ❌ No          |
+| **Completed By**         | -              |
+| **Completion Date**      | -              |
+| **Deliverable Location** | -              |
+| **Next Phase**           | [Phase 9 - ]() |
+
+**Goal:**
+
+#### Phase 9 Deliverables
 
 | #   | Deliverable      | Description              | Location |
 | --- | ---------------- | ------------------------ | -------- |
 | 1   | **Server Roles** | Rebuild all server roles | —        |
 
-#### 8.1 — Create `server/network_storage/`
+#### 9.1 — Create `server/network_storage/`
 
 — consolidate from `network_storage/`
 
-#### 8.2 — Create `server/cluster/master/`
+#### 9.2 — Create `server/cluster/master/`
 
 — implement from skeleton
 
-#### 8.3 — Create `server/cluster/worker/`
+#### 9.3 — Create `server/cluster/worker/`
 
 — implement from skeleton
 
-#### 8.4 — Create `server/cluster/client/`
+#### 9.4 — Create `server/cluster/client/`
 
 — consolidate from `cluster/_client/`
 
-#### 8.5 — Create `server/cluster/helm/`
+#### 9.5 — Create `server/cluster/helm/`
 
 — consolidate from `cluster/_helm/`
 
-#### 8.6 — Create `server/cluster/containers/`
+#### 9.6 — Create `server/cluster/containers/`
 
 — consolidate from `cluster/_containers/`
 
-#### 8.7 — Create `server/ai/`
+#### 9.7 — Create `server/ai/`
 
 — implement or remove empty sub-roles
 
-#### 8.8 — Add proper OS detection and tagging to all server roles
+#### 9.8 — Add proper OS detection and tagging to all server roles
 
-### Phase 9 — Playbooks
+### Phase 10 — Playbooks
 
-#### Phase 9 Status
+#### Phase 10 Status
 
 | Item                     | Status          |
 | ------------------------ | --------------- |
@@ -695,47 +732,49 @@ ansible/roles/
 | **Deliverable Location** | -               |
 | **Next Phase**           | [Phase 10 - ]() |
 
-#### Phase 9 Deliverables
+**Goal:**
+
+#### Phase 10 Deliverables
 
 | #   | Deliverable   | Description                          | Location |
 | --- | ------------- | ------------------------------------ | -------- |
 | 1   | **Playbooks** | Create/update machine-type playbooks | —        |
 
-#### 9.1 — Create `laptop.yaml`
+#### 10.1 — Create `laptop.yaml`
 
 — compose core + hardware + system + desktop + dev roles
 
-#### 9.2 — Create `desktop.yaml`
+#### 10.2 — Create `desktop.yaml`
 
 — compose core + hardware + system + desktop + dev roles
 
-#### 9.3 — Create `server.yaml`
+#### 10.3 — Create `server.yaml`
 
 — compose core + system + server roles
 
-#### 9.4 — Create `home_theater_pc_debian.yaml`
+#### 10.4 — Create `home_theater_pc_debian.yaml`
 
 — compose core + system + hardware roles
 
-#### 9.5 — Fix `debian_server.yaml`
+#### 10.5 — Fix `debian_server.yaml`
 
 — correct host group and role selection
 
-#### 9.6 — Implement `ubuntu_server.yaml`
+#### 10.6 — Implement `ubuntu_server.yaml`
 
 — compose core + system + server roles
 
-#### 9.7 — Update `arch_desktop.yaml`
+#### 10.7 — Update `arch_desktop.yaml`
 
 — remove OmniProvisioner reference, update role paths
 
-#### 9.8 — Update `debian_router.yaml`
+#### 10.8 — Update `debian_router.yaml`
 
 — update role paths
 
-### Phase 10 — Validation
+### Phase 11 — Validation
 
-#### Phase 10 Status
+#### Phase 11 Status
 
 | Item                     | Status |
 | ------------------------ | ------ |
@@ -745,49 +784,51 @@ ansible/roles/
 | **Deliverable Location** | -      |
 | **Next Phase**           | N/A    |
 
-#### Phase 10 Deliverables
+**Goal:**
+
+#### Phase 11 Deliverables
 
 | #   | Deliverable    | Description                                | Location |
 | --- | -------------- | ------------------------------------------ | -------- |
 | 1   | **Validation** | Test all playbooks against target machines | —        |
 
-#### 10.1 — Run `ansible-playbook --syntax-check` on all playbooks
+#### 11.1 — Run `ansible-playbook --syntax-check` on all playbooks
 
 — validate syntax across all playbooks
 
-#### 10.2 — Run `ansible-lint` on all roles
+#### 11.2 — Run `ansible-lint` on all roles
 
 — lint all roles for best practices and errors
 
-#### 10.3 — Test `laptop.yaml` against Arch laptop target
+#### 11.3 — Test `laptop.yaml` against Arch laptop target
 
 — run playbook against Arch laptop target machine
 
-#### 10.4 — Test `desktop.yaml` against Arch desktop target
+#### 11.4 — Test `desktop.yaml` against Arch desktop target
 
 — run playbook against Arch desktop target machine
 
-#### 10.5 — Test `server.yaml` against Debian server target
+#### 11.5 — Test `server.yaml` against Debian server target
 
 — run playbook against Debian server target machine
 
-#### 10.6 — Test `debian_router.yaml` against router target
+#### 11.6 — Test `debian_router.yaml` against router target
 
 — run playbook against router target machine
 
-#### 10.7 — Test `home_theater_pc_debian.yaml` against HTPC target
+#### 11.7 — Test `home_theater_pc_debian.yaml` against HTPC target
 
 — run playbook against HTPC target machine
 
-#### 10.8 — Verify all broken references are fixed
+#### 11.8 — Verify all broken references are fixed
 
 — confirm no missing role or sub-role references remain
 
-#### 10.9 — Verify no empty placeholder files remain
+#### 11.9 — Verify no empty placeholder files remain
 
 — confirm all empty main.yaml files have been implemented or removed
 
-#### 10.10 — Verify all roles have proper OS detection and tagging
+#### 11.10 — Verify all roles have proper OS detection and tagging
 
 — confirm each role handles OS detection internally and has meaningful tags
 
