@@ -61,7 +61,7 @@ class CallbackModule(CallbackBase):
         # self._last_task_name = None
         # self._task_type_cache = {}
         super(CallbackModule, self).__init__()
-        self.log_file = os.environ.get("ANSIBLE_CUSTOM_LOG_FILE", "~/dotfiles.log")
+        self.log_file = os.environ.get("ANSIBLE_CUSTOM_LOG_FILE", "dotfiles.log")
         # log.propagate = False
 
         self.playbook_name = None
@@ -96,7 +96,7 @@ class CallbackModule(CallbackBase):
     def v2_runner_on_ok(self, result):
         host = result._host.get_name()
         msg = result._result.get("msg", "")
-        mylog = logging.getLogger("custom_ansible")
+        # mylog = logging.getLogger("custom_ansible")
 
         if msg:
             # self._display.display(f"{msg}", color=C.COLOR_OK)
@@ -109,12 +109,12 @@ class CallbackModule(CallbackBase):
         host = result._host.get_name()
         # self._display.display(f"{host}: FAILED", color=C.COLOR_ERROR)
 
-        mylog = logging.getLogger("custom_ansible")
+        # mylog = logging.getLogger("custom_ansible")
         self._log(f"{host}: FAILED")
 
     def v2_runner_on_skipped(self, result):
         host = result._host.get_name()
         # self._display.display(f"{host}: SKIPPED", color=C.COLOR_ERROR)
 
-        mylog = logging.getLogger("custom_ansible")
+        # mylog = logging.getLogger("custom_ansible")
         self._log(f"{host}: SKIPPED")
