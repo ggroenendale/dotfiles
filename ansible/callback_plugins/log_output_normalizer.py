@@ -69,10 +69,7 @@ class CallbackModule(CallbackBase):
         # self._last_task_name = None
         # self._task_type_cache = {}
         super(CallbackModule, self).__init__()
-        # self.log_file = os.environ.get(
-        #    "ANSIBLE_CUSTOM_LOG_FILE", "~/.dotfiles/logs/idunno_dotfiles.log"
-        # )
-        # log.propagate = False
+        self.log_file = None
 
         self.playbook_name = None
         self.play_name = None
