@@ -27,7 +27,7 @@
     suffix: paru-build
   register: build_dir
   when:
-    - ansible_distribution == "Archlinux"
+    - ansible_facts['distribution'] == "Archlinux"
     - paru_check.rc != 0
 
 - name: Clone Paru from AUR
@@ -36,7 +36,7 @@
     dest: "{{ build_dir.path }}"
     depth: 1
   when:
-    - ansible_distribution == "Archlinux"
+    - ansible_facts['distribution'] == "Archlinux"
     - paru_check.rc != 0
 
 - name: Build and install Paru with makepkg
@@ -45,7 +45,7 @@
     chdir: "{{ build_dir.path }}"
   become: true
   when:
-    - ansible_distribution == "Archlinux"
+    - ansible_facts['distribution'] == "Archlinux"
     - paru_check.rc != 0
   register: paru_install
   changed_when: paru_install.rc == 0
@@ -55,16 +55,16 @@
     path: "{{ build_dir.path }}"
     state: absent
   when:
-    - ansible_distribution == "Archlinux"
+    - ansible_facts['distribution'] == "Archlinux"
     - paru_check.rc != 0
 
 - name: Verify Paru installation
   ansible.builtin.command: paru --version
   register: paru_version
   changed_when: false
-  when: ansible_distribution == "Archlinux"
+  when: ansible_facts['distribution'] == "Archlinux"
 
 - name: Report Paru version
   ansible.builtin.debug:
     msg: "Paru installed: {{ paru_version.stdout_lines[0] if paru_version.stdout_lines is defined else 'already present' }}"
-  when: ansible_distribution == "Archlinux"
+  when: ansible_facts['distribution'] == "Archlinux"
