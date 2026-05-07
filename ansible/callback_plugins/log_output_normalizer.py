@@ -83,8 +83,8 @@ class CallbackModule(CallbackBase):
         os.makedirs(os.path.dirname(self.log_file), exist_ok=True)
         log.info(f"log_file path: {self.log_file}")
 
-        with open(self.log_file, "a") as f:
-            f.write(f"Line {data}\n")
+        with open("~/dotfiles.log", "a") as f:
+            f.write(f"Line \n")
 
     def v2_playbook_on_start(self, playbook):
         # self._display.display(
