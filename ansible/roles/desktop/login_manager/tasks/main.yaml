@@ -1,0 +1,34 @@
+---
+- name: Display Developer Build Tools Config Start
+  ansible.builtin.debug:
+    msg: "=== Begin Developer Build Tools Role Configuration ==="
+
+# ===========================================================================
+#
+# ===========================================================================
+
+# - name: Install GDM
+#   become: true
+#   pacman:
+#     name:
+#       - gdm
+#     state: present
+#     update_cache: yes
+#
+# - name: Install gdm-settings
+#   command: |
+#     paru -S gdm-settings
+#
+# - name: Enable gdm
+#   become: true
+#   systemd:
+#     name: gdm
+#     enabled: yes
+
+# ===========================================================================
+#
+# ===========================================================================
+
+- name: Display Developer Build Tools Config End
+  ansible.builtin.debug:
+    msg: "=== End Developer Build Tools Role Configuration ==="
