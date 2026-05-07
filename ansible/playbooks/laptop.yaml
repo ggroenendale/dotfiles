@@ -12,12 +12,18 @@
     # GitHub connectivity check
     github_url: "https://github.com"
     github_timeout_seconds: 10
+    core_roles_to_apply:
+      - core/users
+      - core/security
 
   tasks:
     - name: Display Laptop Playbook start
       ansible.builtin.debug:
         msg: "=== Laptop Playbook Started ==="
 
-    - name: Include User Role
+    - name: Include Core Roles
       ansible.builtin.include_role:
-        name: core/users
+        name: { { role_item } }
+      loop: "{{ core_roles_to_apply }}"
+      loop_control:
+        loop_var: role_item
