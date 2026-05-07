@@ -62,7 +62,7 @@ class CallbackModule(CallbackBase):
         # self._task_type_cache = {}
         super(CallbackModule, self).__init__()
         self.log_file = os.environ.get(
-            "ANSIBLE_CUSTOM_LOG_FILE", "./idunno_dotfiles.log"
+            "ANSIBLE_CUSTOM_LOG_FILE", "~/.dotfiles/logs/idunno_dotfiles.log"
         )
         # log.propagate = False
 
