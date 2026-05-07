@@ -30,22 +30,6 @@ class AnsibleFormatter(logging.Formatter):
         return f"MyFormat - {level}: {msg}"
 
 
-# Attach Custom Format to a stream handler
-custom_stream_handler = logging.StreamHandler()
-custom_stream_handler.setFormatter(AnsibleFormatter())
-
-# Attach custom format to a file handler
-custom_file_handler = logging.FileHandler(".dotfiles.log")
-custom_file_handler.setFormatter(AnsibleFormatter())
-
-# Assign Custom Format Handler to ansible logger
-log = logging.getLogger("ansible")
-log.handlers = [custom_stream_handler, custom_file_handler]
-# log.propagate = False
-
-log.info("Testing log")
-
-
 class CallbackModule(CallbackBase):
     CALLBACK_VERSION = 2.0
     CALLBACK_TYPE = "stdout"
@@ -56,6 +40,25 @@ class CallbackModule(CallbackBase):
     YELLOW = "\033[33m"
     RESET = "\033[0m"
 
+    def __init__():
+        """ """
+        super().__init__()
+
+        # Attach Custom Format to a stream handler
+        custom_stream_handler = logging.StreamHandler()
+        custom_stream_handler.setFormatter(AnsibleFormatter())
+
+        # Attach custom format to a file handler
+        custom_file_handler = logging.FileHandler(".dotfiles.log")
+        custom_file_handler.setFormatter(AnsibleFormatter())
+
+        # Assign Custom Format Handler to ansible logger
+        self.log = logging.getLogger("ansible")
+        log.handlers = [custom_stream_handler, custom_file_handler]
+        # log.propagate = False
+
+        log.info("Testing log")
+
     def v2_playbook_on_start(self, playbook):
         # self._display.display(
         #    f"Starting Playbook.... | green is: {C.COLOR_OK}, red is: {C.COLOR_ERROR}",
@@ -63,7 +66,7 @@ class CallbackModule(CallbackBase):
         # )
 
         # log = logging.getLogger("ansible")
-        log.info("Starting Playbook.....")
+        self.log.info("Starting Playbook.....")
 
     def v2_runner_on_ok(self, result):
         host = result._host.get_name()
@@ -71,17 +74,17 @@ class CallbackModule(CallbackBase):
 
         if msg:
             # self._display.display(f"{msg}", color=C.COLOR_OK)
-            log.info(f"{msg} what this?")
+            self.log.info(f"{msg}?")
         else:
             # self._display.display(f"{host}: OK", color=C.COLOR_CHANGED)
-            log.info(f"{host}: OK")
+            self.log.info(f"{host}: OK")
 
     def v2_runner_on_failed(self, result, ignore_errors=False):
         host = result._host.get_name()
         # self._display.display(f"{host}: FAILED", color=C.COLOR_ERROR)
-        log.info(f"{host}: FAILED")
+        self.log.info(f"{host}: FAILED")
 
     def v2_runner_on_skipped(self, result):
         host = result._host.get_name()
         # self._display.display(f"{host}: SKIPPED", color=C.COLOR_ERROR)
-        log.info(f"{host}: SKIPPED")
+        self.log.info(f"{host}: SKIPPED")
