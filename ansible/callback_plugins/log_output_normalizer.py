@@ -63,7 +63,7 @@ class CallbackModule(CallbackBase):
 
         self.log = log
 
-        self.log.info("Testing log")
+        log.info("Testing log")
 
     def v2_playbook_on_start(self, playbook):
         # self._display.display(
