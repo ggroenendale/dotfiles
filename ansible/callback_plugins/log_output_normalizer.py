@@ -41,7 +41,7 @@ custom_file_handler.setFormatter(AnsibleFormatter())
 log = logging.getLogger("custom_ansible")
 log.handlers = [custom_stream_handler, custom_file_handler]
 
-log.info("Testing Ansible Logger")
+# log.info("Testing Ansible Logger")
 
 
 class CallbackModule(CallbackBase):
@@ -83,7 +83,7 @@ class CallbackModule(CallbackBase):
         os.makedirs(os.path.dirname(self.log_file), exist_ok=True)
 
         with open(self.log_file, "a") as f:
-            f.write(f"{data}\n")
+            f.write(f"Line {data}\n")
 
     def v2_playbook_on_start(self, playbook):
         # self._display.display(
