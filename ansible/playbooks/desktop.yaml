@@ -1,0 +1,19 @@
+---
+- name: Desktop — Complete Configuration
+  hosts: localhost
+  connection: local
+  become: false
+  gather_facts: true
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+    # Minimum required versions
+    min_python_version: "3.8"
+    min_ansible_version: "2.14"
+    # GitHub connectivity check
+    github_url: "https://github.com"
+    github_timeout_seconds: 10
+
+  tasks:
+    - name: Display Desktop Playbook start
+      ansible.builtin.debug:
+        msg: "=== Desktop Playbook Started ==="
