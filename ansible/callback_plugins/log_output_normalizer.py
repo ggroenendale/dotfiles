@@ -36,6 +36,7 @@ custom_stream_handler.setFormatter(AnsibleFormatter())
 
 # Attach custom format to a file handler
 custom_file_handler = logging.FileHandler("~/dotfiles.log")
+custom_file_handler.setFormatter(AnsibleFormatter())
 
 # Assign Custom Format Handler to ansible logger
 log = logging.getLogger("ansible")
