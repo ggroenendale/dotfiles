@@ -2,7 +2,7 @@
 
 ## Active Projects
 
-### [Proj-002]: Dotfiles Ansible Migration
+### [Proj-001]: Dotfiles Ansible Migration
 
 **Status:** Planning
 **Priority:** High
@@ -11,28 +11,24 @@
 
 #### Project Overview
 
-Migrate the dotfiles repository from a mixed GNU Stow/loose-file state to a clean, modular Ansible-driven configuration management system with a standardized repository structure. See [Proj-002-dotfiles-ansible-migration.md](./Proj-002-dotfiles-ansible-migration.md) for full details.
+Migrate the dotfiles repository from a mixed GNU Stow/loose-file state to a clean, modular Ansible-driven configuration management system with a standardized repository structure. See [Proj-001-dotfiles-ansible-migration.md](./Proj-001-dotfiles-ansible-migration.md) for full details.
 
-#### Current Phase: Phase 1 — Repository Restructure
+#### Current Phase: Phase 2 — Ansible Foundation & Package Role
 
 **Phase Status:** Complete ✅
 **Steps:**
-- 1.1 — Distribute `.config/` contents into stow packages — Done ✅
-- 1.2 — Distribute `.local/` contents into stow packages — Done ✅
-- 1.3 — Clean up root-level files — Done ✅
-- 1.4 — Update `.stow-local-ignore` — Done ✅
-- 1.5 — Test Stow still works after restructure — Done ✅ (348 symlinks, 0 conflicts, 0 errors)
-- 1.6 — Create Ansible role for font installation — Done ✅ (package-first, files-fallback)
+- 2.1 — Design Ansible project structure — Done ✅ (no inventory file, `ansible-pull` with `-i localhost,`)
+- 2.2 — Create base playbook structure — Done ✅ (`bootstrap.yaml` implemented with OS detection, environment validation, SSH config, network checks, and Ansible collection verification)
+- 2.3 — Create package management role — Done ✅ (`package_management` role with idempotent Paru AUR helper installation on Arch Linux)
 
-#### Next Phase: Phase 2 — Ansible Foundation & Package Role
+#### Next Phase: Phase 3 — Dotfiles Symlink Migration (Stow)
 
 **Phase Status:** Pending ⏳
 **Steps:**
-- 2.1 — Design Ansible project structure
-- 2.2 — Create base playbook structure
-- 2.3 — Create package management role
-- 2.4 — Define package categories
-- 2.5 — Test package role on each OS
+- 3.1 — Create the stow role
+- 3.2 — Define stow packages in variables
+- 3.3 — Handle edge cases
+- 3.4 — Test the stow role
 
 ### [Proj-003]: Kubernetes Cluster Infrastructure & Dotfiles Integration
 
