@@ -102,11 +102,11 @@ class CallbackModule(CallbackBase):
         os.makedirs(os.path.dirname(self.log_file), exist_ok=True)
 
         if color is None:
-            # color = "\x1b[31m"
-            color = ""
+            color = "\x1b[31m"
+            # color = ""
 
-        # reset = "\x1b[0m"
-        reset = ""
+        reset = "\x1b[0m"
+        # reset = ""
 
         with open(log_file, "a") as f:
             f.write(f"{color}{data} {reset}\n")

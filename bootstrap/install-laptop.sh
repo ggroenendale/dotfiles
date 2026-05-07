@@ -162,7 +162,8 @@ __task() {
 # ---------------------------------------------------------
 # _cmd()
 # ---------------------------------------------------------
-#   Performs commands with error checking
+#   Performs commands with error checking but hides output
+#   while command executes
 #
 #   Inputs:
 #       $1 - the command to run
@@ -207,6 +208,53 @@ _cmd() {
   fi
 }
 
+# ---------------------------------------------------------
+# _cmd_show()
+# ---------------------------------------------------------
+#   Performs commands with error checking and shows output
+#
+#   Inputs:
+#       $1 - the command to run
+#  
+# ---------------------------------------------------------
+_cmd_show() {
+  #create log if it doesn't exist
+  if ! [[ -f $DOTFILES_LOG ]]; then
+    touch $DOTFILES_LOG
+  fi
+  # empty conduro.log
+  > $DOTFILES_LOG
+
+  # hide stdout, on error we print and exit
+  if eval "$1" 2>&1 | tee "$DOTFILES_LOG"; test ${PIPESTATUS[0]} -eq 0; then
+    return 0 # success
+  else
+    # Kill spinner if running
+    if [[ $SPINNER_PID != "" ]]; then
+      kill $SPINNER_PID 2>/dev/null
+      wait $SPINNER_PID 2>/dev/null
+      SPINNER_PID=""
+    fi
+
+    # Show cursor again
+    tput cnorm
+
+    # Clear the line and show error
+    printf "\r\033[K${CAT_RED} [✗]  ${CAT_TEXT}${TASK}${NC}\n"
+
+    # Show error details
+    local line
+    while read -r line; do
+      printf "      ${CAT_MAROON}%s${NC}\n" "$line"
+    done < "$DOTFILES_LOG"
+    printf "\n"
+
+    # remove log file
+    rm $DOTFILES_LOG
+    # exit installation
+    exit 1
+  fi
+}
 # ---------------------------------------------------------
 # _clear_task()
 # ---------------------------------------------------------
@@ -551,13 +599,13 @@ fi
 
 # Phase 1: Bootstrap — environment validation and prerequisites
 __task "Running bootstrap playbook"
-_cmd "ansible-pull -U \"$REPO_URL\" -C \"$BRANCH\" -i 127.0.0.1, --limit=all --clean \"$ANSIBLE_PLAYBOOKS_DIR/bootstrap.yaml\""
+_cmd_show "ansible-pull -U \"$REPO_URL\" -C \"$BRANCH\" -i 127.0.0.1, --limit=all --clean \"$ANSIBLE_PLAYBOOKS_DIR/bootstrap.yaml\""
 _task_done
 
 
 # Phase 2: System-specific provisioning
 __task "Running $SYSTEM_PLAYBOOK playbook"
-_cmd "ansible-pull -U \"$REPO_URL\" -C \"$BRANCH\" -i 127.0.0.1, --limit=all --clean \"$ANSIBLE_PLAYBOOKS_DIR/$SYSTEM_PLAYBOOK\""
+_cmd_show "ansible-pull -U \"$REPO_URL\" -C \"$BRANCH\" -i 127.0.0.1, --limit=all --clean \"$ANSIBLE_PLAYBOOKS_DIR/$SYSTEM_PLAYBOOK\""
 _task_done
 
 
