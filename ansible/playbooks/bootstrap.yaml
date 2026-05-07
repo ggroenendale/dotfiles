@@ -28,6 +28,10 @@
         os_family: "{{ ansible_facts['os_family'] }}"
         os_distribution: "{{ ansible_facts['distribution'] }}"
 
+    - name: Show ansible_facts
+      debug:
+        var: ansible_facts
+
     # ── Environment Validation ────────────────────────────────────
     - name: Check Python version
       ansible.builtin.assert:
@@ -39,7 +43,7 @@
     - name: Check Ansible version
       ansible.builtin.assert:
         that:
-          - ansible_version.full is version(min_ansible_version, ">=")
+          - ansible_facts['version'] is version(min_ansible_version, ">=")
         fail_msg: "Ansible {{ ansible_facts['version']['full'] }} is below minimum {{ min_ansible_version }}"
         success_msg: "Ansible {{ ansible_facts['version']['full'] }} meets minimum {{ min_ansible_version }}"
 
