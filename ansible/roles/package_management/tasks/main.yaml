@@ -18,7 +18,7 @@
     state: present
   become: true
   when:
-    - ansible_distribution == "Archlinux"
+    - ansible_facts['distribution'] == "Archlinux"
     - paru_check.rc != 0
 
 - name: Create temporary build directory
@@ -68,4 +68,3 @@
   ansible.builtin.debug:
     msg: "Paru installed: {{ paru_version.stdout_lines[0] if paru_version.stdout_lines is defined else 'already present' }}"
   when: ansible_distribution == "Archlinux"
-
