@@ -43,6 +43,8 @@ log = logging.getLogger("ansible")
 log.handlers = [custom_stream_handler, custom_file_handler]
 log.propagate = False
 
+log.info("Testing log")
+
 
 class CallbackModule(CallbackBase):
     CALLBACK_VERSION = 2.0
@@ -60,7 +62,7 @@ class CallbackModule(CallbackBase):
         #    color=C.COLOR_WARN,
         # )
 
-        log = logging.getLogger("ansible")
+        # log = logging.getLogger("ansible")
         log.info("Starting Playbook.....")
 
     def v2_runner_on_ok(self, result):
@@ -68,16 +70,18 @@ class CallbackModule(CallbackBase):
         msg = result._result.get("msg", "")
 
         if msg:
-            self._display.display(f"{msg}", color=C.COLOR_OK)
+            # self._display.display(f"{msg}", color=C.COLOR_OK)
             log.info(f"{msg}")
         else:
-            self._display.display(f"{host}: OK", color=C.COLOR_CHANGED)
+            # self._display.display(f"{host}: OK", color=C.COLOR_CHANGED)
             log.info(f"{host}: OK")
 
     def v2_runner_on_failed(self, result, ignore_errors=False):
         host = result._host.get_name()
-        self._display.display(f"{host}: FAILED", color=C.COLOR_ERROR)
+        # self._display.display(f"{host}: FAILED", color=C.COLOR_ERROR)
+        log.info(f"{host}: FAILED")
 
     def v2_runner_on_skipped(self, result):
         host = result._host.get_name()
-        self._display.display(f"{host}: SKIPPED", color=C.COLOR_ERROR)
+        # self._display.display(f"{host}: SKIPPED", color=C.COLOR_ERROR)
+        log.info(f"{host}: SKIPPED")
