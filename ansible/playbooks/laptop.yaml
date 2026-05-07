@@ -17,3 +17,7 @@
     - name: Display Laptop Playbook start
       ansible.builtin.debug:
         msg: "=== Laptop Playbook Started ==="
+
+    - name: Include User Role
+      ansible.builtin.include_role:
+        name: core/users
