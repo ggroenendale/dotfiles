@@ -34,7 +34,7 @@ set -e
 VAULT_SECRET_FILE="$HOME/.ansible-vault/vault.secret"
 OP_INSTALLED=false
 OP_AUTHENTICATED=false
-DOTFILES_LOG="$HOME/.dotfiles.log"
+DOTFILES_LOG="$HOME/.otherdotfiles.log"
 DOTFILES_DIR="$HOME/.dotfiles"
 IS_FIRST_RUN="$HOME/.dotfiles_run"
 
