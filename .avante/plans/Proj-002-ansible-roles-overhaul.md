@@ -194,9 +194,13 @@ ansible/roles/
 │   ├── task_bar/                  # Waybar status bar
 │   ├── authentication/            # Polkit authentication agent
 │   ├── theme/                     # GTK colorscheme and theming
-│   ├── browser/                   # Firefox, LibreWolf, Zen Browser
-│   ├── file_managers/             # Thunar file manager
-│   └── apps/                      # Desktop applications (gimp, blender)
+│   └── file_managers/             # Thunar file manager
+|
+├── desktop_applications/          # Desktop environment roles
+│   ├── blender/                   # Blender 3d modeling
+│   ├── brave/                     # Brave Browser
+│   ├── firefox/                   # Firefox Browser
+│   └── gimp/                      # Gimp Image Editing
 │
 ├── dev/                           # Development tool roles
 │   ├── build_tools/               # make, cmake, gcc, base-devel
