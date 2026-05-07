@@ -38,17 +38,11 @@ DOTFILES_LOG="$HOME/.dotfiles.log"
 DOTFILES_DIR="$HOME/.dotfiles"
 IS_FIRST_RUN="$HOME/.dotfiles_run"
 
-# Logging vars
-PUSH_LOGS=false
-LOG_DIR="$(dirname "$0")/../logs"
-mkdir -p "$LOG_DIR"
-LOG_FILE="$LOG_DIR/install-$(basename "$0" .sh)-$(date +%Y-%m-%dT%H-%M-%S).log"
-
 # Spinner PID tracking
 SPINNER_PID=""
 REPO_URL="https://github.com/ggroenendale/dotfiles.git"
 BRANCH="main"
-SYSTEM_PLAYBOOK="laptop.yaml"
+SYSTEM_PLAYBOOK="server.yaml"
 ANSIBLE_PLAYBOOKS_DIR="$DOTFILES_DIR/ansible/playbooks"
 
 # Specify location of ansible config to make sure it uses the dotfiles one
@@ -86,15 +80,6 @@ while [[ $# -gt 0 ]]; do
             ;;
     esac
 done
-
-
-# Log system info
-{
-    echo "=== System Info ==="
-    uname -a
-    cat /etc/os-release 2>/dev/null
-    echo
-} | tee -a "$LOG_FILE"
 
 # ==============================================================
 #   Helper Functions
@@ -550,25 +535,14 @@ else
 fi
 
 # Phase 1: Bootstrap — environment validation and prerequisites
-{
-    __task "Running bootstrap playbook"
-    _cmd "ansible-pull -U \"$REPO_URL\" -C \"$BRANCH\" -i 127.0.0.1, --limit=all --clean \"$ANSIBLE_PLAYBOOKS_DIR/bootstrap.yaml\""
-    _task_done
-} | tee -a "$LOG_FILE"
+__task "Running bootstrap playbook"
+_cmd "ansible-pull -U \"$REPO_URL\" -C \"$BRANCH\" -i 127.0.0.1, --limit=all --clean \"$ANSIBLE_PLAYBOOKS_DIR/bootstrap.yaml\""
+_task_done
 
 # Phase 2: System-specific provisioning
-{
-    __task "Running $SYSTEM_PLAYBOOK playbook"
-    _cmd "ansible-pull -U \"$REPO_URL\" -C \"$BRANCH\" -i 127.0.0.1, --limit=all --clean \"$ANSIBLE_PLAYBOOKS_DIR/$SYSTEM_PLAYBOOK\""
-    _task_done
-} | tee -a "$LOG_FILE"
-
-# Push logs 
-if [ "$PUSH_LOGS" = true ] && git remote -v 2>/dev/null | grep -q origin; then
-    git add "$LOG_FILE"
-    git commit -m "logs: install run $(date +%Y-%m-%d)"
-    git push
-fi
+__task "Running $SYSTEM_PLAYBOOK playbook"
+_cmd "ansible-pull -U \"$REPO_URL\" -C \"$BRANCH\" -i 127.0.0.1, --limit=all --clean \"$ANSIBLE_PLAYBOOKS_DIR/$SYSTEM_PLAYBOOK\""
+_task_done
 
 # Completion message
 echo ""
