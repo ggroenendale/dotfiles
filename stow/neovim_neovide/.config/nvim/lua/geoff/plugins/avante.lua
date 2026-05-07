@@ -455,7 +455,7 @@ return {
 						local handle = io.popen(full_cmd .. " 2>&1", "r")
 
 						if not handle then
-							return nil, false, "Failed to execute stow command"
+							return nil, "Failed to execute stow command"
 						end
 
 						local output = handle:read("*a")
@@ -464,7 +464,6 @@ return {
 						-- Check if stow command exists
 						if output:match("command not found") or output:match("not found") then
 							return output,
-								false,
 								"GNU Stow is not installed. Install with: sudo apt install stow (Debian/Ubuntu) or sudo pacman -S stow (Arch)"
 						end
 
@@ -591,7 +590,7 @@ return {
 
 						-- Check if template exists
 						if vim.fn.filereadable(template_path) == 0 then
-							return nil, false, "Session template not found at: " .. template_path
+							return nil, "Session template not found at: " .. template_path
 						end
 
 						-- Read template
