@@ -43,9 +43,9 @@
     - name: Check Ansible version
       ansible.builtin.assert:
         that:
-          - ansible_facts.version is version(min_ansible_version, ">=")
-        fail_msg: "Ansible {{ ansible_facts.version.full }} is below minimum {{ min_ansible_version }}"
-        success_msg: "Ansible {{ ansible_facts.version.full }} meets minimum {{ min_ansible_version }}"
+          - ansible_version is version(min_ansible_version, ">=")
+        fail_msg: "Ansible {{ ansible_version.full }} is below minimum {{ min_ansible_version }}"
+        success_msg: "Ansible {{ ansible_version.full }} meets minimum {{ min_ansible_version }}"
 
     - name: Check git is available
       ansible.builtin.command: git --version
