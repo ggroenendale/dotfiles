@@ -3,6 +3,13 @@ from ansible import constants as C
 import json
 import urllib.request
 
+import logging
+
+logging.basicConfig(format="%(message)s", level=logging.INFO)
+
+log = logging.getLogger("ansible")
+log.info("hello world")
+
 DOCUMENTATION = """
     name: log_output_normalizer
     type: stdout
@@ -23,10 +30,13 @@ class CallbackModule(CallbackBase):
     RESET = "\033[0m"
 
     def v2_playbook_on_start(self, playbook):
-        self._display.display(
-            f"Starting Playbook.... | green is: {C.COLOR_OK}, red is: {C.COLOR_ERROR}",
-            color=C.COLOR_WARN,
-        )
+        # self._display.display(
+        #    f"Starting Playbook.... | green is: {C.COLOR_OK}, red is: {C.COLOR_ERROR}",
+        #    color=C.COLOR_WARN,
+        # )
+
+        log = logging.getLogger("ansible")
+        log.info("Starting Playbook.....")
 
     def v2_runner_on_ok(self, result):
         host = result._host.get_name()
