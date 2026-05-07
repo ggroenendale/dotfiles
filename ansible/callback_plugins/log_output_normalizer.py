@@ -40,9 +40,13 @@ class CallbackModule(CallbackBase):
     YELLOW = "\033[33m"
     RESET = "\033[0m"
 
-    def __init__():
+    def __init__(self):
         """ """
-        super().__init__()
+        self._play = None
+        self._last_task_banner = None
+        self._last_task_name = None
+        self._task_type_cache = {}
+        super(CallbackModule, self).__init__()
 
         # Attach Custom Format to a stream handler
         custom_stream_handler = logging.StreamHandler()
@@ -53,11 +57,11 @@ class CallbackModule(CallbackBase):
         custom_file_handler.setFormatter(AnsibleFormatter())
 
         # Assign Custom Format Handler to ansible logger
-        self.log = logging.getLogger("ansible")
+        log = logging.getLogger("ansible")
         log.handlers = [custom_stream_handler, custom_file_handler]
         # log.propagate = False
 
-        log.info("Testing log")
+        self.log.info("Testing log")
 
     def v2_playbook_on_start(self, playbook):
         # self._display.display(
