@@ -1,4 +1,5 @@
 from ansible.plugins.callback import CallbackBase
+from ansible import constants as C
 import json
 import urllib.request
 
@@ -22,14 +23,17 @@ class CallbackModule(CallbackBase):
     RESET = "\033[0m"
 
     def v2_playbook_on_start(self, playbook):
-        self._display.display(f"Starting Playbook....", color="blue")
+        self._display.display(
+            f"Starting Playbook.... | green is: {C.COLOR_OK}, red is: {C.COLOR_ERROR}",
+            color="blue",
+        )
 
     def v2_runner_on_ok(self, result):
         host = result._host.get_name()
         msg = result._result.get("msg", "")
 
         if msg:
-            self._display.display(f"msg", color="green")
+            self._display.display(f"{msg}", color="green")
         else:
             self._display.display(f"{host}: OK", color="yellow")
 
