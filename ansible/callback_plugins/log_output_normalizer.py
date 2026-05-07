@@ -15,6 +15,14 @@ DOCUMENTATION = """
     short_description: Cleaner log outputs
     description:
         - Custom log outputs
+    options:
+        custom_log_path:
+            description: Path to custom log
+            env:
+                - name: ANSIBLE_CUSTOM_LOG_PATH
+            ini:
+                - section: callback_log_output_normalizer
+                  key: custom_log_path
 """
 
 
