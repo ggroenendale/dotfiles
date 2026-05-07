@@ -166,7 +166,7 @@
       ansible.builtin.debug:
         msg:
           - "=== Bootstrap Complete ==="
-          - "OS: {{ ansible_facts.os_distribution }} {{ ansible_facts.distribution_version }}"
+          - "OS: {{ ansible_facts.distribution }} {{ ansible_facts.distribution_version }}"
           - "Python: {{ ansible_facts.python_version. }}"
           - "Ansible: {{ ansible_version.full }}"
           - "GitHub: {{ 'reachable' if github_check.status is defined and github_check.status == 200 else 'unreachable (check network)' }}"
