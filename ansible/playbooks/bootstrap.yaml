@@ -21,27 +21,27 @@
     # ── OS Detection ──────────────────────────────────────────────
     - name: Detect operating system
       ansible.builtin.debug:
-        msg: "Detected OS: {{ ansible_distribution }} {{ ansible_distribution_version }} ({{ ansible_os_family }})"
+        msg: "Detected OS: {{ ansible_facts['distribution'] }} {{ ansible_facts['distribution_version'] }} ({{ ansible_facts['os_family'] }})"
 
     - name: Set OS family fact
       ansible.builtin.set_fact:
-        os_family: "{{ ansible_os_family }}"
-        os_distribution: "{{ ansible_distribution }}"
+        os_family: "{{ ansible_facts['os_family'] }}"
+        os_distribution: "{{ ansible_facts['distribution'] }}"
 
     # ── Environment Validation ────────────────────────────────────
     - name: Check Python version
       ansible.builtin.assert:
         that:
-          - ansible_python_version is version(min_python_version, ">=")
-        fail_msg: "Python {{ ansible_python_version }} is below minimum {{ min_python_version }}"
-        success_msg: "Python {{ ansible_python_version }} meets minimum {{ min_python_version }}"
+          - ansible_facts['python_version'] is version(min_python_version, ">=")
+        fail_msg: "Python {{ ansible_facts['python_version'] }} is below minimum {{ min_python_version }}"
+        success_msg: "Python {{ ansible_facts['python_version'] }} meets minimum {{ min_python_version }}"
 
     - name: Check Ansible version
       ansible.builtin.assert:
         that:
           - ansible_version.full is version(min_ansible_version, ">=")
-        fail_msg: "Ansible {{ ansible_version.full }} is below minimum {{ min_ansible_version }}"
-        success_msg: "Ansible {{ ansible_version.full }} meets minimum {{ min_ansible_version }}"
+        fail_msg: "Ansible {{ ansible_facts['version']['full'] }} is below minimum {{ min_ansible_version }}"
+        success_msg: "Ansible {{ ansible_facts['version']['full'] }} meets minimum {{ min_ansible_version }}"
 
     - name: Check git is available
       ansible.builtin.command: git --version
@@ -78,18 +78,18 @@
     # ── SSH Configuration ─────────────────────────────────────────
     - name: Ensure ~/.ssh directory exists with correct permissions
       ansible.builtin.file:
-        path: "{{ ansible_user_dir }}/.ssh"
+        path: "{{ ansible_facts['user_dir'] }}/.ssh"
         state: directory
         mode: "0700"
 
     - name: Check if SSH config exists
       ansible.builtin.stat:
-        path: "{{ ansible_user_dir }}/.ssh/config"
+        path: "{{ ansible_facts['user_dir'] }}/.ssh/config"
       register: ssh_config_stat
 
     - name: Create default SSH config if missing
       ansible.builtin.copy:
-        dest: "{{ ansible_user_dir }}/.ssh/config"
+        dest: "{{ ansible_facts['user_dir'] }}/.ssh/config"
         content: |
           # SSH Client Configuration — managed by dotfiles Ansible
           # See ~/.dotfiles/ansible/playbooks/bootstrap.yaml
@@ -129,14 +129,14 @@
     - name: Include package management role (Arch Linux — Paru AUR helper)
       ansible.builtin.include_role:
         name: package_management
-      when: os_distribution == "Archlinux"
+      when: ansible_facts['os_distribution'] == "Archlinux"
 
     - name: Verify package manager availability (Debian/Ubuntu)
       ansible.builtin.command: apt --version
       register: apt_check
       changed_when: false
       failed_when: false
-      when: os_distribution in ["Debian", "Ubuntu"]
+      when: ansible_facts['os_distribution'] in ["Debian", "Ubuntu"]
 
     - name: Assert apt is available (Debian/Ubuntu)
       ansible.builtin.assert:
@@ -144,14 +144,14 @@
           - apt_check.rc == 0
         fail_msg: "apt is not available on {{ os_distribution }}"
         success_msg: "apt is available"
-      when: os_distribution in ["Debian", "Ubuntu"]
+      when: ansible_facts['os_distribution'] in ["Debian", "Ubuntu"]
 
     - name: Verify package manager availability (openSUSE)
       ansible.builtin.command: zypper --version
       register: zypper_check
       changed_when: false
       failed_when: false
-      when: os_distribution == "openSUSE"
+      when: ansible_facts['os_distribution'] == "openSUSE"
 
     - name: Assert zypper is available (openSUSE)
       ansible.builtin.assert:
@@ -159,16 +159,15 @@
           - zypper_check.rc == 0
         fail_msg: "zypper is not available on {{ os_distribution }}"
         success_msg: "zypper is available"
-      when: os_distribution == "openSUSE"
+      when: ansible_facts['os_distribution'] == "openSUSE"
 
     # ── Summary ───────────────────────────────────────────────────
     - name: Bootstrap summary
       ansible.builtin.debug:
         msg:
           - "=== Bootstrap Complete ==="
-          - "OS: {{ os_distribution }} {{ ansible_distribution_version }}"
-          - "Python: {{ ansible_python_version }}"
-          - "Ansible: {{ ansible_version.full }}"
+          - "OS: {{ ansible_facts['os_distribution'] }} {{ ansible_facts['distribution_version'] }}"
+          - "Python: {{ ansible_facts['ansible_python_version'] }}"
+          - "Ansible: {{ ansible_facts['version']['full'] }}"
           - "GitHub: {{ 'reachable' if github_check.status is defined and github_check.status == 200 else 'unreachable (check network)' }}"
           - "Next: Run the machine-specific playbook (e.g., laptop.yaml, workstation.yaml, server.yaml)"
-
