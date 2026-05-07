@@ -151,7 +151,7 @@
       register: zypper_check
       changed_when: false
       failed_when: false
-      when: ansible_facts.distribution == "openSUSE"
+      when: ansible_facts.os_family == "Suse"
 
     - name: Assert zypper is available (openSUSE)
       ansible.builtin.assert:
@@ -159,7 +159,7 @@
           - zypper_check.rc == 0
         fail_msg: "zypper is not available on {{ os_distribution }}"
         success_msg: "zypper is available"
-      when: ansible_facts.distribution == "openSUSE"
+      when: ansible_facts.os_family == "Suse"
 
     # ── Summary ───────────────────────────────────────────────────
     - name: Bootstrap summary
