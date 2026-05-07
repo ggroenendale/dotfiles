@@ -25,8 +25,8 @@
 
     - name: Set OS family fact
       ansible.builtin.set_fact:
-        os_family: "{{ ansible_facts['os_family'] }}"
-        os_distribution: "{{ ansible_facts['distribution'] }}"
+        os_family: "{{ ansible_facts.os_family }}"
+        os_distribution: "{{ ansible_facts.distribution }}"
 
     - name: Show ansible_facts
       debug:
@@ -36,16 +36,16 @@
     - name: Check Python version
       ansible.builtin.assert:
         that:
-          - ansible_facts['python_version'] is version(min_python_version, ">=")
-        fail_msg: "Python {{ ansible_facts['python_version'] }} is below minimum {{ min_python_version }}"
-        success_msg: "Python {{ ansible_facts['python_version'] }} meets minimum {{ min_python_version }}"
+          - ansible_facts.python_version is version(min_python_version, ">=")
+        fail_msg: "Python {{ ansible_facts.python_version }} is below minimum {{ min_python_version }}"
+        success_msg: "Python {{ ansible_facts.python_version }} meets minimum {{ min_python_version }}"
 
     - name: Check Ansible version
       ansible.builtin.assert:
         that:
-          - ansible_facts['version'] is version(min_ansible_version, ">=")
-        fail_msg: "Ansible {{ ansible_facts['version']['full'] }} is below minimum {{ min_ansible_version }}"
-        success_msg: "Ansible {{ ansible_facts['version']['full'] }} meets minimum {{ min_ansible_version }}"
+          - ansible_facts.version is version(min_ansible_version, ">=")
+        fail_msg: "Ansible {{ ansible_facts.version.full }} is below minimum {{ min_ansible_version }}"
+        success_msg: "Ansible {{ ansible_facts.version.full }} meets minimum {{ min_ansible_version }}"
 
     - name: Check git is available
       ansible.builtin.command: git --version
