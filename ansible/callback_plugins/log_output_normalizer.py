@@ -34,14 +34,14 @@ custom_stream_handler = logging.StreamHandler()
 custom_stream_handler.setFormatter(AnsibleFormatter())
 
 # Attach custom format to a file handler
-custom_file_handler = logging.FileHandler("dotfiles.log")
+custom_file_handler = logging.FileHandler(".dotfiles.log")
 custom_file_handler.setFormatter(AnsibleFormatter())
 
 # Assign Custom Format Handler to ansible logger
 log = logging.getLogger("custom_ansible")
 log.handlers = [custom_stream_handler, custom_file_handler]
 
-# log.info("Testing Ansible Logger")
+log.info("Testing dot Ansible Logger")
 
 
 class CallbackModule(CallbackBase):
