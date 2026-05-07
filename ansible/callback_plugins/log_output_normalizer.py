@@ -33,14 +33,14 @@ class CallbackModule(CallbackBase):
         msg = result._result.get("msg", "")
 
         if msg:
-            self._display.display(f"{msg}", color="green")
+            self._display.display(f"{msg}", color=C.COLOR_OK)
         else:
-            self._display.display(f"{host}: OK", color="yellow")
+            self._display.display(f"{host}: OK", color=C.COLOR_CHANGED)
 
     def v2_runner_on_failed(self, result, ignore_errors=False):
         host = result._host.get_name()
-        self._display.display(f"{host}: FAILED", color="red")
+        self._display.display(f"{host}: FAILED", color=C.COLOR_ERROR)
 
     def v2_runner_on_skipped(self, result):
         host = result._host.get_name()
-        self._display.display(f"{host}: SKIPPED", color="yellow")
+        self._display.display(f"{host}: SKIPPED", color=C.COLOR_ERROR)
