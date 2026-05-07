@@ -1,0 +1,16 @@
+---
+- name: Display Hardware Bluetooth Config Start
+  ansible.builtin.debug:
+    msg: "=== Begin Hardware Bluetooth Role Configuration ==="
+
+# ===========================================================================
+#
+# ===========================================================================
+
+# ===========================================================================
+#
+# ===========================================================================
+
+- name: Display Hardware Bluetooth Config End
+  ansible.builtin.debug:
+    msg: "=== End Hardware Bluetooth Role Configuration ==="
