@@ -5,9 +5,9 @@ import urllib.request
 
 import logging
 
-logging.basicConfig(
-    filename=C.DEFAULT_LOG_PATH, format="%(message)s", level=logging.INFO
-)
+# logging.basicConfig(
+#    filename=C.DEFAULT_LOG_PATH, format="%(message)s", level=logging.INFO
+# )
 
 
 DOCUMENTATION = """
