@@ -550,18 +550,16 @@ else
 fi
 
 # Phase 1: Bootstrap — environment validation and prerequisites
-{
-    __task "Running bootstrap playbook"
-    _cmd "ansible-pull -U \"$REPO_URL\" -C \"$BRANCH\" -i 127.0.0.1, --limit=all --clean \"$ANSIBLE_PLAYBOOKS_DIR/bootstrap.yaml\""
-    _task_done
-} | tee -a "$LOG_FILE"
+__task "Running bootstrap playbook"
+_cmd "ansible-pull -U \"$REPO_URL\" -C \"$BRANCH\" -i 127.0.0.1, --limit=all --clean \"$ANSIBLE_PLAYBOOKS_DIR/bootstrap.yaml\""
+_task_done
+
 
 # Phase 2: System-specific provisioning
-{
-    __task "Running $SYSTEM_PLAYBOOK playbook"
-    _cmd "ansible-pull -U \"$REPO_URL\" -C \"$BRANCH\" -i 127.0.0.1, --limit=all --clean \"$ANSIBLE_PLAYBOOKS_DIR/$SYSTEM_PLAYBOOK\""
-    _task_done
-} | tee -a "$LOG_FILE"
+__task "Running $SYSTEM_PLAYBOOK playbook"
+_cmd "ansible-pull -U \"$REPO_URL\" -C \"$BRANCH\" -i 127.0.0.1, --limit=all --clean \"$ANSIBLE_PLAYBOOKS_DIR/$SYSTEM_PLAYBOOK\""
+_task_done
+
 
 # Push logs 
 if [ "$PUSH_LOGS" = true ] && git remote -v 2>/dev/null | grep -q origin; then
