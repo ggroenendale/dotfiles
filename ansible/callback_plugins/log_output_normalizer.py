@@ -1,3 +1,4 @@
+from pathlib import Path
 import os
 from ansible.plugins.callback import CallbackBase
 from ansible import constants as C
@@ -94,6 +95,7 @@ class CallbackModule(CallbackBase):
         entry = {}
 
         # Ensure directory exists
+        log.info(f"Find super parent: {Path(__file__).parent.parent}")
         os.makedirs(os.path.dirname(self.log_file), exist_ok=True)
         log.info(f"log_file path: {self.log_file}")
         log.info(f"dirname: {os.path.dirname(self.log_file)}")
