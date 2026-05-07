@@ -40,7 +40,7 @@ IS_FIRST_RUN="$HOME/.dotfiles_run"
 
 # Logging vars
 PUSH_LOGS=false
-LOG_DIR="$(dirname "$0")/../logs"
+LOG_DIR="$DOTFILES_DIR/logs"
 mkdir -p "$LOG_DIR"
 LOG_FILE="$LOG_DIR/install-$(basename "$0" .sh)-$(date +%Y-%m-%dT%H-%M-%S).log"
 
