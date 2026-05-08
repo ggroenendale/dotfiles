@@ -44,15 +44,15 @@ cliargs = dict(context.CLIARGS)
 cliargs["connection"] = "local"
 cliargs["verbosity"] = 0
 
-print(type(ansible_version))
-pprint(ansible_version)
-print(type(cliargs["extra_vars"]))
-
-extra_vars = cliargs.get("extra_vars", tuple)
-
-print(extra_vars)
-
-cliargs["extra_vars"] = extra_vars + (ansible_version,)
+# print(type(ansible_version))
+# pprint(ansible_version)
+# print(type(cliargs["extra_vars"]))
+#
+# extra_vars = cliargs.get("extra_vars", tuple)
+#
+# print(extra_vars)
+#
+# cliargs["extra_vars"] = extra_vars + (ansible_version,)
 
 context.CLIARGS = ImmutableDict(**cliargs)
 
@@ -64,6 +64,12 @@ loader = DataLoader()
 
 inventory = InventoryManager(loader=loader, sources=["localhost,"])
 variable_manager = VariableManager(loader=loader, inventory=inventory)
+variable_manager.extra_vars = {
+    "ansible_version": {
+        "full": ansible_version,
+        "string": ansible_version,
+    }
+}
 passwords = {}
 
 
