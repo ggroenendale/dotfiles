@@ -8,7 +8,7 @@ from ansible.parsing.dataloader import DataLoader
 from ansible.vars.manager import VariableManager
 from ansible.utils.display import Display
 from ansible.plugins.loader import init_plugin_loader
-from ansible.cli import CLI
+from ansible.cli.playbook import PlaybookCLI
 
 from ansible import context
 
