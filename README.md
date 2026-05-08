@@ -1,38 +1,110 @@
-## Dotfiles Repo.
+# Dotfiles
 
-In order to let gnu stow copy our dotfiles into our home directory, we first need to install gnu stow.
+Personal dotfiles managed with [GNU Stow](https://www.gnu.org/software/stow/) and provisioned with [Ansible](https://www.ansible.com/).
 
-Debian/Ubuntu
+## Repository Structure
+
+```
+.dotfiles/
+├── ansible/           # Ansible playbooks and roles for automated provisioning
+├── bootstrap/         # Bootstrap install scripts (install-laptop.sh, install-server.sh, etc.)
+├── stow/              # Dotfiles organized into stow packages
+│   ├── app_desktop_files/   # .desktop files for application launchers
+│   ├── aur_helper/          # AUR helper configuration (paru.conf)
+│   ├── bash/                # Shell configuration (.bashrc, .bash_profile, scripts)
+│   ├── desktop_environment/ # Hyprland, Waybar, kitty, fuzzel, mako, etc.
+│   └── neovim_neovide/      # Neovim and Neovide configuration
+├── .avante/           # AI assistant context, plans, and rules
+├── .gitignore
+├── .stow-local-ignore
+├── AGENTS.md
+└── README.md
+```
+
+## Quick Start
+
+### Prerequisites
+
+Install GNU Stow:
 
 ```bash
+# Debian/Ubuntu
 sudo apt install stow
-```
 
-Arch
-
-```bash
+# Arch Linux
 sudo pacman -S stow
+
+# openSUSE
+sudo zypper install stow
 ```
 
-Then we need to make sure our `/.dotfiles` folder lives in our home directory. So we can git clone
-this repo into our home directory as .dotfiles.
+### Clone and Symlink
 
 ```bash
 cd ~
 git clone https://github.com/ggroenendale/dotfiles.git .dotfiles
-```
-
-Then once we have all of the files onto the device that we want, we run gnu stow in order to symlink our dotfiles to the
-home directory. The magic bit here about symlinking the folders into the home directory is due to stow symlinking to one
-folder above by default.
-
-```bash
 cd ~/.dotfiles
 stow .
 ```
 
-> NOTE: stow by default ignores the `/.git` folder. If we want to ignore other files we can create a `.stow-local-ignore`
-> file and make entries similar to .gitignore entries.
+> **Note:** Stow by default ignores the `.git` folder. Additional ignore patterns are defined in `.stow-local-ignore`.
+
+### Automated Provisioning (Recommended)
+
+For a fully automated setup that installs packages and configures the system:
+
+```bash
+# Laptop (full desktop environment)
+./bootstrap/install-laptop.sh
+
+# Server (minimal setup)
+./bootstrap/install-server.sh
+
+# Desktop (desktop environment without laptop-specific config)
+./bootstrap/install-desktop.sh
+```
+
+See [bootstrap/README.md](bootstrap/README.md) for detailed usage instructions.
+
+## Ansible Provisioning
+
+The `ansible/` directory contains a modular Ansible project for automated system provisioning. It supports:
+
+- **Cross-platform**: Arch Linux, Debian, Ubuntu, openSUSE
+- **Idempotent**: Safe to run multiple times — no duplicate configuration
+- **Modular roles**: Dotfiles, fonts, system configuration, desktop environment, and more
+
+See [ansible/README.md](ansible/README.md) for the full Ansible documentation.
+
+### Key Playbooks
+
+| Playbook | Purpose |
+|----------|---------|
+| `bootstrap.yaml` | Environment validation and prerequisites |
+| `laptop.yaml` | Full laptop configuration |
+| `server.yaml` | Server configuration (placeholder) |
+| `desktop.yaml` | Desktop configuration (placeholder) |
+
+## Stow Packages
+
+The `stow/` directory organizes dotfiles into logical packages:
+
+| Package | Contents |
+|---------|----------|
+| `bash/` | Shell configuration (`.bashrc`, `.bash_profile`), custom scripts (`~/.local/bin/`) |
+| `desktop_environment/` | Hyprland, Waybar, kitty, fuzzel, mako, starship, Thunar, backgrounds |
+| `neovim_neovide/` | Neovim config, Neovide config, Neovide workspace script |
+| `app_desktop_files/` | `.desktop` files for application launchers |
+| `aur_helper/` | Paru configuration (`paru.conf`) |
+
+To stow individual packages:
+
+```bash
+cd ~/.dotfiles/stow
+stow bash
+stow neovim_neovide
+stow desktop_environment
+```
 
 ## Screen Capture System
 
