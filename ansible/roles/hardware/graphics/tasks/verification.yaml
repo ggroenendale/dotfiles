@@ -1,0 +1,32 @@
+# Nvidia Verification
+- name: Verify NVIDIA module is loaded
+  command: lsmod | grep nvidia
+  register: nvidia_module
+  failed_when: nvidia_module.rc != 0
+  changed_when: false
+
+- name: Check NVIDIA driver version
+  command: nvidia-smi --query-gpu=driver_version --format=csv,noheader
+  register: nvidia_version
+  changed_when: false
+
+- name: Display driver version
+  debug:
+    msg: "NVIDIA driver {{ nvidia_version.stdout }} is installed"
+
+- name: Run glxinfo
+  command: glxinfo -B
+  register: glxinfo_out
+  changed_when: false
+  failed_when: glxinfo_out.rc != 0
+
+- name: Extract OpenGL version
+  set_fact:
+    opengl_version: "{{ glxinfo_out.stdout | regex_search('OpenGL version string:\\s*(.*)', ,\\1') }}"
+
+- name: Assert OpenGL version present
+  assert:
+    that:
+      - opengl_version is defined
+    fail_msg: >
+      OpenGL not detected. GPU drivers or Mesa are missing.
