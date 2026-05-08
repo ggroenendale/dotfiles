@@ -1,5 +1,4 @@
 import argparse
-from ansible.module_utils.common.collections import ImmutableDict
 
 from pathlib import Path
 from ansible.executor.playbook_executor import PlaybookExecutor
