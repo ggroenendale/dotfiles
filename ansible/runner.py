@@ -71,13 +71,15 @@ loader = DataLoader()
 inventory = InventoryManager(loader=loader, sources=["localhost,"])
 
 
-#     "ansible_version": {
-#         "full": ansible_version,
+extra_vars = {"ansible_version": ansible_version}
+# "full": ansible_version,
 #         "string": ansible_version,
 #     }
 # }
 
 variable_manager = VariableManager(loader=loader, inventory=inventory)
+
+variable_manager.extra_vars = extra_vars
 
 passwords = {}
 
