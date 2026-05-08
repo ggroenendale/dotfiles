@@ -37,11 +37,12 @@ cli.parse()
 # context.CLIARGS["connection"] = "local"
 # context.CLIARGS["verbosity"] = 0
 
-context.CLIARGS = ImmutableDict(
-    **dict(context.CLIARGS),
-    connection="local",
-    verbosity=0,
-)
+cliargs = dict(context.CLIARGS)
+
+cliargs["connection"] = "local"
+cliargs["verbosity"] = 0
+
+context.CLIARGS = ImmutableDict(**cliargs)
 
 # ---- Plugin loader (REQUIRED) ----
 init_plugin_loader()
