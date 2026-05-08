@@ -1,4 +1,5 @@
 import argparse
+from ansible.module_utils.common.collections import ImmutableDict
 
 from pathlib import Path
 from ansible.executor.playbook_executor import PlaybookExecutor
@@ -35,6 +36,12 @@ cli.parse()
 # context.CLIARGS = context.CLIARGS.copy()
 context.CLIARGS["connection"] = "local"
 context.CLIARGS["verbosity"] = 0
+
+context.CLIARGS = ImmutableDict(
+    **dict(context.CLIARGS),
+    connection="local",
+    verbosity=0,
+)
 
 # ---- Plugin loader (REQUIRED) ----
 init_plugin_loader()
