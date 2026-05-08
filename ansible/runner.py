@@ -90,6 +90,8 @@ version_info = {
 }
 
 option_vars = load_options_vars(version_info)
+
+pprint(option_vars)
 extra_vars = load_extra_vars(loader=loader)
 variable_manager._extra_vars = extra_vars
 variable_manager._options_vars = option_vars
