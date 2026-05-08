@@ -11,6 +11,7 @@ from ansible.plugins.loader import init_plugin_loader
 from ansible.cli.playbook import PlaybookCLI
 
 from ansible import context
+from ansible.module_utils.ansible_release import __version__ as ansible_version
 
 # Custom arguments to get custom playbook url
 parser = argparse.ArgumentParser(
@@ -41,6 +42,12 @@ cliargs = dict(context.CLIARGS)
 
 cliargs["connection"] = "local"
 cliargs["verbosity"] = 0
+
+
+cliargs["extra_vars"] = {
+    **cliargs.get("extra_vars", {}),
+    "ansible_version_custom": ansible_version,
+}
 
 context.CLIARGS = ImmutableDict(**cliargs)
 
