@@ -9,6 +9,7 @@ import logging
 from ansible.plugins.callback import CallbackBase
 from ansible import constants as C
 from ansible.executor.task_result import CallbackTaskResult
+from ansible.playbook import Playbook
 
 BORDER_LENGTH = 40
 
@@ -164,14 +165,12 @@ class CallbackModule(CallbackBase):
 
         self._log(minor_border)
 
-    def v2_playbook_on_start(self, playbook):
+    def v2_playbook_on_start(self, playbook: Playbook):
         """
         On playbook start this function fires off
 
         :param playbook: The playbook object
         """
-
-        print(f"Type of Playbook: {type(playbook)}")
 
         # Create and format the prefix
         prefix = "[PLAYBOOK START]"
@@ -179,6 +178,10 @@ class CallbackModule(CallbackBase):
 
         # Define a message to log
         msg = f": Starting Playbook - {playbook._file_name}"
+
+        # Add a major border:
+        self._insert_major_border()
+        self._insert_major_border()
 
         # First log to terminal
         self._log_to_term(f"{f_prefix}{msg}")
@@ -193,7 +196,7 @@ class CallbackModule(CallbackBase):
         :param included_file:
         :type included_file: str
         """
-        file_name = str(included_file)
+        file_name = str(included_file.get("role_item"))
         prefix = "[INCLUDE TASKS]"
         f_prefix = style(prefix, fg=(255, 255, 255), bg=(204, 43, 224))
 
@@ -234,6 +237,9 @@ class CallbackModule(CallbackBase):
         f_prefix = style(prefix, fg=(255, 255, 255), bg=(31, 39, 235))
 
         if msg:
+            # Add a major border:
+            self._insert_minor_border()
+
             # First log to terminal
             self._log_to_term(f"  {f_prefix}{msg}")
 
