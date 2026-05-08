@@ -26,7 +26,7 @@ filename = args.filename
 # print(f"Can the runner even be reach correctly? - Attempt run of: {filename}")
 
 # Define playbook stuff
-loader = DataLoader
+loader = DataLoader()
 
 inventory = InventoryManager(loader=loader, sources=["localhost,"])
 variable_manager = VariableManager(loader=loader, inventory=inventory)
