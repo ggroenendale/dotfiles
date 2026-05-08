@@ -20,11 +20,11 @@
 
     - name: Debug Ansible version variable
       ansible.builtin.debug:
-        var: ansible_version
+        msg: ansible_version
 
     - name: Display bootstrap start
       ansible.builtin.debug:
-        var: ansible_facts
+        msg: ansible_facts
 
         # ── OS Detection ──────────────────────────────────────────────
     - name: Detect operating system
