@@ -1,0 +1,8 @@
+arch_users:
+  - name: geoff
+    password: "{{ '3Mb3r@RCh!tect' | password_hash('sha512') }}"
+    shell: /bin/bash
+    home: /home/geoff
+    groups: wheel,adm,ftp,games,http,log,rfkill,systemd-journal
+    append: true
+    generate_ssh_key: true
