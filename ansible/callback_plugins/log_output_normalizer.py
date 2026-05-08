@@ -253,9 +253,8 @@ class CallbackModule(CallbackBase):
         prefix = "[TASK INFO]"
         f_prefix = style(prefix, fg=(255, 255, 255), bg=(31, 39, 235))
 
-        if var:
-            print(type(var))
-            print(var)
+        #     print(type(var))
+        #     print(var)
 
         if msg:
             if isinstance(msg, list):
