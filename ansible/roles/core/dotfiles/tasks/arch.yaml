@@ -1,0 +1,13 @@
+- name: Find stow packages
+  ansible.builtin.find:
+    paths: "{{ ansible_env.HOME }}/.dotfiles/stow"
+    file_type: directory
+    depth: 1
+  register: stow_dirs
+
+- name: Stow all packages dynamically
+  ansible.builtin.command: >
+    stow --restow {{ item.path | basename }}
+  args:
+    chdir: "{{ ansible_env.HOME }}/.dotfiles/stow"
+  loop: "{{ stow_dirs.files }}"
