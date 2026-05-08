@@ -84,6 +84,8 @@ variable_manager = VariableManager(loader=loader, inventory=inventory)
 extra_vars = load_extra_vars(loader=loader)
 variable_manager._extra_vars = extra_vars
 
+pprint(variable_manager.__dict__)
+
 # variable_manager.extra_vars = extra_vars
 
 passwords = {}
