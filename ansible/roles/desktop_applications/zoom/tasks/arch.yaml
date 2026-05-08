@@ -1,0 +1,13 @@
+---
+- name: Install Zoom using paru
+  ansible.builtin.command:
+    cmd: paru -S --noconfirm zoom
+  register: result
+  changed_when: "'installed' in result.stdout or 'is up to date' not in result.stdout"
+  failed_when:
+    - result.rc != 0
+    - "'nothing to do' not in result.stderr"
+
+- name: Print installation result
+  ansible.builtin.debug:
+    msg: "Zoom installation result: {{ result.stdout_lines | default(['No output']) | join(', ') }}"

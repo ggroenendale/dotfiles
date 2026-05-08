@@ -1,13 +1,31 @@
 ---
-- name: Install Zoom using paru
-  ansible.builtin.command:
-    cmd: paru -S --noconfirm zoom
-  register: result
-  changed_when: "'installed' in result.stdout or 'is up to date' not in result.stdout"
-  failed_when:
-    - result.rc != 0
-    - "'nothing to do' not in result.stderr"
-
-- name: Print installation result
+- name: Display Desktop Applications - Zoom - Start
   ansible.builtin.debug:
-    msg: "Zoom installation result: {{ result.stdout_lines | default(['No output']) | join(', ') }}"
+    msg: "=== Begin Desktop Applications - Zoom - Role Configuration ==="
+
+# ===========================================================================
+#
+# ===========================================================================
+
+- name: If Arch, Include Arch Zoom Config
+  include_tasks: arch.yaml
+  when: is_arch
+
+- name: If Debian, Include Debian Zoom Config
+  include_tasks: debian.yaml
+  when: is_debian
+
+- name: If OpenSUSE, Include OpenSUSE Zoom Config
+  include_tasks: opensuse.yaml
+  when: is_opensuse
+
+- name: If Ubuntu, Include Ubuntu Zoom Config
+  include_tasks: ubuntu.yaml
+  when: is_ubuntu
+# ===========================================================================
+#
+# ===========================================================================
+
+- name: Display Desktop Applications - Zoom - Config End
+  ansible.builtin.debug:
+    msg: "=== End Desktop Applications - Zoom - Role Configuration ==="
