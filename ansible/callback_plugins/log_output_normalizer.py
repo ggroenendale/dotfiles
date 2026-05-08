@@ -9,8 +9,7 @@ import logging
 from ansible.plugins.callback import CallbackBase
 from ansible import constants as C
 from ansible.executor.task_result import CallbackTaskResult
-from ansible.playbook import Playbook
-from ansible.playbook.included_file import InludedFile
+from ansible.playbook import Playbook, PlaybookInclude
 
 BORDER_LENGTH = 70
 
@@ -190,7 +189,7 @@ class CallbackModule(CallbackBase):
         # Then log to file
         self._log(f"{prefix}{msg}")
 
-    def v2_playbook_on_include(self, included_file: IncludedFile):
+    def v2_playbook_on_include(self, included_file: PlaybookInclude):
         """
         Print statements when files are included
 
