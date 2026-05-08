@@ -251,10 +251,11 @@ class CallbackModule(CallbackBase):
 
         if msg:
             if isinstance(msg, list):
-                self._log_to_term(
-                    f" *************************************************************** MSG IS LIST ********************************"
-                )
-
+                # If msg is a list, loop through its contents and print
+                for line in msg:
+                    # Print each line
+                    self._log_to_term(f"    {line}")
+                    self._log(f"    {line}")
             else:
                 # First log to terminal
                 self._log_to_term(f"    {f_prefix}")
