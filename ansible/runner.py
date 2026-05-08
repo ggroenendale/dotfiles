@@ -32,7 +32,9 @@ filename = args.filename
 
 playbook_path = Path(__file__).parent.joinpath("playbooks", filename)
 
-cli = PlaybookCLI(["ansible-playbook", str(playbook_path), '-e "ansible_version=fuck"'])
+cli = PlaybookCLI(
+    ["ansible-playbook", str(playbook_path), f'-e "ansible_version={ansible_version}"']
+)
 cli.parse()
 
 # context.CLIARGS = context.CLIARGS.copy()
@@ -49,10 +51,10 @@ cliargs["verbosity"] = 0
 # print(type(cliargs["extra_vars"]))
 #
 # extra_vars = cliargs.get("extra_vars", tuple)
-extra_vars = cliargs.get("extra_vars") + (f"ansible_version={ansible_version}",)
-print(extra_vars)
-
-cliargs["extra_vars"] = (f"ansible_version={ansible_version}",)
+# extra_vars = cliargs.get("extra_vars") + (f"ansible_version={ansible_version}",)
+# print(extra_vars)
+#
+# cliargs["extra_vars"] = (f"ansible_version={ansible_version}",)
 
 context.CLIARGS = ImmutableDict(**cliargs)
 
