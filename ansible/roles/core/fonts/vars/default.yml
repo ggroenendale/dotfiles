@@ -1,0 +1,5 @@
+---
+# Default font packages (fallback when OS is not recognized)
+# Empty list — the file copy fallback will handle font deployment.
+font_packages: []
+

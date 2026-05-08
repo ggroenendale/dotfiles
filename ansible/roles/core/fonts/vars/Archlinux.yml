@@ -1,0 +1,8 @@
+---
+# Font packages for Arch Linux (pacman)
+font_packages:
+  - ttf-mononoki-nerd
+  - ttf-sourcecodepro-nerd
+  - nerd-fonts-symbols
+  - ttf-nerd-fonts-symbols-mono
+
