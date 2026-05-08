@@ -46,6 +46,7 @@ cliargs["verbosity"] = 0
 
 print(type(ansible_version))
 pprint(ansible_version)
+print(type(cliargs["extra_vars"]))
 cliargs["extra_vars"] = {
     **cliargs.get("extra_vars", {}),
     "ansible_version_custom": ansible_version,
