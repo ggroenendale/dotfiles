@@ -34,8 +34,8 @@ cli = PlaybookCLI(["ansible-playbook", str(playbook_path)])
 cli.parse()
 
 # context.CLIARGS = context.CLIARGS.copy()
-context.CLIARGS["connection"] = "local"
-context.CLIARGS["verbosity"] = 0
+# context.CLIARGS["connection"] = "local"
+# context.CLIARGS["verbosity"] = 0
 
 context.CLIARGS = ImmutableDict(
     **dict(context.CLIARGS),
