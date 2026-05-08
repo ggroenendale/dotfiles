@@ -35,7 +35,7 @@ playbook_path = Path(__file__).parent.joinpath("playbooks", filename)
 
 # Instantiate a playbook executor to get rid of excessive ansible print statements
 executor = PlaybookExecutor(
-    playbooks=[playbook_path],
+    playbooks=[str(playbook_path)],
     inventory=inventory,
     variable_manager=variable_manager,
     loader=loader,
