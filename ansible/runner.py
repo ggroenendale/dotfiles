@@ -8,6 +8,7 @@ from ansible.parsing.dataloader import DataLoader
 from ansible.vars.manager import VariableManager
 from ansible.utils.display import Display
 from ansible.plugins.loader import init_plugin_loader
+from ansible.cli import CLI
 
 from ansible import context
 
@@ -27,38 +28,45 @@ args = parser.parse_args()
 # Retrieve the playbook filename
 filename = args.filename
 
-# ---- CLI context (REQUIRED) ----
-context.CLIARGS = ImmutableDict(
-    # core execution
-    connection="local",
-    module_path=None,
-    forks=10,
-    remote_user=None,
-    # privilege escalation
-    become=False,
-    become_method=None,
-    become_user=None,
-    become_ask_pass=False,
-    # execution behavior
-    check=False,
-    diff=False,
-    verbosity=0,
-    # playbook / parser expectations
-    syntax=False,
-    start_at_task=None,
-    tags=None,
-    skip_tags=None,
-    # inventory / connection
-    listhosts=False,
-    listtasks=False,
-    listtags=False,
-    # extra
-    extra_vars={},
-)
+# # ---- CLI context (REQUIRED) ----
+# context.CLIARGS = ImmutableDict(
+#     # core execution
+#     connection="local",
+#     module_path=None,
+#     forks=10,
+#     remote_user=None,
+#     # privilege escalation
+#     become=False,
+#     become_method=None,
+#     become_user=None,
+#     become_ask_pass=False,
+#     # execution behavior
+#     check=False,
+#     diff=False,
+#     verbosity=0,
+#     # playbook / parser expectations
+#     syntax=False,
+#     start_at_task=None,
+#     tags=None,
+#     skip_tags=None,
+#     # inventory / connection
+#     listhosts=False,
+#     listtasks=False,
+#     listtags=False,
+#     # extra
+#     extra_vars={},
+# )
 
+# initialize full context safely
+cli = CLI([])
+cli.parse()
+
+
+context.CLIARGS = context.CLIARGS.copy()
+context.CLIARGS["connection"] = "local"
 # args = {}
 
-context._init_global_context(parser)
+# context._init_global_context(parser)
 
 # ---- Plugin loader (REQUIRED) ----
 init_plugin_loader()
