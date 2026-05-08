@@ -706,16 +706,16 @@ else
 fi
 
 # Phase 1: Bootstrap — environment validation and prerequisites
-printf "${CAT_OVERLAY1} [..] Running bootstrap playbook"
+printf "${CAT_OVERLAY1} [..] Running bootstrap playbook\n"
 _cmd_show "python3 \"$DOTFILES_DIR/ansible/runner.py\" bootstrap.yaml"
 #_cmd_show "ansible-pull -U \"$REPO_URL\" -C \"$BRANCH\" -i 127.0.0.1, --limit=all --clean \"$ANSIBLE_PLAYBOOKS_DIR/bootstrap.yaml\""
-printf "${CAT_GREEN} [✓] Running bootstrap playbook"
+printf "${CAT_GREEN} [✓] Running bootstrap playbook\n"
 
 
 # Phase 2: System-specific provisioning
-printf "${CAT_OVERLAY1} [..] Running $SYSTEM_PLAYBOOK playbook"
+printf "${CAT_OVERLAY1} [..] Running $SYSTEM_PLAYBOOK playbook\n"
 #_cmd_show "ansible-pull -U \"$REPO_URL\" -C \"$BRANCH\" -i 127.0.0.1, --limit=all --clean \"$ANSIBLE_PLAYBOOKS_DIR/$SYSTEM_PLAYBOOK\""
-printf "${CAT_GREEN} [✓] Running $SYSTEM_PLAYBOOK playbook"
+printf "${CAT_GREEN} [✓] Running $SYSTEM_PLAYBOOK playbook\n"
 
 
 # Push logs 
