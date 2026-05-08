@@ -128,7 +128,7 @@
     # ── Package Manager Setup (OS-specific) ───────────────────────
     - name: Include package management role (Arch Linux — Paru AUR helper)
       ansible.builtin.include_role:
-        name: package_management
+        name: core/package_management
       when: ansible_facts.distribution == "Archlinux"
 
     - name: Verify package manager availability (Debian/Ubuntu)
