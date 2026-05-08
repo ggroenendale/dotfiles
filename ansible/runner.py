@@ -7,6 +7,7 @@ from ansible.executor.playbook_executor import PlaybookExecutor
 from ansible.inventory.manager import InventoryManager
 from ansible.parsing.dataloader import DataLoader
 from ansible.vars.manager import VariableManager
+from ansible.utils.vars import load_extra_vars
 from ansible.utils.display import Display
 from ansible.plugins.loader import init_plugin_loader
 from ansible.cli.playbook import PlaybookCLI
@@ -79,6 +80,8 @@ extra_vars = {"ansible_version": ansible_version}
 # }
 
 variable_manager = VariableManager(loader=loader, inventory=inventory)
+
+load_extra_vars(loader=loader)
 
 # variable_manager.extra_vars = extra_vars
 
