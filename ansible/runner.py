@@ -4,6 +4,7 @@ from ansible.inventory.manager import InventoryManager
 from ansible.parsing.dataloader import DataLoader
 from ansible.vars.manager import VariableManager
 from ansible.utils.display import Display
+from ansible.plugins.loader import init_plugin_loader
 import argparse
 
 # Custom arguments to get custom playbook url
@@ -22,8 +23,8 @@ args = parser.parse_args()
 # Retrieve the playbook filename
 filename = args.filename
 
-# Test if the script launches from installer script
-# print(f"Can the runner even be reach correctly? - Attempt run of: {filename}")
+# ---- Plugin loader (REQUIRED) ----
+init_plugin_loader()
 
 # Define playbook stuff
 loader = DataLoader()
@@ -41,14 +42,6 @@ executor = PlaybookExecutor(
     loader=loader,
     passwords=passwords,
 )
-
-print(loader)
-print(inventory)
-print(variable_manager)
-print(passwords)
-print(playbook_path)
-print(executor)
-
 
 # Run the executor
 executor.run()
