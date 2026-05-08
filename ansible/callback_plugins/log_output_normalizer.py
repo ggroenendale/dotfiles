@@ -245,12 +245,21 @@ class CallbackModule(CallbackBase):
 
             # Then log to file
             self._log(f"  {prefix}{msg}")
+
+            # Add a major border:
+            self._insert_minor_border()
         else:
+            # Add a major border:
+            self._insert_minor_border()
+
             # First log to terminal
             self._log_to_term(f"  {f_prefix}{msg}")
 
             # Then log to file
-            self._log(f"  {prefix}{msg}")
+            self._log(f"  {prefix}: OK")
+
+            # Add a major border:
+            self._insert_minor_border()
 
     def v2_runner_on_skipped(self, result: CallbackTaskResult):
         """
