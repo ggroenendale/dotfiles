@@ -114,14 +114,13 @@ class CallbackModule(CallbackBase):
         print(f"{color}{data} {reset}")
 
     def v2_playbook_on_start(self, playbook):
-        # self._display.display(
-        #    f"Starting Playbook.... | green is: {C.COLOR_OK}, red is: {C.COLOR_ERROR}",
-        #    color=C.COLOR_WARN,
-        # )
+        """
+        On playbook start this function fires off
 
-        self._log(
-            "INFO: Is my custom logger getting overwritten Starting Playbook....."
-        )
+        :param playbook: The playbook object
+        """
+
+        self._log(f"INFO: Starting Playbook - {playbook._file_name}")
 
     def v2_runner_on_ok(self, result):
         host = result._host.get_name()
