@@ -28,45 +28,14 @@ args = parser.parse_args()
 # Retrieve the playbook filename
 filename = args.filename
 
-# # ---- CLI context (REQUIRED) ----
-# context.CLIARGS = ImmutableDict(
-#     # core execution
-#     connection="local",
-#     module_path=None,
-#     forks=10,
-#     remote_user=None,
-#     # privilege escalation
-#     become=False,
-#     become_method=None,
-#     become_user=None,
-#     become_ask_pass=False,
-#     # execution behavior
-#     check=False,
-#     diff=False,
-#     verbosity=0,
-#     # playbook / parser expectations
-#     syntax=False,
-#     start_at_task=None,
-#     tags=None,
-#     skip_tags=None,
-#     # inventory / connection
-#     listhosts=False,
-#     listtasks=False,
-#     listtags=False,
-#     # extra
-#     extra_vars={},
-# )
+playbook_path = Path(__file__).parent.joinpath("playbooks", filename)
 
-# initialize full context safely
-cli = CLI([])
+cli = PlaybookCLI(["ansible-playbook", str(playbook_path)])
 cli.parse()
-
 
 context.CLIARGS = context.CLIARGS.copy()
 context.CLIARGS["connection"] = "local"
-# args = {}
-
-# context._init_global_context(parser)
+context.CLIARGS["verbosity"] = 0
 
 # ---- Plugin loader (REQUIRED) ----
 init_plugin_loader()
@@ -77,7 +46,7 @@ loader = DataLoader()
 inventory = InventoryManager(loader=loader, sources=["localhost,"])
 variable_manager = VariableManager(loader=loader, inventory=inventory)
 passwords = {}
-playbook_path = Path(__file__).parent.joinpath("playbooks", filename)
+
 
 # Instantiate a playbook executor to get rid of excessive ansible print statements
 executor = PlaybookExecutor(
