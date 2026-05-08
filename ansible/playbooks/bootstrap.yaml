@@ -179,4 +179,4 @@
           - "Ansible: {{ ansible_version.full }}"
           - "GitHub: {{ 'reachable' if github_check.status is defined and github_check.status == 200 else 'unreachable (check network)' }}"
           - "Next: Run the machine-specific playbook (e.g., laptop.yaml, workstation.yaml, server.yaml)"
-          - "Extras: {{ extra_vars }}"
+          - "Extras: {{ _extra_vars }}"
