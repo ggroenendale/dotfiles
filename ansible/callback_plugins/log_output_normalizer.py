@@ -241,10 +241,16 @@ class CallbackModule(CallbackBase):
             self._insert_minor_border()
 
             # First log to terminal
-            self._log_to_term(f"  {f_prefix}{msg}")
+            self._log_to_term(f"  {f_prefix}")
 
             # Then log to file
-            self._log(f"  {prefix}{msg}")
+            self._log(f"  {prefix}")
+
+            # First log to terminal
+            self._log_to_term(f"  {msg}")
+
+            # Then log to file
+            self._log(f"  {msg}")
 
             # Add a major border:
             self._insert_minor_border()
@@ -253,10 +259,16 @@ class CallbackModule(CallbackBase):
             self._insert_minor_border()
 
             # First log to terminal
-            self._log_to_term(f"  {f_prefix}{msg}")
+            self._log_to_term(f"  {f_prefix}")
 
             # Then log to file
-            self._log(f"  {prefix}: OK")
+            self._log(f"  {prefix}")
+
+            # First log to terminal
+            self._log_to_term(f"  OK")
+
+            # Then log to file
+            self._log(f"  OK")
 
             # Add a major border:
             self._insert_minor_border()
