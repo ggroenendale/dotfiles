@@ -8,10 +8,7 @@ import logging
 
 from ansible.plugins.callback import CallbackBase
 from ansible import constants as C
-
-if TYPE_CHECKING:
-    from ansible.executor.task_result import CallbackTaskResult
-
+from ansible.executor.task_result import CallbackTaskResult
 
 DOCUMENTATION = """
     name: log_output_normalizer
