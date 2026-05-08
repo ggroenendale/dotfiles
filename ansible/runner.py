@@ -81,7 +81,8 @@ extra_vars = {"ansible_version": ansible_version}
 
 variable_manager = VariableManager(loader=loader, inventory=inventory)
 
-load_extra_vars(loader=loader)
+extra_vars = load_extra_vars(loader=loader)
+variable_manager._extra_vars = extra_vars
 
 # variable_manager.extra_vars = extra_vars
 
