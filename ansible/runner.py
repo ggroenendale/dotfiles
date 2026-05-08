@@ -1,3 +1,6 @@
+import argparse
+from ansible.module_utils.common.collections import ImmutableDict
+
 from pathlib import Path
 from ansible.executor.playbook_executor import PlaybookExecutor
 from ansible.inventory.manager import InventoryManager
@@ -5,7 +8,8 @@ from ansible.parsing.dataloader import DataLoader
 from ansible.vars.manager import VariableManager
 from ansible.utils.display import Display
 from ansible.plugins.loader import init_plugin_loader
-import argparse
+
+from ansible import context
 
 # Custom arguments to get custom playbook url
 parser = argparse.ArgumentParser(
@@ -22,6 +26,19 @@ args = parser.parse_args()
 
 # Retrieve the playbook filename
 filename = args.filename
+
+# ---- CLI context (REQUIRED) ----
+context.CLIARGS = ImmutableDict(
+    connection="local",
+    module_path=None,
+    forks=10,
+    become=None,
+    become_method=None,
+    become_user=None,
+    check=False,
+    diff=False,
+    verbosity=0,
+)
 
 # ---- Plugin loader (REQUIRED) ----
 init_plugin_loader()
