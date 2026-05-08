@@ -23,7 +23,7 @@ args = parser.parse_args()
 filename = args.filename
 
 # Test if the script launches from installer script
-print(f"Can the runner even be reach correctly? - Attempt run of: {filename}")
+# print(f"Can the runner even be reach correctly? - Attempt run of: {filename}")
 
 # Define playbook stuff
 loader = DataLoader
@@ -31,7 +31,7 @@ loader = DataLoader
 inventory = InventoryManager(loader=loader, sources=["localhost,"])
 variable_manager = VariableManager(loader=loader, inventory=inventory)
 passwords = {}
-playbook_path = Path(__file__).joinpath("playbooks", filename)
+playbook_path = Path(__file__).parent.joinpath("playbooks", filename)
 
 # Instantiate a playbook executor to get rid of excessive ansible print statements
 executor = PlaybookExecutor(
@@ -50,5 +50,5 @@ print(playbook_path)
 print(executor)
 
 
-# # Run the executor
-# executor.run()
+# Run the executor
+executor.run()
