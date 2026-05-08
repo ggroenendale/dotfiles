@@ -1,7 +1,0 @@
----
-# Font packages for Debian (apt)
-# Nerd fonts are not in official Debian repos, so this is minimal.
-# The fallback file copy will handle the actual font deployment.
-font_packages:
-  - fonts-firacode
-

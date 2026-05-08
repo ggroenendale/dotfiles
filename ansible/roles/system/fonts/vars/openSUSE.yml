@@ -1,7 +1,0 @@
----
-# Font packages for openSUSE (zypper)
-# Nerd fonts are not in official openSUSE repos, so this is minimal.
-# The fallback file copy will handle the actual font deployment.
-font_packages:
-  - fetch-git
-
