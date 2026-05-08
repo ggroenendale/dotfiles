@@ -20,7 +20,7 @@
 
     - name: Debug Ansible version variable
       ansible.builtin.debug:
-        var: ansible_version_custom
+        var: ansible_version
 
     # - name: Display bootstrap start
     #   ansible.builtin.debug:
