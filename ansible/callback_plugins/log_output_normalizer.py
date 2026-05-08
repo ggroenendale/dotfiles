@@ -250,17 +250,23 @@ class CallbackModule(CallbackBase):
         f_prefix = style(prefix, fg=(255, 255, 255), bg=(31, 39, 235))
 
         if msg:
-            # First log to terminal
-            self._log_to_term(f"    {f_prefix}")
+            if isinstance(msg, list):
+                self._log_to_term(
+                    f" *************************************************************** MSG IS LIST ********************************"
+                )
 
-            # Then log to file
-            self._log(f"    {prefix}")
+            else:
+                # First log to terminal
+                self._log_to_term(f"    {f_prefix}")
 
-            # First log to terminal
-            self._log_to_term(f"    {msg}")
+                # Then log to file
+                self._log(f"    {prefix}")
 
-            # Then log to file
-            self._log(f"    {msg}")
+                # First log to terminal
+                self._log_to_term(f"    {msg}")
+
+                # Then log to file
+                self._log(f"    {msg}")
 
         else:
             # First log to terminal
