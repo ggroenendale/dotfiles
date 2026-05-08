@@ -237,6 +237,11 @@ class CallbackModule(CallbackBase):
         f_prefix = style(prefix, fg=(255, 255, 255), bg=(204, 43, 224))
         task_name = result.task.get_name().strip()
 
+        # First log to terminal
+        self._log_to_term(f"  {f_prefix} --- {task_name} ---")
+        # Then log to file
+        self._log(f"  {prefix} --- {task_name} ---")
+
         # Add a minor border:
         self._insert_minor_border()
 
