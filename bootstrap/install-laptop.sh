@@ -26,6 +26,24 @@
 
 set -e
 
+# Check for tput (required for cursor control)
+if ! command -v tput &> /dev/null; then
+  echo -e "${CAT_RED}Error: 'tput' is required but not found.${NC}"
+  echo -e "${CAT_SUBTEXT1}Please install ncurses (Ubuntu: apt install ncurses-bin, Arch: pacman -S ncurses)${NC}"
+  exit 1
+fi
+
+# Early check for help/version flags (before setup)
+for arg in "$@"; do
+  case $arg in
+    -h|--help)
+      SHOW_HELP=true
+      ;;
+    --version)
+      SHOW_VERSION=true
+      ;;
+  esac
+done
 # ==============================================================
 #   Variables                               
 # ==============================================================
@@ -99,6 +117,26 @@ done
 # ==============================================================
 #   Helper Functions
 # ==============================================================
+
+# ---------------------------------------------------------
+# cleanup()
+# ---------------------------------------------------------
+# Cleanup function for exit
+# 
+# Inputs:
+#   $1 - task description string
+#  
+# ---------------------------------------------------------
+#
+cleanup() {
+  # Kill spinner if running
+  if [[ $SPINNER_PID != "" ]]; then
+    kill $SPINNER_PID 2>/dev/null
+    wait $SPINNER_PID 2>/dev/null
+  fi
+  # Show cursor
+  tput cnorm
+}
 
 # ---------------------------------------------------------
 # _spinner()
