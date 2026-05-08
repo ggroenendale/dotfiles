@@ -43,25 +43,12 @@ cli = PlaybookCLI(
 )
 cli.parse()
 
-# context.CLIARGS = context.CLIARGS.copy()
-# context.CLIARGS["connection"] = "local"
-# context.CLIARGS["verbosity"] = 0
-
+# Define cliargs
 cliargs = dict(context.CLIARGS)
-
 cliargs["connection"] = "local"
 cliargs["verbosity"] = 0
 
-# print(type(ansible_version))
-# pprint(ansible_version)
-# print(type(cliargs["extra_vars"]))
-#
-# extra_vars = cliargs.get("extra_vars", tuple)
-# extra_vars = cliargs.get("extra_vars") + (f"ansible_version={ansible_version}",)
-# print(extra_vars)
-#
-# cliargs["extra_vars"] = (f"ansible_version={ansible_version}",)
-
+# Repackage CLIARGS
 context.CLIARGS = ImmutableDict(**cliargs)
 
 # ---- Plugin loader (REQUIRED) ----
@@ -70,15 +57,10 @@ init_plugin_loader()
 # Define playbook stuff
 loader = DataLoader()
 
+# Define a basic inventory for localhost
 inventory = InventoryManager(loader=loader, sources=["localhost,"])
 
-
-extra_vars = {"ansible_version": ansible_version}
-# "full": ansible_version,
-#         "string": ansible_version,
-#     }
-# }
-
+# Variable manager is how we insert ansible version information
 variable_manager = VariableManager(
     loader=loader,
     inventory=inventory,
@@ -91,22 +73,15 @@ variable_manager = VariableManager(
     },
 )
 
+# Extra vars needs more testing
+extra_vars = {"extra_version_info": ansible_version, "extra_test": "is_extra"}
 
-# option_vars = load_options_vars(version_info)
-
-# pprint(option_vars)
-extra_vars = load_extra_vars(loader=loader)
+# extra_vars = load_extra_vars(loader=loader)
 variable_manager._extra_vars = extra_vars
-# variable_manager._options_vars = option_vars
-# variable_manager._options_vars["ansible_version"]["full"] = ansible_version
 
 pprint(variable_manager.__dict__)
 
-
-# variable_manager.extra_vars = extra_vars
-
 passwords = {}
-
 
 # Instantiate a playbook executor to get rid of excessive ansible print statements
 executor = PlaybookExecutor(
