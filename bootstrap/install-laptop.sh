@@ -177,12 +177,12 @@ done
 
 
 # Log system info
-{
-    echo "=== System Info ==="
-    uname -a
-    cat /etc/os-release 2>/dev/null
-    echo
-} | tee -a "$LOG_FILE"
+# {
+#     echo "=== System Info ==="
+#     uname -a
+#     cat /etc/os-release 2>/dev/null
+#     echo
+# } | tee -a "$LOG_FILE"
 
 # ==============================================================
 #   Helper Functions
