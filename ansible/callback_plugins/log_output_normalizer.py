@@ -250,6 +250,10 @@ class CallbackModule(CallbackBase):
         prefix = "[TASK INFO]"
         f_prefix = style(prefix, fg=(255, 255, 255), bg=(31, 39, 235))
 
+        if var:
+            print(type(var))
+            print(var)
+
         if msg:
             if isinstance(msg, list):
                 # If msg is a list, loop through its contents and print
@@ -270,9 +274,6 @@ class CallbackModule(CallbackBase):
                 # Then log to file
                 self._log(f"    {msg}")
 
-            if var:
-                print(type(var))
-                print(var)
         else:
             # First log to terminal
             self._log_to_term(f"    {f_prefix}")
