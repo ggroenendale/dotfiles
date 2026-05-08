@@ -33,7 +33,11 @@ filename = args.filename
 playbook_path = Path(__file__).parent.joinpath("playbooks", filename)
 
 cli = PlaybookCLI(
-    ["ansible-playbook", str(playbook_path), f'-e "ansible_version={ansible_version}"']
+    [
+        "ansible-playbook",
+        str(playbook_path),
+        f'--extra-vars "ansible_version={ansible_version}"',
+    ]
 )
 cli.parse()
 
