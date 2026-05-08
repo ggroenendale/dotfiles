@@ -79,22 +79,25 @@ extra_vars = {"ansible_version": ansible_version}
 #     }
 # }
 
-variable_manager = VariableManager(loader=loader, inventory=inventory)
+variable_manager = VariableManager(
+    loader=loader,
+    inventory=inventory,
+    version_info={
+        "string": ansible_version.strip(),
+        "full": ansible_version,
+        "major": ansible_version.split(".")[0],
+        "minor": ansible_version.split(".")[1],
+        "revision": ansible_version.split(".")[2],
+    },
+)
 
-version_info = {
-    "string": ansible_version.strip(),
-    "full": ansible_version,
-    "major": ansible_version.split(".")[0],
-    "minor": ansible_version.split(".")[1],
-    "revision": ansible_version.split(".")[2],
-}
 
-option_vars = load_options_vars(version_info)
+# option_vars = load_options_vars(version_info)
 
-pprint(option_vars)
+# pprint(option_vars)
 extra_vars = load_extra_vars(loader=loader)
 variable_manager._extra_vars = extra_vars
-variable_manager._options_vars = option_vars
+# variable_manager._options_vars = option_vars
 # variable_manager._options_vars["ansible_version"]["full"] = ansible_version
 
 pprint(variable_manager.__dict__)
