@@ -32,7 +32,7 @@ filename = args.filename
 
 playbook_path = Path(__file__).parent.joinpath("playbooks", filename)
 
-cli = PlaybookCLI(["ansible-playbook", str(playbook_path)])
+cli = PlaybookCLI(["ansible-playbook", str(playbook_path), '-e "ansible_version=fuck"'])
 cli.parse()
 
 # context.CLIARGS = context.CLIARGS.copy()
