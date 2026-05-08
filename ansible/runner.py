@@ -50,7 +50,7 @@ print(type(cliargs["extra_vars"]))
 
 extra_vars = cliargs.get("extra_vars", tuple)
 
-cliargs["extra_vars"] = extra_vars + (ansible_version)
+cliargs["extra_vars"] = extra_vars + (ansible_version,)
 
 context.CLIARGS = ImmutableDict(**cliargs)
 
