@@ -196,7 +196,7 @@ ansible/roles/
 │   ├── theme/                     # GTK colorscheme and theming
 │   └── file_managers/             # Thunar file manager
 │
-├── desktop_applications/          # Desktop environment roles
+├── desktop_applications/          # Desktop Application roles
 │   ├── blender/                   # Blender 3d modeling
 │   ├── brave/                     # Brave Browser
 │   ├── firefox/                   # Firefox Browser
@@ -220,9 +220,6 @@ ansible/roles/
 │       ├── inference_engine/      # Model serving
 │       ├── models/                # Model management
 │       └── mcp_server/            # MCP server deployment
-│
-└── archive/                       # Deprecated/archived roles (moved here)
-    └── _refined/                  # Refind bootloader (not used)
 ```
 
 ### Naming Conventions
@@ -628,7 +625,7 @@ ansible/roles/
 | --- | ------------- | ----------------------------------------------- | -------- |
 | 1   | **Dev Roles** | Rebuild git, ide, build_tools, containers roles | —        |
 
-#### 7.1 — Create `desktop_apps/`
+#### 7.1 — Create `desktop_applications/`
 
 — consolidate from `desktop/_apps/`
 
