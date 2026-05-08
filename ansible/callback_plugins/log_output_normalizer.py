@@ -231,6 +231,7 @@ class CallbackModule(CallbackBase):
         # Retrieve some values
         host = result._host.get_name()
         msg = result._result.get("msg", "")
+        var = result._result.get("var", "")
 
         # Create a task output header
         prefix = "[TASK START]"
@@ -269,6 +270,9 @@ class CallbackModule(CallbackBase):
                 # Then log to file
                 self._log(f"    {msg}")
 
+            if var:
+                print(type(var))
+                print(var)
         else:
             # First log to terminal
             self._log_to_term(f"    {f_prefix}")
