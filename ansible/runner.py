@@ -29,15 +29,31 @@ filename = args.filename
 
 # ---- CLI context (REQUIRED) ----
 context.CLIARGS = ImmutableDict(
+    # core execution
     connection="local",
     module_path=None,
     forks=10,
-    become=None,
+    remote_user=None,
+    # privilege escalation
+    become=False,
     become_method=None,
     become_user=None,
+    become_ask_pass=False,
+    # execution behavior
     check=False,
     diff=False,
     verbosity=0,
+    # playbook / parser expectations
+    syntax=False,
+    start_at_task=None,
+    tags=None,
+    skip_tags=None,
+    # inventory / connection
+    listhosts=False,
+    listtasks=False,
+    listtags=False,
+    # extra
+    extra_vars={},
 )
 
 # args = {}
