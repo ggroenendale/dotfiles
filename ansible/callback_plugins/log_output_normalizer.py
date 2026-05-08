@@ -233,6 +233,8 @@ class CallbackModule(CallbackBase):
         msg = result._result.get("msg", "")
         var = result._result.get("var", "")
 
+        print(result._result.__dict__)
+
         # Create a task output header
         prefix = "[TASK START]"
         f_prefix = style(prefix, fg=(255, 255, 255), bg=(204, 43, 224))
