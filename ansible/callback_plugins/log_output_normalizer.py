@@ -167,6 +167,42 @@ class CallbackModule(CallbackBase):
         # Then log to file
         self._log(f"{prefix}{msg}")
 
+    def v2_playbook_on_include(self, included_file):
+        """
+        Print statements when files are included
+
+        :param included_file:
+        :type included_file: str
+        """
+        file_name = str(included_file)
+        prefix = "[INCLUDE TASKS]"
+        f_prefix = style(prefix, fg=(255, 255, 255), bg=(204, 43, 224))
+
+        # First log to terminal
+        self._log_to_term(f"  {f_prefix} - {file_name}")
+
+        # Then log to file
+        self._log(f"  {prefix} - {file_name}")
+
+    def v2_playbook_on_task_start(self, task, is_conditional):
+        """
+        Function to be able to write task info regardless of fail or success
+
+        :param task:
+        :type task: CallbackTaskResult
+        :param is_conditional:
+        :type is_conditional: bool
+        """
+        prefix = "[TASK START]"
+        f_prefix = style(prefix, fg=(255, 255, 255), bg=(204, 43, 224))
+        task_name = task.get_name().strip()
+
+        # First log to terminal
+        self._log_to_term(f"  {f_prefix}: {task_name}")
+
+        # Then log to file
+        self._log(f"  {prefix} - {task_name}")
+
     def v2_runner_on_ok(self, result: CallbackTaskResult):
         """
 
