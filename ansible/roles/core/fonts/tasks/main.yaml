@@ -25,7 +25,6 @@
 #   - fonts-packages: Package installation only
 #   - fonts-files: File copy fallback only
 # =============================================================================
----
 - name: Display Core Fonts Config Start
   ansible.builtin.debug:
     msg: "=== Begin System Bootloader Role Configuration ==="
