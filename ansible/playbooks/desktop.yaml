@@ -1,5 +1,5 @@
 ---
-- name: Desktop — Complete Configuration
+- name: Laptop — Complete Configuration
   hosts: localhost
   connection: local
   become: false
@@ -12,8 +12,63 @@
     # GitHub connectivity check
     github_url: "https://github.com"
     github_timeout_seconds: 10
+    is_debian: "{{ 'Debian' in ansible_facts.distribution }}"
+    is_ubuntu: "{{ 'Ubuntu' in ansible_facts.distribution }}"
+    is_opensuse: "{{ ansible_facts.os_family == 'Suse' }}"
+    is_arch: "{{ 'Arch' in ansible_facts.distribution }}"
+    # List roles to include and apply to the playbook, use
+    system_roles_to_apply:
+      - system/bootloader
+      - system/file_system
+      - system/networking/firewall
+      - system/networking/networkmanager
+      - system/networking/vpn
+      - system/networking/wifi
+      - system/networking/dns
+    hardware_roles_to_apply:
+      - hardware/audio
+      - hardware/bluetooth
+      - hardware/graphics
+      - hardware/mouse
+    core_roles_to_apply:
+      - core/base_packages
+      - core/users
+      - core/security
+      - core/dotfiles
+      - core/fonts
+      - core/systemd
+    desktop_roles_to_apply:
+      - desktop/authentication
+      - desktop/login_manager
+      - desktop/hyprland
+      - desktop/wallpaper
+      - desktop/task_bar
+      - desktop/widgets
+      - desktop/run_menu
+      - desktop/notifications
+      - desktop/file_managers
+      - desktop/terminals
+      - desktop/clipboard
+      - desktop/theme
+    dev_roles_to_apply:
+      - dev/build_tools
+      - dev/version_control
+      - dev/ide
+    desktop_apps_to_apply:
+      - desktop_applications/firefox
+      - desktop_applications/brave
+      - desktop_applications/steam
+      - desktop_applications/vlc
+      - desktop_applications/notes
+      - desktop_applications/zoom
 
   tasks:
-    - name: Display Desktop Playbook start
+    - name: Display Laptop Playbook start
       ansible.builtin.debug:
-        msg: "=== Desktop Playbook Started ==="
+        msg: "=== Laptop Playbook Started ==="
+
+    - name: Include System Roles
+      ansible.builtin.include_role:
+        name: "{{ role_item }}"
+      loop: "{{ system_roles_to_apply }}"
+      loop_control:
