@@ -79,7 +79,7 @@ extra_vars = {"extra_version_info": ansible_version, "extra_test": "is_extra"}
 # extra_vars = load_extra_vars(loader=loader)
 variable_manager._extra_vars = extra_vars
 
-pprint(variable_manager.__dict__)
+# pprint(variable_manager.__dict__)
 
 passwords = {}
 
