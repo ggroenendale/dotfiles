@@ -1,3 +1,4 @@
+from pprint import pprint
 import argparse
 from ansible.module_utils.common.collections import ImmutableDict
 
@@ -43,7 +44,8 @@ cliargs = dict(context.CLIARGS)
 cliargs["connection"] = "local"
 cliargs["verbosity"] = 0
 
-
+print(type(ansible_version))
+pprint(ansible_version)
 cliargs["extra_vars"] = {
     **cliargs.get("extra_vars", {}),
     "ansible_version_custom": ansible_version,
