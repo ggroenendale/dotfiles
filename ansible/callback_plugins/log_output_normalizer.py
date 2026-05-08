@@ -39,18 +39,18 @@ class AnsibleFormatter(logging.Formatter):
 
 
 # Attach Custom Format to a stream handler
-custom_stream_handler = logging.StreamHandler()
-custom_stream_handler.setFormatter(AnsibleFormatter())
+# custom_stream_handler = logging.StreamHandler()
+# custom_stream_handler.setFormatter(AnsibleFormatter())
 
 # Attach custom format to a file handler
-custom_file_handler = logging.FileHandler(".dotfiles.log")
-custom_file_handler.setFormatter(AnsibleFormatter())
+# custom_file_handler = logging.FileHandler(".dotfiles.log")
+# custom_file_handler.setFormatter(AnsibleFormatter())
 
 # Assign Custom Format Handler to ansible logger
-log = logging.getLogger("custom_ansible")
-log.handlers = [custom_stream_handler, custom_file_handler]
+# log = logging.getLogger("custom_ansible")
+# log.handlers = [custom_stream_handler, custom_file_handler]
 
-log.info("Testing dot Ansible Logger")
+# log.info("Testing dot Ansible Logger")
 
 
 class CallbackModule(CallbackBase):
@@ -110,6 +110,8 @@ class CallbackModule(CallbackBase):
 
         with open(log_file, "a") as f:
             f.write(f"{color}{data} {reset}\n")
+
+        print(f"{color}{data} {reset}\n")
 
     def v2_playbook_on_start(self, playbook):
         # self._display.display(
