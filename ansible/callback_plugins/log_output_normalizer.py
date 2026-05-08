@@ -11,7 +11,7 @@ from ansible import constants as C
 from ansible.executor.task_result import CallbackTaskResult
 from ansible.playbook import Playbook
 
-BORDER_LENGTH = 40
+BORDER_LENGTH = 70
 
 DOCUMENTATION = """
     name: log_output_normalizer
@@ -161,9 +161,9 @@ class CallbackModule(CallbackBase):
         """
         minor_border = "-" * BORDER_LENGTH
 
-        self._log_to_term(minor_border)
+        self._log_to_term(f"  {minor_border}")
 
-        self._log(minor_border)
+        self._log(f"  {minor_border}")
 
     def v2_playbook_on_start(self, playbook: Playbook):
         """
