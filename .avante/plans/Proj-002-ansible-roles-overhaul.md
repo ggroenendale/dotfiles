@@ -167,6 +167,7 @@ ansible/roles/
 │   ├── security/                  # SSH hardening, fail2ban, firewall
 │   ├── systemd/                   # Systemd service management
 │   ├── dotfiles/                  # Dotfiles deployment via stow
+│   ├── fonts/                     # Font Installation
 │   └── package_management/        # AUR helper (paru) installation
 │
 ├── hardware/                      # Hardware-specific roles
@@ -177,9 +178,8 @@ ansible/roles/
 │
 ├── system/                        # System-level configuration
 │   ├── bootloader/                # GRUB bootloader
-│   ├── storage/                   # BTRFS, LVM, btrbk
-│   ├── networking/                # NetworkManager, firewall, DHCP, DNS
-│   └── fonts/                     # Font installation (multi-OS)
+│   ├── file_system/               # BTRFS, LVM, btrbk
+│   └── networking/                # NetworkManager, firewall, DHCP, DNS
 │
 ├── desktop/                       # Desktop environment roles
 │   ├── hyprland/                  # Hyprland compositor
@@ -195,7 +195,7 @@ ansible/roles/
 │   ├── authentication/            # Polkit authentication agent
 │   ├── theme/                     # GTK colorscheme and theming
 │   └── file_managers/             # Thunar file manager
-|
+│
 ├── desktop_applications/          # Desktop environment roles
 │   ├── blender/                   # Blender 3d modeling
 │   ├── brave/                     # Brave Browser
