@@ -1,3 +1,4 @@
+from pprint import pprint
 from typing import TYPE_CHECKING
 
 from pathlib import Path
@@ -233,7 +234,7 @@ class CallbackModule(CallbackBase):
         msg = result._result.get("msg", "")
         var = result._result.get("var", "")
 
-        print(result._result.__dict__)
+        pprint(result._result)
 
         # Create a task output header
         prefix = "[TASK START]"
