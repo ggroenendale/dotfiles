@@ -80,7 +80,7 @@ extra_vars = {"ansible_version": ansible_version}
 
 variable_manager = VariableManager(loader=loader, inventory=inventory)
 
-variable_manager.extra_vars = extra_vars
+# variable_manager.extra_vars = extra_vars
 
 passwords = {}
 
