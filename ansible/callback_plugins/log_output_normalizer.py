@@ -109,9 +109,9 @@ class CallbackModule(CallbackBase):
         # reset = ""
 
         with open(log_file, "a") as f:
-            f.write(f"{color}{data} {reset}\n")
+            f.write(f"{data}\n")
 
-        print(f"{color}{data} {reset}\n")
+        print(f"{color}{data} {reset}")
 
     def v2_playbook_on_start(self, playbook):
         # self._display.display(
