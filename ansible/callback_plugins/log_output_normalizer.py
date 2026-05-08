@@ -10,6 +10,8 @@ from ansible.plugins.callback import CallbackBase
 from ansible import constants as C
 from ansible.executor.task_result import CallbackTaskResult
 
+BORDER_LENGTH = 40
+
 DOCUMENTATION = """
     name: log_output_normalizer
     type: stdout
@@ -141,6 +143,26 @@ class CallbackModule(CallbackBase):
         # First write the log to the terminal so the statement shows regardless
         # file writing issues
         print(f"{msg} {reset}")
+
+    def _insert_major_border(self):
+        """
+        Prints a border for readability
+        """
+        major_border = "=" * BORDER_LENGTH
+
+        self._log_to_term(major_border)
+
+        self._log(major_border)
+
+    def _insert_minor_border(self):
+        """
+        Prints a border for readability
+        """
+        minor_border = "-" * BORDER_LENGTH
+
+        self._log_to_term(minor_border)
+
+        self._log(minor_border)
 
     def v2_playbook_on_start(self, playbook):
         """
