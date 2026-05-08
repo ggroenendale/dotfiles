@@ -10,6 +10,7 @@ from ansible.plugins.callback import CallbackBase
 from ansible import constants as C
 from ansible.executor.task_result import CallbackTaskResult
 from ansible.playbook import Playbook
+from ansible.playbook.included_file import InludedFile
 
 BORDER_LENGTH = 70
 
@@ -189,14 +190,14 @@ class CallbackModule(CallbackBase):
         # Then log to file
         self._log(f"{prefix}{msg}")
 
-    def v2_playbook_on_include(self, included_file):
+    def v2_playbook_on_include(self, included_file: IncludedFile):
         """
         Print statements when files are included
 
         :param included_file:
         :type included_file: str
         """
-        file_name = str(included_file.get("role_item"))
+        file_name = str(included_file._filename)
         prefix = "[INCLUDE TASKS]"
         f_prefix = style(prefix, fg=(255, 255, 255), bg=(204, 43, 224))
 
