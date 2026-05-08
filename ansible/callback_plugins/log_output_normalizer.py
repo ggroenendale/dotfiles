@@ -1,13 +1,16 @@
+from typing import TYPE_CHECKING
+
 from pathlib import Path
 import os
-from ansible.plugins.callback import CallbackBase
-from ansible import constants as C
 import json
 import urllib.request
-
 import logging
 
-logging.basicConfig(filename="dotfiles.log", format="%(message)s", level=logging.INFO)
+from ansible.plugins.callback import CallbackBase
+from ansible import constants as C
+
+if TYPE_CHECKING:
+    from ansible.executor.task_result import CallbackTaskResult
 
 
 DOCUMENTATION = """
@@ -27,6 +30,42 @@ DOCUMENTATION = """
 """
 
 
+def style(text, fg=None, bg=None, bold=False) -> str:
+    """
+    Text color style
+
+    :param text: The text to format
+    :type text: str
+    :param fg: The text foreground color in RGB
+    :type fg: tuple
+    :param bg: The text background color in RGB
+    :type bg: tuple
+    :param bold: Boolean to make the text normal or bold
+    :type bold: bool
+    :return: Return the formatted string
+    :rtype: str
+    """
+    codes = []
+
+    if bold:
+        codes.append("1")
+
+    if isinstance(fg, tuple):  # RGB
+        codes.append(f"38;2;{fg[0]};{fg[1]};{fg[2]}")
+    elif fg is not None:
+        codes.append(str(fg))
+
+    if isinstance(bg, tuple):
+        codes.append(f"48;2;{bg[0]};{bg[1]};{bg[2]}")
+    elif bg is not None:
+        codes.append(str(bg))
+
+    prefix = f"\x1b[{';'.join(codes)}m" if codes else ""
+    suffix = "\x1b[0m"
+
+    return f"{prefix}{text}{suffix}"
+
+
 class AnsibleFormatter(logging.Formatter):
     """
     Define a custom formatter
@@ -36,21 +75,6 @@ class AnsibleFormatter(logging.Formatter):
         level = record.levelname
         msg = record.getMessage()
         return f"MyFormat - {level}: {msg}"
-
-
-# Attach Custom Format to a stream handler
-# custom_stream_handler = logging.StreamHandler()
-# custom_stream_handler.setFormatter(AnsibleFormatter())
-
-# Attach custom format to a file handler
-# custom_file_handler = logging.FileHandler(".dotfiles.log")
-# custom_file_handler.setFormatter(AnsibleFormatter())
-
-# Assign Custom Format Handler to ansible logger
-# log = logging.getLogger("custom_ansible")
-# log.handlers = [custom_stream_handler, custom_file_handler]
-
-# log.info("Testing dot Ansible Logger")
 
 
 class CallbackModule(CallbackBase):
@@ -64,54 +88,62 @@ class CallbackModule(CallbackBase):
     RESET = "\033[0m"
 
     def __init__(self):
-        """ """
-        # self._play = None
-        # self._last_task_banner = None
-        # self._last_task_name = None
-        # self._task_type_cache = {}
+        """
+        Instantiate the Callback Module
+
+        """
+
         super(CallbackModule, self).__init__()
         self.log_file = None
 
         self.playbook_name = None
         self.play_name = None
 
-        # mylog = logging.getLogger("custom_ansible")
-
-        # mylog.info("Testing log")
-
     def set_options(self, task_keys=None, var_options=None, direct=None):
-        """Load options from configuration."""
+        """
+        Load options from configuration.
+
+        :param task_keys:
+        :param var_options:
+        :param direct:
+        """
         super(CallbackModule, self).set_options(
             task_keys=task_keys, var_options=var_options, direct=direct
         )
         self.log_file = self.get_option("custom_log_path")
 
-    def _log(self, data, color=None):
+    def _log(self, msg: str):
         """
-        Write a log
-        :param category: The category
-        :param data: The data
+        Custom function write to a log file with custom formatting
+
+        :param msg: The string statement to print to the terminal or file
+        :type msg: str
         """
-        entry = {}
 
         # Ensure directory exists
-        log_file = Path(__file__).parent.parent.parent.joinpath(
-            "logs", "mydotfiles.log"
-        )
+        log_file = Path(__file__).parent.parent.parent.joinpath("logs", self.log_file)
+        os.makedirs(os.path.dirname(log_file), exist_ok=True)
 
-        os.makedirs(os.path.dirname(self.log_file), exist_ok=True)
-
-        if color is None:
-            color = "\x1b[31m"
-            # color = ""
-
-        reset = "\x1b[0m"
-        # reset = ""
-
+        # Try to write to the log file stripping out the formatting
         with open(log_file, "a") as f:
-            f.write(f"{data}\n")
+            f.write(f"{msg}\n")
 
-        print(f"{color}{data} {reset}")
+    def _log_to_term(self, msg: str):
+        """
+        Custom function to log to stdout with custom colors
+
+        :param msg: The string statement to print to the terminal or file
+        :type msg: str
+        :param color: The color of the string for the terminal
+        :type color: str
+        """
+
+        # Create the reset constant to undue any formatting
+        reset = "\x1b[0m"
+
+        # First write the log to the terminal so the statement shows regardless
+        # file writing issues
+        print(f"{msg} {reset}")
 
     def v2_playbook_on_start(self, playbook):
         """
@@ -120,30 +152,82 @@ class CallbackModule(CallbackBase):
         :param playbook: The playbook object
         """
 
-        self._log(f"INFO: Starting Playbook - {playbook._file_name}")
+        print(f"Type of Playbook: {type(playbook)}")
 
-    def v2_runner_on_ok(self, result):
+        # Create and format the prefix
+        prefix = "[PLAYBOOK START]"
+        f_prefix = style(prefix, fg=(255, 255, 255), bg=(31, 39, 235))
+
+        # Define a message to log
+        msg = f": Starting Playbook - {playbook._file_name}"
+
+        # First log to terminal
+        self._log_to_term(f"{f_prefix}{msg}")
+
+        # Then log to file
+        self._log(f"{prefix}{msg}")
+
+    def v2_runner_on_ok(self, result: CallbackTaskResult):
+        """
+
+        :param result:
+        :type result: CallbackTaskResult
+        """
         host = result._host.get_name()
         msg = result._result.get("msg", "")
-        # mylog = logging.getLogger("custom_ansible")
+        prefix = "[TASK INFO]"
+        f_prefix = style(prefix, fg=(255, 255, 255), bg=(31, 39, 235))
 
         if msg:
-            # self._display.display(f"{msg}", color=C.COLOR_OK)
-            self._log(f"{msg}?")
+            # First log to terminal
+            self._log_to_term(f"  {f_prefix}{msg}")
+
+            # Then log to file
+            self._log(f"  {prefix}{msg}")
         else:
-            # self._display.display(f"{host}: OK", color=C.COLOR_CHANGED)
-            self._log(f"{host}: OK")
+            # First log to terminal
+            self._log_to_term(f"  {f_prefix}{msg}")
 
-    def v2_runner_on_failed(self, result, ignore_errors=False):
+            # Then log to file
+            self._log(f"  {prefix}{msg}")
+
+    def v2_runner_on_skipped(self, result: CallbackTaskResult):
+        """
+        When a task is skipped we print nothing
+
+        :param result: Type result object
+        :type result: CallbackTaskResult
+        """
         host = result._host.get_name()
-        # self._display.display(f"{host}: FAILED", color=C.COLOR_ERROR)
+        task_name = result.task.get_name().strip()
 
-        # mylog = logging.getLogger("custom_ansible")
-        self._log(f"{host}: FAILED")
+        prefix = "[TASK SKIPPED]"
+        f_prefix = style(prefix, fg=(255, 255, 255), bg=(137, 138, 145))
 
-    def v2_runner_on_skipped(self, result):
+        # First log to terminal
+        self._log_to_term(f"  {f_prefix}: {task_name}")
+
+        # Then log to file
+        self._log(f"  {prefix}: {task_name}")
+
+    def v2_runner_on_failed(self, result: CallbackTaskResult, ignore_errors=False):
+        """
+        What to print on Task Failed
+
+        :param result:
+        :type result: CallbackTaskResult
+        :param ignore_errors:
+        :type ignore_errors: bool
+        """
         host = result._host.get_name()
-        # self._display.display(f"{host}: SKIPPED", color=C.COLOR_ERROR)
+        task_name = result.task.get_name().strip()
+        err_msg = result._result.get("msg", "")
 
-        # mylog = logging.getLogger("custom_ansible")
-        self._log(f"{host}: SKIPPED")
+        prefix = "[TASK FAILED]"
+        f_prefix = style(prefix, fg=(255, 255, 255), bg=(137, 138, 145))
+
+        # First log to terminal
+        self._log_to_term(f"  {f_prefix}: {task_name} - {err_msg}")
+
+        # Then log to file
+        self._log(f"  {prefix}: {task_name} - {err_msg}")
