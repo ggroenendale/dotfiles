@@ -215,15 +215,12 @@ class CallbackModule(CallbackBase):
         :param is_conditional:
         :type is_conditional: bool
         """
-        prefix = "[TASK START]"
-        f_prefix = style(prefix, fg=(255, 255, 255), bg=(204, 43, 224))
-        task_name = task.get_name().strip()
-
         # First log to terminal
-        self._log_to_term(f"  {f_prefix}: {task_name}")
+        # self._log_to_term(f"  {f_prefix}: {task_name}")
 
         # Then log to file
-        self._log(f"  {prefix} - {task_name}")
+        # self._log(f"  {prefix} - {task_name}")
+        pass
 
     def v2_runner_on_ok(self, result: CallbackTaskResult):
         """
@@ -231,15 +228,23 @@ class CallbackModule(CallbackBase):
         :param result:
         :type result: CallbackTaskResult
         """
+        # Retrieve some values
         host = result._host.get_name()
         msg = result._result.get("msg", "")
+
+        # Create a task output header
+        prefix = "[TASK START]"
+        f_prefix = style(prefix, fg=(255, 255, 255), bg=(204, 43, 224))
+        task_name = result.task.get_name().strip()
+
+        # Add a minor border:
+        self._insert_minor_border()
+
+        # Create normal task info output
         prefix = "[TASK INFO]"
         f_prefix = style(prefix, fg=(255, 255, 255), bg=(31, 39, 235))
 
         if msg:
-            # Add a major border:
-            self._insert_minor_border()
-
             # First log to terminal
             self._log_to_term(f"  {f_prefix}")
 
@@ -252,12 +257,7 @@ class CallbackModule(CallbackBase):
             # Then log to file
             self._log(f"  {msg}")
 
-            # Add a major border:
-            self._insert_minor_border()
         else:
-            # Add a major border:
-            self._insert_minor_border()
-
             # First log to terminal
             self._log_to_term(f"  {f_prefix}")
 
@@ -270,8 +270,9 @@ class CallbackModule(CallbackBase):
             # Then log to file
             self._log(f"  OK")
 
-            # Add a major border:
-            self._insert_minor_border()
+        # Create task end
+        # Add a minor border:
+        self._insert_minor_border()
 
     def v2_runner_on_skipped(self, result: CallbackTaskResult):
         """
@@ -280,17 +281,18 @@ class CallbackModule(CallbackBase):
         :param result: Type result object
         :type result: CallbackTaskResult
         """
-        host = result._host.get_name()
-        task_name = result.task.get_name().strip()
+        # host = result._host.get_name()
+        # task_name = result.task.get_name().strip()
 
-        prefix = "[TASK SKIPPED]"
-        f_prefix = style(prefix, fg=(255, 255, 255), bg=(137, 138, 145))
+        # prefix = "[TASK SKIPPED]"
+        # f_prefix = style(prefix, fg=(255, 255, 255), bg=(137, 138, 145))
 
         # First log to terminal
-        self._log_to_term(f"  {f_prefix}: {task_name}")
+        # self._log_to_term(f"  {f_prefix}: {task_name}")
 
         # Then log to file
-        self._log(f"  {prefix}: {task_name}")
+        # self._log(f"  {prefix}: {task_name}")
+        pass
 
     def v2_runner_on_failed(self, result: CallbackTaskResult, ignore_errors=False):
         """
