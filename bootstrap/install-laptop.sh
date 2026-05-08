@@ -637,13 +637,14 @@ fi
 
 # Phase 1: Bootstrap — environment validation and prerequisites
 __task "Running bootstrap playbook"
-_cmd_show "ansible-pull -U \"$REPO_URL\" -C \"$BRANCH\" -i 127.0.0.1, --limit=all --clean \"$ANSIBLE_PLAYBOOKS_DIR/bootstrap.yaml\""
+_cmd_show "python3 ../ansible/runner.py bootstrap.yaml"
+#_cmd_show "ansible-pull -U \"$REPO_URL\" -C \"$BRANCH\" -i 127.0.0.1, --limit=all --clean \"$ANSIBLE_PLAYBOOKS_DIR/bootstrap.yaml\""
 _task_done
 
 
 # Phase 2: System-specific provisioning
 __task "Running $SYSTEM_PLAYBOOK playbook"
-_cmd_show "ansible-pull -U \"$REPO_URL\" -C \"$BRANCH\" -i 127.0.0.1, --limit=all --clean \"$ANSIBLE_PLAYBOOKS_DIR/$SYSTEM_PLAYBOOK\""
+#_cmd_show "ansible-pull -U \"$REPO_URL\" -C \"$BRANCH\" -i 127.0.0.1, --limit=all --clean \"$ANSIBLE_PLAYBOOKS_DIR/$SYSTEM_PLAYBOOK\""
 _task_done
 
 

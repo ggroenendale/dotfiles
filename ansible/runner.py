@@ -22,23 +22,25 @@ args = parser.parse_args()
 # Retrieve the playbook filename
 filename = args.filename
 
-loader = DataLoader()
 
-inventory = InventoryManager(loader=loader, sources=["localhost,"])
-variable_manager = VariableManager(loader=loader, inventory=inventory)
+#
+# inventory = InventoryManager(loader=loader, sources=["localhost,"])
+# variable_manager = VariableManager(loader=loader, inventory=inventory)
+#
+# passwords = {}
+#
+# playbook_path = Path(__file__).joinpath("playbooks", filename)
+#
+# # Instantiate a playbook executor to get rid of excessive ansible print statements
+# executor = PlaybookExecutor(
+#     playbooks=[playbook_path],
+#     inventory=inventory,
+#     variable_manager=variable_manager,
+#     loader=loader,
+#     passwords=passwords,
+# )
+#
+# # Run the executor
+# executor.run()
 
-passwords = {}
-
-playbook_path = Path(__file__).joinpath("playbooks", filename)
-
-# Instantiate a playbook executor to get rid of excessive ansible print statements
-executor = PlaybookExecutor(
-    playbooks=[playbook_path],
-    inventory=inventory,
-    variable_manager=variable_manager,
-    loader=loader,
-    passwords=passwords,
-)
-
-# Run the executor
-executor.run()
+print(f"Can the runner even be reach correctly? - Attempt run of: {filename}")
