@@ -97,6 +97,7 @@ variable_manager._options_vars = option_vars
 
 pprint(variable_manager.__dict__)
 
+
 # variable_manager.extra_vars = extra_vars
 
 passwords = {}

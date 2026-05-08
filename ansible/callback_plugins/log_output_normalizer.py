@@ -234,7 +234,7 @@ class CallbackModule(CallbackBase):
         msg = result._result.get("msg", "")
         var = result._result.get("var", "")
 
-        pprint(result._result)
+        # pprint(result._result)
 
         # Create a task output header
         prefix = "[TASK START]"
