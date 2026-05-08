@@ -40,6 +40,8 @@ context.CLIARGS = ImmutableDict(
     verbosity=0,
 )
 
+context._init_global_context()
+
 # ---- Plugin loader (REQUIRED) ----
 init_plugin_loader()
 
