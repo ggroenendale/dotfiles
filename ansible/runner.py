@@ -49,7 +49,7 @@ cliargs["verbosity"] = 0
 # print(type(cliargs["extra_vars"]))
 #
 # extra_vars = cliargs.get("extra_vars", tuple)
-extra_vars = cliargs.get("extra_vars")
+extra_vars = cliargs.get("extra_vars") + (f"ansible_version={ansible_version}",)
 print(extra_vars)
 
 cliargs["extra_vars"] = (f"ansible_version={ansible_version}",)
