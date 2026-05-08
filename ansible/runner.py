@@ -36,7 +36,8 @@ cli = PlaybookCLI(
     [
         "ansible-playbook",
         str(playbook_path),
-        f'--extra-vars "ansible_version={ansible_version}"',
+        "--extra-vars",
+        f"ansible_version={ansible_version}",
     ]
 )
 cli.parse()
