@@ -83,6 +83,7 @@ variable_manager = VariableManager(loader=loader, inventory=inventory)
 
 extra_vars = load_extra_vars(loader=loader)
 variable_manager._extra_vars = extra_vars
+variable_manager._options_vars["ansible_version"] = ansible_version
 
 pprint(variable_manager.__dict__)
 
