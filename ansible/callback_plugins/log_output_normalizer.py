@@ -251,29 +251,29 @@ class CallbackModule(CallbackBase):
 
         if msg:
             # First log to terminal
-            self._log_to_term(f"  {f_prefix}")
+            self._log_to_term(f"    {f_prefix}")
 
             # Then log to file
-            self._log(f"  {prefix}")
+            self._log(f"    {prefix}")
 
             # First log to terminal
-            self._log_to_term(f"  {msg}")
+            self._log_to_term(f"    {msg}")
 
             # Then log to file
-            self._log(f"  {msg}")
+            self._log(f"    {msg}")
 
         else:
             # First log to terminal
-            self._log_to_term(f"  {f_prefix}")
+            self._log_to_term(f"    {f_prefix}")
 
             # Then log to file
-            self._log(f"  {prefix}")
+            self._log(f"    {prefix}")
 
             # First log to terminal
-            self._log_to_term(f"  OK")
+            self._log_to_term(f"    OK")
 
             # Then log to file
-            self._log(f"  OK")
+            self._log(f"    OK")
 
         # Create task end
         # Add a minor border:
