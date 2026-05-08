@@ -58,7 +58,7 @@
       - desktop_applications/firefox
       - desktop_applications/brave
       - desktop_applications/steam
-      - desktop_applications/vlc
+      - desktop_applications/video_player
       - desktop_applications/notes
       - desktop_applications/zoom
 
