@@ -1,0 +1,159 @@
+# Preflight check
+- name: Verify Git is installed
+  command: git --version
+  register: git_check
+  changed_when: false
+  failed_when: git_check.rc != 0
+
+- name: Fail if Git is not available
+  fail:
+    msg: "Git needs to be installed by base_packages before configuring git for user. Ensure Common/base_packages ran successfully"
+  when: git_check.rc != 0
+
+# Run Git Configuration tasks
+- import_tasks: arch_ssh.yaml
+  tags: [git, ssh]
+
+- import_tasks: arch_gpg.yaml
+  when: git_gpg_sign | default(false)
+  tags: [git, gpg]
+
+- import_tasks: arch_git_credentials.yaml
+  tags: [git, credentials]
+
+- import_tasks: arch_git_config.yaml
+  tags: [git, config]
+
+# Run Configuration tasks after Preflight succeeds
+- name: Install Github CLI
+  become: true
+  pacman:
+    name:
+      - github-cli
+    state: present
+
+# Preflight checks
+- name: Assert git identity is defined
+  assert:
+    that:
+      - git_identity is defined
+      - git_identity.name is defined
+      - git_identity.email is defined
+    fail_msg: >
+      Git identity is not defined for this host.
+      Define git_identity in host_vars or group_vars.
+  when: git_require_identity | default(true)
+
+- name: Verify Git is installed
+  command: git --version
+  register: git_check
+  changed_when: false
+  failed_when: git_check.rc != 0
+
+- name: Fail if Git is not available
+  fail:
+    msg: "Git must be installed before configuring git"
+  when: git_check.rc != 0
+
+  # Create config files
+- name: Create ~/.config/git directory
+  file:
+    path: "~/.config/git"
+    state: directory
+    mode: "0755"
+
+- name: Configure global gitignore
+  copy:
+    src: files/gitignore
+    dest: "~/.config/git/ignore"
+    mode: "0644"
+
+- name: Configure global git config
+  template:
+    src: templates/gitconfig.j2
+    dest: "~/.gitconfig"
+    mode: "0644"
+
+- name: Ensure installation directories exist
+  become: true
+  file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+    - /usr/local/bin
+    - /usr/local/lib/gcm-core
+
+- name: Download GCM artifacts
+  block:
+    - get_url:
+        url: https://github.com/git-ecosystem/git-credential-manager/releases/download/v2.6.1/gcm-linux_amd64.2.6.1.tar.gz
+        dest: /tmp/gcm.tar.gz
+
+    - get_url:
+        url: https://github.com/git-ecosystem/git-credential-manager/releases/download/v2.6.1/gcm-linux_amd64.2.6.1.tar.gz.asc
+        dest: /tmp/gcm.tar.gz.asc
+
+    - get_url:
+        url: https://github.com/git-ecosystem/git-credential-manager/releases/download/v2.6.1/gcm-public.asc
+        dest: /tmp/gcm-public.asc
+
+- name: Import GCM public key
+  command: gpg --import /tmp/gcm-public.asc
+
+- name: Verify GCM tarball
+  command: gpg --verify /tmp/gcm.tar.gz.asc /tmp/gcm.tar.gz
+
+- name: Install GCM
+  become: true
+  unarchive:
+    src: /tmp/gcm.tar.gz
+    dest: /usr/local/bin/
+    creates: /usr/local/bin/git-credential-manager
+
+# Preflight checks
+- name: Verify SSH Client is installed
+  command: ssh -V
+  register: ssh_check
+  changed_when: false
+  failed_when: ssh_check.rc != 0
+
+- name: Fail if SSH is not available
+  fail:
+    msg: "SSH is required before configuring git. Ensure Common/ssh ran successfully"
+  when: ssh_check.rc != 0
+
+# SSH key setup
+- name: Ensure .ssh directory exists
+  file:
+    path: "~/.ssh"
+    state: directory
+    mode: "0700"
+
+- name: Generate SSH key (if none exists)
+  openssh_keypair:
+    path: "~/.ssh/id_ed25519"
+    type: ed25519
+    force: false
+
+- name: Configure ssh-agent behavior
+  lineinfile:
+    path: "~/.ssh/config"
+    create: yes
+    mode: "0600"
+    line: "AddKeysToAgent yes"
+
+- name: Install GPG
+  become: true
+  pacman:
+    name: gnupg
+    state: present
+
+- name: Configure GPG agent
+  copy:
+    content: |
+      enable-ssh-support
+      default-cache-ttl 86400
+      max-cache-ttl 86400
+    dest: "~/.gnupg/gpg-agent.conf"
+    mode: "0600"
+  notify: Reload GPG agent
