@@ -714,6 +714,7 @@ printf "${CAT_GREEN} [✓] Running bootstrap playbook\n${NC}"
 
 # Phase 2: System-specific provisioning
 printf "${CAT_OVERLAY1} [..] Running $SYSTEM_PLAYBOOK playbook\n${NC}"
+_cmd_show "python3 \"$DOTFILES_DIR/ansible/runner.py\" $SYSTEM_PLAYBOOK"
 #_cmd_show "ansible-pull -U \"$REPO_URL\" -C \"$BRANCH\" -i 127.0.0.1, --limit=all --clean \"$ANSIBLE_PLAYBOOKS_DIR/$SYSTEM_PLAYBOOK\""
 printf "${CAT_GREEN} [✓] Running $SYSTEM_PLAYBOOK playbook\n${NC}"
 
