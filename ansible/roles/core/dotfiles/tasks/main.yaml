@@ -1,7 +1,7 @@
 ---
 - name: Display Core Dotfiles Config Start
   ansible.builtin.debug:
-    msg: "=== Begin System Bootloader Role Configuration ==="
+    msg: "=== Begin Core Dotfiles Role Configuration ==="
 
 # ===========================================================================
 #
