@@ -1,4 +1,4 @@
-from pprint import pprint
+from pprint import pprint, pformat
 from typing import TYPE_CHECKING
 
 from pathlib import Path
@@ -146,25 +146,68 @@ class CallbackModule(CallbackBase):
         # file writing issues
         print(f"{msg} {reset}")
 
-    def _insert_major_border(self):
+    def _insert_major_border(self, fg=None, bg=None):
         """
         Prints a border for readability
         """
         major_border = "=" * BORDER_LENGTH
+        f_major_border = style(major_border, fg=fg, bg=bg)
 
-        self._log_to_term(major_border)
+        self._log_to_term(f_major_border)
 
         self._log(major_border)
 
-    def _insert_minor_border(self):
+    def _insert_minor_border(self, fg=None, bg=None):
         """
         Prints a border for readability
         """
         minor_border = "-" * BORDER_LENGTH
+        f_minor_border = style(minor_border, fg=fg, bg=bg)
 
-        self._log_to_term(f"  {minor_border}")
+        self._log_to_term(f"  {f_minor_border}")
 
         self._log(f"  {minor_border}")
+
+    def _handle_debug(self, result: CallbackTaskResult):
+        """
+        Handle debug statements
+
+        :param result:
+        :type result: CallbackTaskResult
+        """
+        # Try to retrieve the variable to debug
+        var = result.task.args.get("var", "")
+
+        # Setup pprint
+        def left_indent(text, indent=' ' * 8):
+            return ''.join([indent + l for l in text.splitlines(True)])
+
+        if len(var) > 0:
+            # Add a minor border first
+            self._insert_minor_border(fg=(240, 128, 49))
+
+            # Debug Header
+            debug_header = f"    Debugging: {var}"
+            f_debug_header = style(debug_header, fg=(240, 128, 49))
+
+            # Format variable
+            variable = left_indent(pformat(result._result.get(var,"")))
+            f_variable = style(variable, fg=(240, 128, 49))
+
+            # Debug full variables here
+            self._log_to_term(f_debug_header)
+            self._log(debug_header)
+            self._insert_minor_border(fg=(240, 128, 49))
+            self._log_to_term(f_variable)
+            self._log(variable)
+            self._insert_minor_border(fg=(240, 128, 49))
+
+        elif var == "full":
+            print("Debugging full dictionary")
+            pprint(result.__dict__)
+        else:
+            # Sometimes I only use debug for msg prints.
+            pass
 
     def v2_playbook_on_start(self, playbook: Playbook):
         """
@@ -232,9 +275,6 @@ class CallbackModule(CallbackBase):
         # Retrieve some values
         host = result._host.get_name()
         msg = result._result.get("msg", "")
-        var = result._result.get("var", "")
-
-        # pprint(result._result)
 
         # Create a task output header
         prefix = "[TASK START]"
@@ -248,14 +288,22 @@ class CallbackModule(CallbackBase):
 
         # Add a minor border:
         self._insert_minor_border()
-
         # Create normal task info output
         prefix = "[TASK INFO]"
         f_prefix = style(prefix, fg=(255, 255, 255), bg=(31, 39, 235))
 
-        if var:
-            print(type(var))
-            print(var)
+        # First log to terminal
+        self._log_to_term(f"    {f_prefix}")
+
+        # Then log to file
+        self._log(f"    {prefix}")
+
+        # If debugging variables, run debug function passing
+        # in the result object
+        if result.task.action == "ansible.builtin.debug":
+            # Handle variable debug
+            self._handle_debug(result=result)
+            self._insert_minor_border()
 
         if msg:
             if isinstance(msg, list):
@@ -266,24 +314,12 @@ class CallbackModule(CallbackBase):
                     self._log(f"    {line}")
             else:
                 # First log to terminal
-                self._log_to_term(f"    {f_prefix}")
-
-                # Then log to file
-                self._log(f"    {prefix}")
-
-                # First log to terminal
                 self._log_to_term(f"    {msg}")
 
                 # Then log to file
                 self._log(f"    {msg}")
 
         else:
-            # First log to terminal
-            self._log_to_term(f"    {f_prefix}")
-
-            # Then log to file
-            self._log(f"    {prefix}")
-
             # First log to terminal
             self._log_to_term(f"    OK")
 
@@ -303,14 +339,14 @@ class CallbackModule(CallbackBase):
         """
         # host = result._host.get_name()
         # task_name = result.task.get_name().strip()
-
+        #
         # prefix = "[TASK SKIPPED]"
         # f_prefix = style(prefix, fg=(255, 255, 255), bg=(137, 138, 145))
-
-        # First log to terminal
+        #
+        # # First log to terminal
         # self._log_to_term(f"  {f_prefix}: {task_name}")
-
-        # Then log to file
+        #
+        # # Then log to file
         # self._log(f"  {prefix}: {task_name}")
         pass
 
@@ -327,6 +363,16 @@ class CallbackModule(CallbackBase):
         task_name = result.task.get_name().strip()
         err_msg = result._result.get("msg", "")
 
+        # Create a task output header
+        prefix = "[TASK START]"
+        f_prefix = style(prefix, fg=(255, 255, 255), bg=(204, 43, 224))
+        task_name = result.task.get_name().strip()
+
+        # First log to terminal
+        self._log_to_term(f"  {f_prefix} --- {task_name} ---")
+        # Then log to file
+        self._log(f"  {prefix} --- {task_name} ---")
+
         prefix = "[TASK FAILED]"
         f_prefix = style(prefix, fg=(255, 255, 255), bg=(137, 138, 145))
 
@@ -335,3 +381,7 @@ class CallbackModule(CallbackBase):
 
         # Then log to file
         self._log(f"  {prefix}: {task_name} - {err_msg}")
+
+        # Debug full variables here
+        # pprint(result.__dict__)
+        self._insert_minor_border()

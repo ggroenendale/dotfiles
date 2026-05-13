@@ -1,5 +1,6 @@
 from pprint import pprint
 import argparse
+import getpass
 from ansible.module_utils.common.collections import ImmutableDict
 
 from pathlib import Path
@@ -30,6 +31,10 @@ args = parser.parse_args()
 
 # Retrieve the playbook filename
 filename = args.filename
+
+passwords = {
+    "become_pass": getpass.getpass("Sudo password: ")
+}
 
 playbook_path = Path(__file__).parent.joinpath("playbooks", filename)
 
@@ -78,10 +83,6 @@ extra_vars = {"extra_version_info": ansible_version, "extra_test": "is_extra"}
 
 # extra_vars = load_extra_vars(loader=loader)
 variable_manager._extra_vars = extra_vars
-
-# pprint(variable_manager.__dict__)
-
-passwords = {}
 
 # Instantiate a playbook executor to get rid of excessive ansible print statements
 executor = PlaybookExecutor(
