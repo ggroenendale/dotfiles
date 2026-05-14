@@ -1,0 +1,32 @@
+---
+- name: Display Desktop Environment - Clipboard Config Start
+  ansible.builtin.debug:
+    msg: "=== Begin Desktop Environment - Clipboard Role Configuration ==="
+
+# ===========================================================================
+#
+# ===========================================================================
+
+- name: If Arch, Include Arch Clipboard Config
+  include_tasks: arch.yaml
+  when: is_arch
+
+- name: If Debian, Include Debian Clipboard Config
+  include_tasks: debian.yaml
+  when: is_debian
+
+- name: If OpenSUSE, Include OpenSUSE Clipboard Config
+  include_tasks: opensuse.yaml
+  when: is_opensuse
+
+- name: If Ubuntu, Include Ubuntu Clipboard Config
+  include_tasks: ubuntu.yaml
+  when: is_ubuntu
+
+# ===========================================================================
+#
+# ===========================================================================
+
+- name: Display Desktop Environment - Clipboard Config End
+  ansible.builtin.debug:
+    msg: "=== End Desktop Environment - Clipboard Role Configuration ==="
