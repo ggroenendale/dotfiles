@@ -102,12 +102,6 @@
 # Critical when SSH’d into headless or rescue systems
 # Cheap and always useful
 
-- name: Install essential base packages
-  pacman:
-    name:
-      - git
-    state: present
-
 - name: Install Git Version control system
   pacman:
     name: git
