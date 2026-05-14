@@ -1,0 +1,31 @@
+---
+- name: Display User Config Start
+  ansible.builtin.debug:
+    msg: "=== Begin User Role Configuration ==="
+
+# ===========================================================================
+#
+# ===========================================================================
+
+- name: If Arch, Include Arch Users Config
+  include_tasks: arch.yaml
+  when: is_arch
+
+- name: If Debian, Include Debian Users Config
+  include_tasks: debian.yaml
+  when: is_debian
+
+- name: If OpenSUSE, Include OpenSUSE Users Config
+  include_tasks: opensuse.yaml
+  when: is_opensuse
+
+- name: If Ubuntu, Include Ubuntu Users Config
+  include_tasks: ubuntu.yaml
+  when: is_ubuntu
+# ===========================================================================
+#
+# ===========================================================================
+
+- name: Display User Config End
+  ansible.builtin.debug:
+    msg: "=== End User Role Configuration ==="

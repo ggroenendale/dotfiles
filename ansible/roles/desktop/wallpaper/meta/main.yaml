@@ -1,0 +1,26 @@
+galaxy_info:
+  role_name: desktop/wallpaper
+  description: Install Wallpaper daemon and wallpaper switcher
+  license: MIT
+  min_ansible_version: "2.14"
+
+  platforms:
+    - name: ArchLinux
+      versions:
+        - all
+    - name: Debian
+      versions:
+        - bookwork
+        - bullseye
+    - name: OpenSUSE
+      versions:
+        - all
+    - name: OpenSUSE
+      versions:
+        - all
+    - name: Ubuntu
+      versions:
+        - all
+
+dependencies:
+  - role: core/base_packages
