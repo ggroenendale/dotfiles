@@ -1,0 +1,36 @@
+galaxy_info:
+  role_name: dev/ide
+  description: Install and configure neovim and neovide
+  license: MIT
+  min_ansible_version: "2.14"
+
+  platforms:
+    - name: ArchLinux
+      versions:
+        - all
+    - name: Debian
+      versions:
+        - bookwork
+        - bullseye
+    - name: OpenSUSE
+      versions:
+        - all
+    - name: OpenSUSE
+      versions:
+        - all
+    - name: Ubuntu
+      versions:
+        - all
+
+dependencies:
+  # Requires nothing for the time being
+  - role: common/git
+  - role: common/curl
+  - role: common/gcc
+  - role: common/make
+  - role: common/lazygit
+  - role: common/lazydocker
+  - role: common/podman
+  - role: common/stow
+  - role: common/nodejs_npm
+  - role: common/

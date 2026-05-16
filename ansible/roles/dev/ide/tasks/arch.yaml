@@ -3,8 +3,13 @@
   pacman:
     name:
       - neovim
-      - ripgrep
     state: present
+
+- name: Install requirements for telescope.nvim (ripgrep, fd, fzf, devicons)
+  become: true
+  pacman:
+    name:
+      - ripgrep
 
 - name: Install Lazygit
   become: true
