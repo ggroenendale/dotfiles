@@ -1,3 +1,4 @@
+---
 galaxy_info:
   role_name: desktop_applications/firefox
   description: Install Firefox Browser and configure extensions

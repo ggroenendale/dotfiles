@@ -1,3 +1,4 @@
+---
 galaxy_info:
   role_name: desktop_applications/gimp
   description: Install and verify Gimp Application

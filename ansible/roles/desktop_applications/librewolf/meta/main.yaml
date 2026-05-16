@@ -1,3 +1,4 @@
+---
 galaxy_info:
   role_name: desktop_applications/librewolf
   description: Install LibreWolf Browser and configure extensions
