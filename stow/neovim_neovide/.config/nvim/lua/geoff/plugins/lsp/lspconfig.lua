@@ -108,7 +108,7 @@ return {
 		})
 
 		-- Customize the documentation hover window
-		vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
+		vim.lsp.handlers["textDocument/hover"] = vim.lsp.buf.hover({
 			border = "rounded", -- other options: "single", "double", "shadow", "none"
 			max_width = 80,
 		})
@@ -129,6 +129,7 @@ return {
 			setup = {},
 			filetypes = { "markdown" },
 		})
+		vim.lsp.enable("markdown_oxide")
 		--vim.lsp.markdown_oxide = {
 		--	setup = {
 		--		capabilities = capabilities,

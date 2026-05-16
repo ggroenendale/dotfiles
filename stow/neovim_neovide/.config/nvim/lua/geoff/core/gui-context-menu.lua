@@ -24,7 +24,7 @@ function M.setup()
 	--M._clear_existing_menus()
 
 	-- Define the main PopUp menu structure
-	M._define_popup_menus()
+	--M._define_popup_menus()
 
 	--vim.notify("Context menus configured", vim.log.levels.INFO)
 end
