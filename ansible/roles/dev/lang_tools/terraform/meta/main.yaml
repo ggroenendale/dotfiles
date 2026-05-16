@@ -1,0 +1,27 @@
+galaxy_info:
+  role_name: dev/lang_tools/terraform
+  description: Install Terraform Language tools
+  license: MIT
+  min_ansible_version: "2.14"
+
+  platforms:
+    - name: ArchLinux
+      versions:
+        - all
+    - name: Debian
+      versions:
+        - bookwork
+        - bullseye
+    - name: OpenSUSE
+      versions:
+        - all
+    - name: OpenSUSE
+      versions:
+        - all
+    - name: Ubuntu
+      versions:
+        - all
+
+dependencies:
+  # Requires common requirements for install
+  - role: common/git
