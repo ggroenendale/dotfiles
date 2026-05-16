@@ -1,16 +1,31 @@
-# LibreWolf Verification
-- name: Check LibreWolf version
-  command: librewolf --version
-  register: lw_version
-  changed_when: false
+---
+- name: Display Desktop Applications - Zen Browser Start
+  ansible.builtin.debug:
+    msg: "=== Begin Desktop Applications - Zen Browser Role Configuration ==="
 
-- name: Validate extensions
-  stat:
-    path: "~/.librewolf/{{ ansible_user_id }}/extensions/"
-  register: ext_dir
+# ===========================================================================
+#
+# ===========================================================================
 
-- name: Show status
-  debug:
-    msg:
-      - "LibreWolf {{ lw_version.stdout }} configured"
-      - "Extensions installed: {{ ext_dir.stat.exists }}"
+- name: If Arch, Include Arch Zen Browser Config
+  include_tasks: arch.yaml
+  when: is_arch
+
+- name: If Debian, Include Debian Zen Browser Config
+  include_tasks: debian.yaml
+  when: is_debian
+
+- name: If OpenSUSE, Include OpenSUSE Zen Browser Config
+  include_tasks: opensuse.yaml
+  when: is_opensuse
+
+- name: If Ubuntu, Include Ubuntu Zen Browser Config
+  include_tasks: ubuntu.yaml
+  when: is_ubuntu
+# ===========================================================================
+#
+# ===========================================================================
+
+- name: Display Desktop Applications - Zen Browser Config End
+  ansible.builtin.debug:
+    msg: "=== End Desktop Applications - Zen Browser Role Configuration ==="

@@ -1,6 +1,6 @@
 galaxy_info:
-  role_name: desktop_applications/inkscape
-  description: Install Inkscape
+  role_name: desktop_applications/gimp
+  description: Install and verify Gimp Application
   license: MIT
   min_ansible_version: "2.14"
 
@@ -23,4 +23,4 @@ galaxy_info:
         - all
 
 dependencies:
-  - role:
+  - role: graphics/opengl

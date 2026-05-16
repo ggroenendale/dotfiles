@@ -1,15 +1,24 @@
 galaxy_info:
-  role_name: freecad
+  role_name: desktop_applications/freecad
   description: Install and verify FreeCAD Application
   license: MIT
   min_ansible_version: "2.14"
 
   platforms:
+    - name: ArchLinux
+      versions:
+        - all
     - name: Debian
       versions:
         - bookwork
         - bullseye
-    - name: ArchLinux
+    - name: OpenSUSE
+      versions:
+        - all
+    - name: OpenSUSE
+      versions:
+        - all
+    - name: Ubuntu
       versions:
         - all
 

@@ -1,6 +1,6 @@
 galaxy_info:
-  role_name: desktop_applications/inkscape
-  description: Install Inkscape
+  role_name: desktop_applications/steam
+  description: Install Steam and configure game file storage
   license: MIT
   min_ansible_version: "2.14"
 
@@ -23,4 +23,5 @@ galaxy_info:
         - all
 
 dependencies:
-  - role:
+  - role: graphics/nvidia
+  - role: graphics/opengl

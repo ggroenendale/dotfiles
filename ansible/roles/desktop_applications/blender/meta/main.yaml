@@ -1,6 +1,6 @@
 galaxy_info:
-  role_name: desktop_applications/inkscape
-  description: Install Inkscape
+  role_name: desktop_applications/blender
+  description: Install and verify Blender Application
   license: MIT
   min_ansible_version: "2.14"
 
@@ -23,4 +23,6 @@ galaxy_info:
         - all
 
 dependencies:
-  - role:
+  - role: hardware/graphics/nvidia
+  - role: hardware/graphics/opengl
+  - role: hardware/graphics/cuda

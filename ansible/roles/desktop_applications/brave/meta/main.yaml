@@ -1,6 +1,6 @@
 galaxy_info:
-  role_name: desktop_applications/inkscape
-  description: Install Inkscape
+  role_name: desktop_applications/brave
+  description: Install Brave Browser and configure extensions
   license: MIT
   min_ansible_version: "2.14"
 
