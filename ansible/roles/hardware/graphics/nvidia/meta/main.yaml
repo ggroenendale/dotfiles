@@ -1,3 +1,4 @@
+---
 galaxy_info:
   role_name: hardware/graphics/nvidia
   description: Verify Nvidia GPU capability for desktop applications

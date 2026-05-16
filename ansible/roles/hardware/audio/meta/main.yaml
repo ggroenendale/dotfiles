@@ -1,3 +1,4 @@
+---
 galaxy_info:
   role_name: hardware/audio
   description: Install Audio drivers and utilities (pipewire, pwvucontrol)

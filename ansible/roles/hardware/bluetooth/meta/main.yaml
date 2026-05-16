@@ -1,3 +1,4 @@
+---
 galaxy_info:
   role_name: hardware/bluetooth
   description: Install Bluetooth utilities and configure special bluetooth devices (bluez, bluetoothctl)

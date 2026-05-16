@@ -1,8 +1,46 @@
+---
+- name: Install Nvidia package
+  become: true
+  pacman:
+    name: nvidia
+    state: present
+    update_cache: yes
+
+- name: Install Nvidia Utils package
+  become: true
+  pacman:
+    name: nvidia-utils
+    state: present
+    update_cache: yes
+
+- name: Install Nvidia Settings package
+  become: true
+  pacman:
+    name: nvidia-settings
+    state: present
+    update_cache: yes
+
+- name: Install Opencl Nvidia for GPU Computing
+  become: true
+  pacman:
+    name: opencl-nvidia
+    state: present
+    update_cache: yes
+
+# Whatever DKMS is
+- name: Detect if using DKMS (for custom kernels)
+  stat:
+    path: /usr/lib/modules/{{ ansible_kernel }}/extramodules
+  register: dkms_needed
+  #when: "'linux-lts' in ansible_kernel or 'linux-zen' in ansible_kernel"
+
 - name: Install DKMS variant if needed
   pacman:
     name: nvidia-dkms
     state: present
   when: dkms_needed.stat.exists
+
+# =============================================================================
 
 - name: Add NVIDIA modules to mkinitcpio
   lineinfile:
@@ -12,6 +50,8 @@
     backrefs: yes
   notify: Rebuild initramfs
 
+# Grub requirement
+
 - name: Enable DRM kernel mode setting
   become: true
   lineinfile:
@@ -20,3 +60,18 @@
     line: 'GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet nvidia-drm.modeset=1"'
     backrefs: yes
   notify: Update GRUB config
+
+- name: Create Xorg configuration
+  copy:
+    content: |
+      Section "Device"
+          Identifier     "Device0"
+          Driver         "nvidia"
+          VendorName     "NVIDIA Corporation"
+          BoardName      "GeForce GTX 1660 Super"
+      EndSection
+    dest: /etc/X11/xorg.conf.d/10-nvidia.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart display manager

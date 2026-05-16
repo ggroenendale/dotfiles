@@ -1,3 +1,4 @@
+---
 galaxy_info:
   role_name: hardware/graphics/opengl
   description: Verify OpenGL and GPU capability for desktop applications
