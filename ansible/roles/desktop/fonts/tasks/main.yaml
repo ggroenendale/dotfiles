@@ -1,0 +1,58 @@
+---
+# =============================================================================
+# Font Installation Role
+#
+# Purpose:
+#   Deploys development fonts (Mononoki Nerd Font, SourceCodePro Nerd Font,
+#   Nerd Font Symbols) to the system. Uses package manager first where
+#   available, falls back to copying font files from the role's files/
+#   directory.
+#
+# Priority Order:
+#   1. Package manager (pacman/apt/zypper) — preferred on Arch/Debian/openSUSE
+#   2. File copy fallback — used when packages aren't available in repos
+#
+# Supported OS:
+#   - Arch Linux (pacman): ttf-mononoki-nerd, ttf-sourcecodepro-nerd,
+#     nerd-fonts-symbols, ttf-nerd-fonts-symbols-mono
+#   - Debian/Ubuntu (apt): fonts-firacode (fallback only — nerd fonts not in
+#     official repos)
+#   - openSUSE (zypper): fetch-git (fallback only — nerd fonts not in official
+#     repos)
+#
+# Tags:
+#   - fonts: Run font tasks selectively
+#   - fonts-packages: Package installation only
+#   - fonts-files: File copy fallback only
+# =============================================================================
+- name: Display Core Fonts Config Start
+  ansible.builtin.debug:
+    msg: "=== Begin System Bootloader Role Configuration ==="
+
+# ===========================================================================
+#
+# ===========================================================================
+
+- name: If Arch, Include Arch Fonts Config
+  include_tasks: arch.yaml
+  when: is_arch
+
+- name: If Debian, Include Debian Fonts Config
+  include_tasks: debian.yaml
+  when: is_debian
+
+- name: If OpenSUSE, Include OpenSUSE Fonts Config
+  include_tasks: opensuse.yaml
+  when: is_opensuse
+
+- name: If Ubuntu, Include Ubuntu Fonts Config
+  include_tasks: ubuntu.yaml
+  when: is_ubuntu
+
+# ===========================================================================
+#
+# ===========================================================================
+
+- name: Display Core Fonts Config End
+  ansible.builtin.debug:
+    msg: "=== End Core Fonts Role Configuration ==="

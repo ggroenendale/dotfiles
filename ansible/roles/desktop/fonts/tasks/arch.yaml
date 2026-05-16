@@ -1,0 +1,60 @@
+- name: Include OS-specific variables
+  ansible.builtin.include_vars: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_os_family }}.yml"
+        - "{{ ansible_distribution }}.yml"
+        - default.yml
+      paths:
+        - "{{ role_path }}/vars"
+  tags: fonts
+
+- name: Install font packages via system package manager
+  ansible.builtin.package:
+    name: "{{ font_packages }}"
+    state: present
+  when: font_packages is defined and font_packages | length > 0
+  become: true
+  tags:
+    - fonts
+    - fonts-packages
+
+- name: Check if fonts are already installed (package manager succeeded)
+  ansible.builtin.stat:
+    path: "/usr/share/fonts/TTF/MononokiNerdFont-Regular.ttf"
+  register: system_font_check
+  tags: fonts
+
+- name: Copy font files to user font directory (fallback)
+  ansible.builtin.copy:
+    src: "files/{{ item }}/"
+    dest: "{{ ansible_env.HOME }}/.local/share/fonts/{{ item }}/"
+    mode: "0644"
+    directory_mode: "0755"
+  loop:
+    - Mononoki
+    - SourceCodePro
+    - NerdFontsSymbolsOnly
+  when: not system_font_check.stat.exists
+  tags:
+    - fonts
+    - fonts-files
+
+- name: Copy Nerd Fonts fontconfig conf (fallback)
+  ansible.builtin.copy:
+    src: files/NerdFontsSymbolsOnly/10-nerd-font-symbols.conf
+    dest: "{{ ansible_env.HOME }}/.local/share/fonts/10-nerd-font-symbols.conf"
+    mode: "0644"
+  when: not system_font_check.stat.exists
+  tags:
+    - fonts
+    - fonts-files
+
+- name: Run fc-cache to register fonts
+  ansible.builtin.command:
+    cmd: fc-cache -fv
+  changed_when: false
+  when: not system_font_check.stat.exists
+  tags:
+    - fonts
+    - fonts-files
