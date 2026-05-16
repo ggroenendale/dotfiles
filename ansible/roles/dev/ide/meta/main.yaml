@@ -1,3 +1,4 @@
+---
 galaxy_info:
   role_name: dev/ide
   description: Install and configure neovim and neovide

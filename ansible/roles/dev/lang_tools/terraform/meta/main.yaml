@@ -1,3 +1,4 @@
+---
 galaxy_info:
   role_name: dev/lang_tools/terraform
   description: Install Terraform Language tools
