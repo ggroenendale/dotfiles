@@ -1,14 +1,9 @@
-# - name: Check if GNU Stow is installed
-#   ansible.builtin.command: command -v stow
-#   register: stow_check
-#   changed_when: false
-#   failed_when: stow_check.rc != 0
-
+---
 # ====================================================================
 # First Ensure Stow is available or install it, become sudo to do so,
 # Sudo password is passed into the runner.py script\
 - name: Ensure GNU Stow is installed
-  ansible.builtin.package:
+  zypper:
     name: stow
     state: present
   become: true

@@ -1,13 +1,61 @@
+---
+# ====================================================================
+# First Ensure Stow is available or install it, become sudo to do so,
+# Sudo password is passed into the runner.py script\
+- name: Ensure GNU Stow is installed
+  pacman:
+    name: stow
+    state: present
+  become: true
+
+# ====================================================================
+# Next find all of the folders with in the stow directory of the
+# dotfiles repository: app_desktop_files, bash, desktop_environment, neovim_neovide, etc.
 - name: Find stow packages
   ansible.builtin.find:
-    paths: "{{ ansible_env.HOME }}/.dotfiles/stow"
+    paths: "{{ ansible_facts.env.HOME }}/.dotfiles/stow"
     file_type: directory
     depth: 1
   register: stow_dirs
 
-- name: Stow all packages dynamically
-  ansible.builtin.command: >
-    stow --restow {{ item.path | basename }}
-  args:
-    chdir: "{{ ansible_env.HOME }}/.dotfiles/stow"
-  loop: "{{ stow_dirs.files }}"
+# ====================================================================
+# Stow doesn't overwrite any existing files on the machine. It will only
+# symlink files from the dotfiles repository to their destinations if
+#
+# The file doesn't currently exist, the --adopt flag is also garbage
+# because it would overwrite the .dotfiles state of that file.
+#
+# As an example, the .bashrc file may come pre-installed with any
+# operating system. It needs to be replaced regardless by the
+# dotfiles copy, but stow can't accomplish this.
+#
+# In order to remove any possible conflicting file, we need to loop thru
+# the stow directories and copy all filepaths into a list. Then loop
+# through that list and remove any conflicting file before stowing.
+- name: Initialize stow_map
+  set_fact:
+    stow_map: []
+
+- name: Collect stow-managed files
+  ansible.builtin.find:
+    paths: "{{ ansible_facts.env.HOME }}/.dotfiles/stow/"
+    file_type: file
+    recurse: true
+    hidden: true
+  register: stow_files
+
+- name: Build file mappings
+  ansible.builtin.set_fact:
+    stow_map: "{{ stow_map + [{
+      'source': item.path,
+      'target': ansible_facts.env.HOME + '/' + (item.path | regex_replace('^.*/stow/[^/]+/', ''))
+    }] }}"
+  loop: "{{ stow_files.files }}"
+
+- name: Stat target files
+  stat:
+    path: "{{ item.target }}"
+  loop: "{{ stow_map }}"
+  register: target_stats
+
+- name: Remove incorrect files or wrong symlinks

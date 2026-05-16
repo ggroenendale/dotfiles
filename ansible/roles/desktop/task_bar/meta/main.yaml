@@ -1,3 +1,4 @@
+---
 galaxy_info:
   role_name: desktop/task_bar
   description: Install task bar tools and plugins for the task bar (waybar)

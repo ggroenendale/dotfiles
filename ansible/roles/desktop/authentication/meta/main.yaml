@@ -1,3 +1,4 @@
+---
 galaxy_info:
   role_name: desktop/authentication
   description: Install authentication tool, unrelated to login tool

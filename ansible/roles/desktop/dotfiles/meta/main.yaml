@@ -1,0 +1,43 @@
+---
+galaxy_info:
+  role_name: desktop/clipboard
+  description: Install clipboard tools
+  license: MIT
+  min_ansible_version: "2.14"
+
+  platforms:
+    - name: ArchLinux
+      versions:
+        - all
+    - name: Debian
+      versions:
+        - bookwork
+        - bullseye
+    - name: OpenSUSE
+      versions:
+        - all
+    - name: OpenSUSE
+      versions:
+        - all
+    - name: Ubuntu
+      versions:
+        - all
+
+dependencies:
+  # Requires stow to be able to copy and symlink files
+  - role: common/stow
+  # Make sure the other desktop roles are installed and configured
+  - role: desktop/wayland
+  - role: desktop/hyprland
+  - role: desktop/authentication
+  - role: desktop/login_manager
+  - role: desktop/terminals
+  - role: desktop/task_bar
+  - role: desktop/notifications
+  - role: desktop/run_menu
+  - role: desktop/wallpaper
+  - role: desktop/theme
+  - role: desktop/widgets
+  - role: desktop/fonts
+  - role: desktop/file_managers
+  - role: desktop/clipboard

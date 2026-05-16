@@ -1,3 +1,4 @@
+---
 galaxy_info:
   role_name: desktop/wayland
   description: Install Wayland as a first step before installing any desktop environment stuff

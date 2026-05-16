@@ -1,3 +1,4 @@
+---
 galaxy_info:
   role_name: desktop/terminals
   description: Install terminal and theme tools (kitty & starship)

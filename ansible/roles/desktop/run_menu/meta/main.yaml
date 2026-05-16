@@ -1,3 +1,4 @@
+---
 galaxy_info:
   role_name: desktop/run_menu
   description: Install run menu tool and configure special options (fuzzel)

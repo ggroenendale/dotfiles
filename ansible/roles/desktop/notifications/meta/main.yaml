@@ -1,3 +1,4 @@
+---
 galaxy_info:
   role_name: desktop/notifications
   description: Install notifications daemon (mako)

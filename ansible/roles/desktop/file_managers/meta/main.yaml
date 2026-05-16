@@ -1,3 +1,4 @@
+---
 galaxy_info:
   role_name: desktop/file_managers
   description: Install and configure file manager tools (thunar, dolphin?, plugins)
