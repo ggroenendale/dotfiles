@@ -1,0 +1,6 @@
+pacman:
+  name:
+    - nodejs
+    - nvm
+    - npm
+  state: present

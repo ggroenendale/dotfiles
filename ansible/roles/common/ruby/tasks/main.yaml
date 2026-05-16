@@ -1,0 +1,32 @@
+---
+- name: Display Common Ruby Config Start
+  ansible.builtin.debug:
+    msg: "=== Begin Common Ruby Role Configuration ==="
+
+# ===========================================================================
+#
+# ===========================================================================
+
+- name: If Arch, Include Arch Ruby Config
+  include_tasks: arch.yaml
+  when: is_arch
+
+- name: If Debian, Include Debian Ruby Config
+  include_tasks: debian.yaml
+  when: is_debian
+
+- name: If OpenSUSE, Include OpenSUSE Ruby Config
+  include_tasks: opensuse.yaml
+  when: is_opensuse
+
+- name: If Ubuntu, Include Ubuntu Ruby Config
+  include_tasks: ubuntu.yaml
+  when: is_ubuntu
+
+# ===========================================================================
+#
+# ===========================================================================
+
+- name: Display Common Ruby Config End
+  ansible.builtin.debug:
+    msg: "=== End Common Ruby Role Configuration ==="
