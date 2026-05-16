@@ -23,14 +23,17 @@ galaxy_info:
         - all
 
 dependencies:
-  # Requires nothing for the time being
+  # Requires common requirements for install
   - role: common/git
   - role: common/curl
   - role: common/gcc
   - role: common/make
-  - role: common/lazygit
-  - role: common/lazydocker
-  - role: common/podman
   - role: common/stow
   - role: common/nodejs_npm
-  - role: common/
+  - role: common/python
+  - role: common/rust
+  - role: common/ruby
+  # Other developer specific requirements
+  - role: dev/lazygit
+  - role: dev/lazydocker
+  - role: dev/podman
