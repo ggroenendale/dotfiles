@@ -1,0 +1,12 @@
+---
+- name: Ensure gcc is installed (openSUSE)
+  zypper:
+    name: gcc
+    state: present
+  become: true
+
+- name: Ensure C++ compiler is installed (openSUSE)
+  zypper:
+    name: gcc-c++
+    state: present
+  become: true

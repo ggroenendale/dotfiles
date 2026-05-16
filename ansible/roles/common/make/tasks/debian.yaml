@@ -1,0 +1,7 @@
+---
+- name: Ensure Make is installed (Debian)
+  apt:
+    name: make
+    state: present
+    update_cache: yes
+  become: true

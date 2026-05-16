@@ -1,5 +1,6 @@
-- name: Install Go
+---
+- name: Ensure Go is installed (Arch)
   pacman:
-    name:
-      - go
+    name: go
     state: present
+  become: true

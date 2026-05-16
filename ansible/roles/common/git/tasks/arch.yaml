@@ -1,0 +1,6 @@
+---
+- name: Ensure git is installed (Arch)
+  pacman:
+    name: git
+    state: present
+  become: true

@@ -1,0 +1,6 @@
+---
+- name: Ensure Make is installed (Arch)
+  pacman:
+    name: make
+    state: present
+  become: true

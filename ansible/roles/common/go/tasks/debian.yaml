@@ -1,0 +1,7 @@
+---
+- name: Ensure Go is installed (Debian)
+  apt:
+    name: golang
+    state: present
+    update_cache: yes
+  become: true

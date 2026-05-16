@@ -1,0 +1,7 @@
+---
+- name: Ensure Ruby is installed (Debian)
+  apt:
+    name: ruby-full
+    state: present
+    update_cache: yes
+  become: true

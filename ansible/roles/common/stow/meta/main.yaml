@@ -1,3 +1,4 @@
+---
 galaxy_info:
   role_name: common/stow
   description: Common requirement to make sure stow is installed

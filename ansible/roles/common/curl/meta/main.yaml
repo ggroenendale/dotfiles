@@ -1,3 +1,4 @@
+---
 galaxy_info:
   role_name: common/curl
   description: Common requirement to make sure curl is installed

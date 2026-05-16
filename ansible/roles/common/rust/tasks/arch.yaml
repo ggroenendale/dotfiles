@@ -1,6 +1,12 @@
-- name: Install Rust
-  become: true
+---
+- name: Ensure Rust compiler is installed (Arch)
   pacman:
-    name:
-      - rust
+    name: rust
     state: present
+  become: true
+
+- name: Ensure Cargo is installed (Arch)
+  pacman:
+    name: cargo
+    state: present
+  become: true

@@ -1,0 +1,7 @@
+---
+- name: Ensure GNU Stow is installed (Debian)
+  apt:
+    name: stow
+    state: present
+    update_cache: yes
+  become: true

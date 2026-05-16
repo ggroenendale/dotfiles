@@ -1,0 +1,19 @@
+---
+- name: Ensure Node.js is installed (Ubuntu)
+  apt:
+    name: nodejs
+    state: present
+    update_cache: yes
+  become: true
+
+- name: Ensure npm is installed (Ubuntu)
+  apt:
+    name: npm
+    state: present
+  become: true
+
+- name: Install nvm (Node Version Manager) for Ubuntu
+  shell: curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+  args:
+    creates: "{{ ansible_facts.env.HOME }}/.nvm/nvm.sh"
+  become: false

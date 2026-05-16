@@ -1,3 +1,4 @@
+---
 galaxy_info:
   role_name: common/go
   description: Common requirement to make sure Go is installed

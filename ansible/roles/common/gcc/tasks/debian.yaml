@@ -1,0 +1,14 @@
+---
+- name: Ensure gcc is installed (Debian)
+  apt:
+    name: gcc
+    state: present
+    update_cache: yes
+  become: true
+
+- name: Ensure C++ compiler is installed (Debian/Ubuntu)
+  apt:
+    name: g++
+    state: present
+    update_cache: yes
+  become: true

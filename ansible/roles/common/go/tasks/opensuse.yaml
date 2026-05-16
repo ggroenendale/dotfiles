@@ -1,0 +1,6 @@
+---
+- name: Ensure Go is installed (openSUSE)
+  zypper:
+    name: go
+    state: present
+  become: true

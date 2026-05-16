@@ -1,3 +1,4 @@
+---
 galaxy_info:
   role_name: common/rust
   description: Common requirement to make sure rust is installed

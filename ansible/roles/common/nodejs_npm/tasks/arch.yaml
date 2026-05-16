@@ -1,6 +1,18 @@
-pacman:
-  name:
-    - nodejs
-    - nvm
-    - npm
-  state: present
+---
+- name: Ensure Node.js is installed (Arch)
+  pacman:
+    name: nodejs
+    state: present
+  become: true
+
+- name: Ensure npm is installed (Arch)
+  pacman:
+    name: npm
+    state: present
+  become: true
+
+- name: Install nvm (Node Version Manager) for Arch
+  shell: curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+  args:
+    creates: "{{ ansible_facts.env.HOME }}/.nvm/nvm.sh"
+  become: false

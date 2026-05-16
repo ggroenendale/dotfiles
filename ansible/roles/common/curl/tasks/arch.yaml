@@ -1,0 +1,6 @@
+---
+- name: Ensure curl is installed (Arch)
+  pacman:
+    name: curl
+    state: present
+  become: true

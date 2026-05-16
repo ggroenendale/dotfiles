@@ -1,3 +1,4 @@
+---
 galaxy_info:
   role_name: common/make
   description: Common requirement to make sure Make is installed

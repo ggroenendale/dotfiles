@@ -1,0 +1,12 @@
+---
+- name: Ensure Rust compiler is installed (openSUSE)
+  zypper:
+    name: rust
+    state: present
+  become: true
+
+- name: Ensure Cargo is installed (openSUSE)
+  zypper:
+    name: cargo
+    state: present
+  become: true

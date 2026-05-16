@@ -1,0 +1,13 @@
+---
+- name: Ensure Rust compiler is installed (Ubuntu)
+  apt:
+    name: rustc
+    state: present
+    update_cache: yes
+  become: true
+
+- name: Ensure Cargo is installed (Ubuntu)
+  apt:
+    name: cargo
+    state: present
+  become: true

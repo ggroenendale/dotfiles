@@ -1,0 +1,6 @@
+---
+- name: Ensure Ruby is installed (openSUSE)
+  zypper:
+    name: ruby
+    state: present
+  become: true

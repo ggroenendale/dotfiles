@@ -1,0 +1,8 @@
+---
+- name: Ensure gcc is installed (Arch)
+  pacman:
+    name: gcc
+    state: present
+  become: true
+#
+# Note the C++ compiler g++ comes with gcc on pacman by default

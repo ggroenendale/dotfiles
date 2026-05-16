@@ -1,0 +1,7 @@
+---
+- name: Ensure git is installed (Ubuntu)
+  apt:
+    name: git
+    state: present
+    update_cache: yes
+  become: true

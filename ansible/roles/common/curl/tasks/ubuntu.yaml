@@ -1,0 +1,7 @@
+---
+- name: Ensure curl is installed (Ubuntu)
+  apt:
+    name: curl
+    state: present
+    update_cache: yes
+  become: true

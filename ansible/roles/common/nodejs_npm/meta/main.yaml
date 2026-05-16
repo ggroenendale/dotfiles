@@ -1,3 +1,4 @@
+---
 galaxy_info:
   role_name: common/nodejs_npm
   description: Common requirement to make sure nodejs and npm is installed

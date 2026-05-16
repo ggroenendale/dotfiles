@@ -1,3 +1,4 @@
+---
 galaxy_info:
   role_name: common/python
   description: Common requirement to make sure python is installed

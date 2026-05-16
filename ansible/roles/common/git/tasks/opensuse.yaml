@@ -1,0 +1,6 @@
+---
+- name: Ensure git is installed (openSUSE)
+  zypper:
+    name: git
+    state: present
+  become: true

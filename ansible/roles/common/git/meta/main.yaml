@@ -1,3 +1,4 @@
+---
 galaxy_info:
   role_name: common/git
   description: Common requirement to make sure Git is installed

@@ -1,3 +1,4 @@
+---
 galaxy_info:
   role_name: common/ruby
   description: Common requirement to make sure ruby is installed

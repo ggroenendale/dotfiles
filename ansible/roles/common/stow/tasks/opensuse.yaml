@@ -1,0 +1,6 @@
+---
+- name: Ensure GNU Stow is installed (openSUSE)
+  zypper:
+    name: stow
+    state: present
+  become: true

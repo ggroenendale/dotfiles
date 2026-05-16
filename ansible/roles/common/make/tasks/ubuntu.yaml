@@ -1,0 +1,7 @@
+---
+- name: Ensure Make is installed (Ubuntu)
+  apt:
+    name: make
+    state: present
+    update_cache: yes
+  become: true

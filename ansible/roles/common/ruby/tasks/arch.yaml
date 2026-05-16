@@ -1,6 +1,6 @@
-- name: Install Ruby
-  become: true
+---
+- name: Ensure Ruby is installed (Arch)
   pacman:
-    name:
-      - ruby
+    name: ruby
     state: present
+  become: true

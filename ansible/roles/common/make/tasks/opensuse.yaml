@@ -1,0 +1,6 @@
+---
+- name: Ensure Make is installed (openSUSE)
+  zypper:
+    name: make
+    state: present
+  become: true
