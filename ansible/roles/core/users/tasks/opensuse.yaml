@@ -1,4 +1,0 @@
----
-- name: OpenSUSE Flag for users test
-  ansible.builtin.debug:
-    msg: "Configuring Users for OpenSUSE ........"
