@@ -153,12 +153,12 @@
         "device": "intel_backlight",
         "format": "{icon}{percent}% ",
         "tooltip": true,
-        "tooltip-format": "当前屏幕亮度: {percent}%",
+        "tooltip-format": ": {percent}%",
         "format-icons": [
-            " 󰃞 ", // 暗 - 深灰
-            " 󰃝 ", // 中 - 灰
-            " 󰃟 ", // 亮 - 柠檬黄
-            " 󰃠 " // 最亮 - 金色
+            " 󰃞 ",
+            " 󰃝 ",
+            " 󰃟 ",
+            " 󰃠 "
         ]
     },
     "bluetooth": {
@@ -174,7 +174,7 @@
         "numlock": true,
         "format": {
             "numlock": "N {icon}"
-            },
+        },
         "format-icons": {
             "locked": "",
             "unlocked": ""
