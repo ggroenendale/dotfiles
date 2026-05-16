@@ -1,25 +1,25 @@
 ---
-- name: Display Hardware Audio Config Start
+- name: Display Hardware Webcam Config Start
   ansible.builtin.debug:
-    msg: "=== Begin Hardware Audio Role Configuration ==="
+    msg: "=== Begin Hardware Webcam Role Configuration ==="
 
 # ===========================================================================
 #
 # ===========================================================================
 
-- name: If Arch, Include Arch Hardware Audio Config
+- name: If Arch, Include Arch Hardware Webcam Config
   include_tasks: arch.yaml
   when: is_arch
 
-- name: If Debian, Include Debian Hardware Audio Config
+- name: If Debian, Include Debian Hardware Webcam Config
   include_tasks: debian.yaml
   when: is_debian
 
-- name: If OpenSUSE, Include OpenSUSE Hardware Audio Config
+- name: If OpenSUSE, Include OpenSUSE Hardware Webcam Config
   include_tasks: opensuse.yaml
   when: is_opensuse
 
-- name: If Ubuntu, Include Ubuntu Hardware Audio Config
+- name: If Ubuntu, Include Ubuntu Hardware Webcam Config
   include_tasks: ubuntu.yaml
   when: is_ubuntu
 
@@ -27,6 +27,6 @@
 #
 # ===========================================================================
 
-- name: Display Hardware Audio Config End
+- name: Display Hardware Webcam Config End
   ansible.builtin.debug:
-    msg: "=== End Hardware Audio Role Configuration ==="
+    msg: "=== End Hardware Webcam Role Configuration ==="

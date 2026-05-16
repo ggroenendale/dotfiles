@@ -1,0 +1,22 @@
+- name: Install DKMS variant if needed
+  pacman:
+    name: nvidia-dkms
+    state: present
+  when: dkms_needed.stat.exists
+
+- name: Add NVIDIA modules to mkinitcpio
+  lineinfile:
+    path: /etc/mkinitcpio.conf
+    regexp: "^MODULES="
+    line: "MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)"
+    backrefs: yes
+  notify: Rebuild initramfs
+
+- name: Enable DRM kernel mode setting
+  become: true
+  lineinfile:
+    path: /etc/default/grub
+    regexp: "^GRUB_CMDLINE_LINUX_DEFAULT="
+    line: 'GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet nvidia-drm.modeset=1"'
+    backrefs: yes
+  notify: Update GRUB config

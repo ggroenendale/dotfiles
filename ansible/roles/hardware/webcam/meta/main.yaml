@@ -1,6 +1,6 @@
 galaxy_info:
-  role_name: hardware/graphics
-  description: Verify OpenGL and GPU capability for desktop applications
+  role_name: hardware/webcam
+  description: Configure any special webcam drivers
   license: MIT
   min_ansible_version: "2.14"
 

@@ -1,6 +1,6 @@
 galaxy_info:
-  role_name: hardware/graphics
-  description: Verify OpenGL and GPU capability for desktop applications
+  role_name: hardware/mouse
+  description: Configure logitech mx master mouse
   license: MIT
   min_ansible_version: "2.14"
 

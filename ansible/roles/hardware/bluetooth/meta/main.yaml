@@ -1,6 +1,6 @@
 galaxy_info:
-  role_name: hardware/graphics
-  description: Verify OpenGL and GPU capability for desktop applications
+  role_name: hardware/bluetooth
+  description: Install Bluetooth utilities and configure special bluetooth devices (bluez, bluetoothctl)
   license: MIT
   min_ansible_version: "2.14"
 
@@ -23,4 +23,5 @@ galaxy_info:
         - all
 
 dependencies:
+  # Requires nothing at the moment
   - role:
