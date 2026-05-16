@@ -1,3 +1,10 @@
 - name: Install AWWW dependencies
   command: |
     paru -S swww --noconfirm
+
+- name: Clone AWWW repository
+  ansible.builtin.git:
+    repo: "https://codeberg.org/LGFae/awww.git"
+    dest: ""
+
+- name:

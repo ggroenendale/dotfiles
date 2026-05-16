@@ -1,48 +1,31 @@
 ---
-- name: Display Developer Build Tools Config Start
+- name: Display Desktop Hyprland Config Start
   ansible.builtin.debug:
-    msg: "=== Begin Developer Build Tools Role Configuration ==="
+    msg: "=== Begin Desktop Hyprland Role Configuration ==="
 
 # ===========================================================================
 #
 # ===========================================================================
 
-# - name: Install GDM
-#   become: true
-#   pacman:
-#     name:
-#       - gdm
-#     state: present
-#     update_cache: yes
-#
-# - name: Install gdm-settings
-#   command: |
-#     paru -S gdm-settings
-#
-# - name: Enable gdm
-#   become: true
-#   systemd:
-#     name: gdm
-#     enabled: yes
-- name: If Arch, Include Arch Users Config
+- name: If Arch, Include Arch Desktop Hyprland Config
   include_tasks: arch.yaml
   when: is_arch
 
-- name: If Debian, Include Debian Users Config
+- name: If Debian, Include Debian Desktop Hyprland Config
   include_tasks: debian.yaml
   when: is_debian
 
-- name: If OpenSUSE, Include OpenSUSE Users Config
+- name: If OpenSUSE, Include OpenSUSE Desktop Hyprland Config
   include_tasks: opensuse.yaml
   when: is_opensuse
 
-- name: If Ubuntu, Include Ubuntu Users Config
+- name: If Ubuntu, Include Ubuntu Desktop Hyprland Config
   include_tasks: ubuntu.yaml
   when: is_ubuntu
 # ===========================================================================
 #
 # ===========================================================================
 
-- name: Display Developer Build Tools Config End
+- name: Display Desktop Hyprland Config End
   ansible.builtin.debug:
-    msg: "=== End Developer Build Tools Role Configuration ==="
+    msg: "=== End Desktop Hyprland Role Configuration ==="

@@ -10,7 +10,6 @@
       - catppuccin-gtk-theme-mocha
       - gtk-theme-bubble-dark-git
     state: present
-
-- name: Clone bubble dark
-  git:
-    repo: https://
+#- name: Clone bubble dark
+#  git:
+#    repo:

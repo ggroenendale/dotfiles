@@ -1,6 +1,6 @@
 galaxy_info:
-  role_name: desktop/wallpaper
-  description: Install Wallpaper daemon and wallpaper switcher
+  role_name: desktop/file_managers
+  description: Install and configure file manager tools (thunar, dolphin?, plugins)
   license: MIT
   min_ansible_version: "2.14"
 
@@ -23,7 +23,7 @@ galaxy_info:
         - all
 
 dependencies:
+  # Requires git to be installed to clone
+  - role:
   # Requires cargo build
-  - role: common/rust
-  # Requires wayand-protocol and wayland-client and cargo
-  - role: desktop/wayland
+  # - role: desktop/wayland

@@ -1,25 +1,25 @@
 ---
-- name: Display Developer Build Tools Config Start
+- name: Display Desktop Wayland Config Start
   ansible.builtin.debug:
-    msg: "=== Begin Developer Build Tools Role Configuration ==="
+    msg: "=== Begin Desktop Wayland Role Configuration ==="
 
 # ===========================================================================
 #
 # ===========================================================================
 
-- name: If Arch, Include Arch Users Config
+- name: If Arch, Include Arch Desktop Wayland Config
   include_tasks: arch.yaml
   when: is_arch
 
-- name: If Debian, Include Debian Users Config
+- name: If Debian, Include Debian Desktop Wayland Config
   include_tasks: debian.yaml
   when: is_debian
 
-- name: If OpenSUSE, Include OpenSUSE Users Config
+- name: If OpenSUSE, Include OpenSUSE Desktop Wayland Config
   include_tasks: opensuse.yaml
   when: is_opensuse
 
-- name: If Ubuntu, Include Ubuntu Users Config
+- name: If Ubuntu, Include Ubuntu Desktop Wayland Config
   include_tasks: ubuntu.yaml
   when: is_ubuntu
 
@@ -27,6 +27,6 @@
 #
 # ===========================================================================
 
-- name: Display Developer Build Tools Config End
+- name: Display Desktop Wayland Config End
   ansible.builtin.debug:
-    msg: "=== End Developer Build Tools Role Configuration ==="
+    msg: "=== End Desktop Wayland Role Configuration ==="

@@ -1,0 +1,5 @@
+- name: Enable Wayland support for NVIDIA
+  become: true
+  command: |
+    echo "GBM_BACKEND=nvidia-drm" >> /etc/environment
+    echo "__GLX_VENDOR_LIBRARY_NAME=nvidia" >> /etc/environment
