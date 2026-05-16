@@ -1,7 +1,0 @@
----
-# Font packages for Ubuntu (apt)
-# Nerd fonts are not in official Ubuntu repos, so this is minimal.
-# The fallback file copy will handle the actual font deployment.
-font_packages:
-  - fonts-firacode
-
