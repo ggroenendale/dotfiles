@@ -1,0 +1,31 @@
+---
+- name: Install ufw
+  apt:
+    name: ufw
+    state: present
+    update_cache: yes
+  become: true
+
+- name: Set default ufw policies (deny incoming, allow outgoing)
+  ufw:
+    direction: "{{ item.direction }}"
+    policy: "{{ item.policy }}"
+  loop:
+    - { direction: incoming, policy: deny }
+    - { direction: outgoing, policy: allow }
+    - { direction: routed, policy: deny }
+  become: true
+
+- name: Allow SSH connections
+  ufw:
+    rule: allow
+    port: "22"
+    proto: tcp
+  become: true
+
+- name: Enable ufw (will prompt to confirm, using force)
+  ufw:
+    state: enabled
+    direction: incoming
+    policy: deny
+  become: true

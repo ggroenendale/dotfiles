@@ -1,0 +1,35 @@
+---
+- name: Install firewalld
+  zypper:
+    name: firewalld
+    state: present
+  become: true
+
+- name: Ensure firewalld service is enabled and running
+  systemd:
+    name: firewalld
+    enabled: yes
+    state: started
+  become: true
+
+- name: Set default zone to public (block incoming by default)
+  command: firewall-cmd --set-default-zone=public
+  become: true
+  changed_when: false
+
+- name: Allow SSH service in public zone
+  firewalld:
+    service: ssh
+    permanent: yes
+    state: enabled
+    zone: public
+    immediate: yes
+  become: true
+
+- name: Block everything else (already default in public zone)
+  firewalld:
+    zone: public
+    policy: drop
+    permanent: yes
+    immediate: yes
+  become: true

@@ -1,3 +1,4 @@
+---
 galaxy_info:
   role_name: system/security/firewall
   description: Configure firewall

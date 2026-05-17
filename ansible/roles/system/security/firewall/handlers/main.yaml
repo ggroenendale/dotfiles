@@ -1,0 +1,6 @@
+---
+- name: restart nftables
+  systemd:
+    name: nftables
+    state: restarted
+  become: true

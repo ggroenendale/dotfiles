@@ -1,8 +1,70 @@
-- name: Install UFW
+---
+- name: Install nftables
   pacman:
-    name: ufw
+    name: nftables
     state: present
-
-- name: Allow SSH
   become: true
-  command: ufw allow 22/tcp
+
+- name: Ensure nftables service is enabled and started
+  systemd:
+    name: nftables
+    enabled: yes
+    state: started
+  become: true
+
+- name: Create a basic nftables ruleset file
+  copy:
+    dest: /etc/nftables.conf
+    content: |
+      #!/usr/sbin/nft -f
+
+      flush ruleset
+
+      table inet filter {
+          chain input {
+              type filter hook input priority 0; policy drop;
+
+              # allow loopback
+              iif lo accept
+
+              # allow established/related connections
+              ct state established,related accept
+
+              # allow SSH (port 22)
+              tcp dport 22 accept
+          }
+
+          chain forward {
+              type filter hook forward priority 0; policy drop;
+          }
+
+          chain output {
+              type filter hook output priority 0; policy accept;
+          }
+      }
+    mode: "0644"
+  become: true
+  notify: restart nftables
+
+- name: Apply the nftables ruleset immediately
+  command: nft -f /etc/nftables.conf
+  become: true
+  changed_when: false
+
+- name: Ensure nftables starts on boot with the correct rules
+  systemd:
+    name: nftables
+    enabled: yes
+    state: started
+  become: true
+
+- name: Disable any legacy iptables services if present (optional)
+  systemd:
+    name: "{{ item }}"
+    state: stopped
+    enabled: no
+  loop:
+    - iptables
+    - ip6tables
+  ignore_errors: yes
+  become: true
