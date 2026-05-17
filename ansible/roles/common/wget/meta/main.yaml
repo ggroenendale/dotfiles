@@ -1,0 +1,28 @@
+---
+galaxy_info:
+  role_name: common/wget
+  description: Common requirement to make sure wget is installed for commandline downloads
+  license: MIT
+  min_ansible_version: "2.14"
+
+  platforms:
+    - name: ArchLinux
+      versions:
+        - all
+    - name: Debian
+      versions:
+        - bookwork
+        - bullseye
+    - name: OpenSUSE
+      versions:
+        - all
+    - name: OpenSUSE
+      versions:
+        - all
+    - name: Ubuntu
+      versions:
+        - all
+
+dependencies:
+  # Requires git to be installed to clone
+  - role:

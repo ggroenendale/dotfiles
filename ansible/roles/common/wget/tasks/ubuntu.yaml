@@ -1,0 +1,7 @@
+---
+- name: Ensure GNU Stow is installed (Ubuntu)
+  apt:
+    name: wget
+    state: present
+    update_cache: yes
+  become: true

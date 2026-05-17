@@ -1,0 +1,6 @@
+---
+- name: Ensure GNU Stow is installed (Arch)
+  pacman:
+    name: wget
+    state: present
+  become: true
