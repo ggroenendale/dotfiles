@@ -9,7 +9,6 @@ return {
 
 		-- LazyVim will merge this with your existing dependencies
 		dependencies = {
-			"nvim-treesitter/nvim-treesitter",
 			"stevearc/dressing.nvim",
 			"nvim-lua/plenary.nvim",
 			"MunifTanjim/nui.nvim",
