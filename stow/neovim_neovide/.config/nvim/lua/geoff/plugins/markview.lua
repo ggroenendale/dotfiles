@@ -5,6 +5,13 @@ return {
 		"echasnovski/mini.icons",
 		"nvim-tree/nvim-web-devicons",
 	},
+	opts = {
+		preview = {
+			filetypes = { "markdown", "Avante" },
+			ignore_buftypes = {},
+		},
+		max_length = 99999,
+	},
 	config = function()
 		require("markview").setup({
 			experimental = {
