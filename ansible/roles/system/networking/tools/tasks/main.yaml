@@ -1,0 +1,32 @@
+---
+- name: Display Networking - Tools Config Start
+  ansible.builtin.debug:
+    msg: "=== Begin Networking - Tools Role Configuration ==="
+
+# ===========================================================================
+#
+# ===========================================================================
+
+- name: If Arch, Include Arch Network Tools Config
+  include_tasks: arch.yaml
+  when: is_arch
+
+- name: If Debian, Include Debian Network Tools Config
+  include_tasks: debian.yaml
+  when: is_debian
+
+- name: If OpenSUSE, Include OpenSUSE Network Tools Config
+  include_tasks: opensuse.yaml
+  when: is_opensuse
+
+- name: If Ubuntu, Include Ubuntu Network Tools Config
+  include_tasks: ubuntu.yaml
+  when: is_ubuntu
+
+# ===========================================================================
+#
+# ===========================================================================
+
+- name: Display Networking - Tools Config End
+  ansible.builtin.debug:
+    msg: "=== End Networking - Tools Role Configuration ==="

@@ -1,0 +1,12 @@
+---
+- name: Install Modern networking tools
+  become: true
+  pacman:
+    name: iproute2
+    state: present
+
+- name: Install performance testing tools
+  become: true
+  pacman:
+    name: iperf3 # Network performance testing
+    state: present
