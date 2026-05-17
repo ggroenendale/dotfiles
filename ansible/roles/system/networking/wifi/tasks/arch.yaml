@@ -1,0 +1,6 @@
+---
+- name: Install WiFi tools
+  become: true
+  pacman:
+    name: wireless_tools
+    state: present

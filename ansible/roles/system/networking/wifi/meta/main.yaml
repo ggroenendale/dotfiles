@@ -1,3 +1,4 @@
+---
 galaxy_info:
   role_name: system/networking/wifi
   description: Install WiFi networking tools
