@@ -1,16 +1,7 @@
-- name: Install networking tools
+- name: Install NetworkManager
   become: true
   pacman:
-    name:
-      - openssh # Remote access
-      - nftables # Firewall (modern alternative to iptables)
-      - networkmanager # Network management
-      - wireless_tools # For WiFi (if needed)
-      - wget # CLI downloads
-      - curl # Advanced HTTP client
-      - rsync # Efficient file transfers
-      - iperf3 # Network performance testing
-      - net-tools #
+    name: networkmanager
     state: present
 
 # Enable and start service
