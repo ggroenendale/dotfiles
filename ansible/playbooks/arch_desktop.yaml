@@ -1,3 +1,4 @@
+---
 - name: Provision Arch Desktop
   hosts: localhost
   connection: local
