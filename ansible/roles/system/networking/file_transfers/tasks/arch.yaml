@@ -1,0 +1,6 @@
+---
+- name: Install rsync for file transfers over the network
+  become: true
+  pacman:
+    name: rsync
+    state: present

@@ -1,0 +1,28 @@
+---
+galaxy_info:
+  role_name: system/networking/file_transfers
+  description: Configure network file transfer tools (rsync)
+  license: MIT
+  min_ansible_version: "2.14"
+
+  platforms:
+    - name: ArchLinux
+      versions:
+        - all
+    - name: Debian
+      versions:
+        - bookwork
+        - bullseye
+    - name: OpenSUSE
+      versions:
+        - all
+    - name: OpenSUSE
+      versions:
+        - all
+    - name: Ubuntu
+      versions:
+        - all
+
+dependencies:
+  # No dependencies for the moment
+  - role: system/security/ssh
