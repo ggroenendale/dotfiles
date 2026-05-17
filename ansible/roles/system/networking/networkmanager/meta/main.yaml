@@ -1,3 +1,4 @@
+---
 galaxy_info:
   role_name: system/networking/networkmanager
   description: Install and configure networkmanager, disable other networking tools
@@ -24,4 +25,5 @@ galaxy_info:
 
 dependencies:
   # No requirements at the moment
-  - role:
+  - role: system/security/ssh
+  - role: common/curl
