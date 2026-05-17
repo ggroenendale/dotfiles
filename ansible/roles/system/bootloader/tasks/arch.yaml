@@ -1,3 +1,4 @@
+---
 - name: Grub Configuration | Install Grub
   become: yes
   block:
@@ -63,9 +64,3 @@
         group: root
         mode: "0755"
       when: grub_theme_enabled | default(false)
-
-    # This doesnt seem to work
-    #- name: Install Grub Customizer
-    #  paru:
-    #    name: grub-customizer
-    #    state: present
