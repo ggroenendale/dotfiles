@@ -1,3 +1,4 @@
+---
 galaxy_info:
   role_name: system/networking/vpn
   description: Install and configure VPN
