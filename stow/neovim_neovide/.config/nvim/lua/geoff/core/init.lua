@@ -1,6 +1,6 @@
 -- Plugin list generator command
 vim.api.nvim_create_user_command("ListPlugins", function(opts)
-	local ok, list = pcall(require, "geoff.plugins.list-plugins")
+	local ok, list = pcall(require, "geoff.utils.list-plugins")
 	if not ok then
 		vim.notify("list-plugins module not found", vim.log.levels.ERROR)
 		return
