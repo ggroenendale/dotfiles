@@ -19,3 +19,6 @@ _scratch/
 # Ignore lazy lock json file, should be machine specific, if we 
 # want to pin plugin versions later we can.
 lazy-lock.json
+
+# Ignore ansible vault password
+.vault_pass.txt
