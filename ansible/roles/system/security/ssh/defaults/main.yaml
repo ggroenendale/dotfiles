@@ -1,0 +1,18 @@
+---
+# Controls optional utility installation
+install_ssh_utils: false
+
+# Controls whether to deploy ~/.ssh/config from a template
+configure_client: false
+
+# Controls fail2ban installation and configuration
+ssh_fail2ban: false
+
+# SSH daemon configuration options
+ssh_port: 22
+ssh_password_auth: false # Force key‑based authentication by default
+ssh_allowed_users: [] # e.g., ['alice', 'bob']
+
+
+# (Optional) Customize the path to the template if needed
+# sshd_config_template: sshd_config.j2

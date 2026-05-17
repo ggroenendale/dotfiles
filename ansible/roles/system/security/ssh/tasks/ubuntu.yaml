@@ -1,6 +1,152 @@
-- name: Install SSH
+# -----------------------------------------------------------------------------
+# SSH Role for Ubuntu (all supported LTS releases)
+# -----------------------------------------------------------------------------
+# This file configures OpenSSH server and client on Ubuntu systems.
+# Ubuntu shares a common heritage with Debian but has some important differences:
+#
+#   1. SERVICE NAME: Ubuntu uses "ssh" as the primary systemd service name.
+#      While "sshd" works as an alias on older releases, Ubuntu 24.04 LTS (Noble)
+#      accepts only "ssh". To remain compatible, this role uses "ssh" everywhere.
+#
+#   2. CONFIGURATION LAYOUT: Ubuntu's default /etc/ssh/sshd_config includes
+#      "Include /etc/ssh/sshd_config.d/*.conf" at the top. This role writes
+#      directly to sshd_config, which remains safe but overrides all fragments.
+#
+#   3. PACKAGE NAMES: "openssh-server" and "openssh-client" (same as Debian).
+#
+# Variables that can be overridden (set in group_vars/host_vars or as role params):
+#   - install_ssh_utils   (default: false) → install extra packages
+#   - configure_client    (default: false) → deploy ~/.ssh/config from template
+#   - ssh_fail2ban        (default: false) → install and configure fail2ban
+#   - ssh_port            (default: 22)    → port sshd listens on
+#   - ssh_password_auth   (default: false) → enable password authentication
+#   - ssh_allowed_users   (default: [])    → list of usernames allowed to log in
+# -----------------------------------------------------------------------------
+
+- name: Update apt cache (idempotent)
+  become: true
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+  changed_when: false
+
+- name: Install OpenSSH server and client
+  become: true
   apt:
     name:
-      - openssh
-      - sshpass
+      - openssh-server
+      - openssh-client
     state: present
+
+- name: Ensure SSH directory exists
+  become: true
+  file:
+    path: /etc/ssh
+    state: directory
+    mode: "0755"
+
+- name: Configure sshd_config (secure defaults)
+  become: true
+  template:
+    src: sshd_config.j2
+    dest: /etc/ssh/sshd_config
+    owner: root
+    group: root
+    mode: "0600"
+  notify: Restart SSH
+  # Note: Ubuntu's default sshd_config includes "Include /etc/ssh/sshd_config.d/*.conf"
+  # at the top. Writing directly to sshd_config overrides all fragments, which is
+  # intentional for this role. If you need to preserve fragments, use a template
+  # that respects the Include directive or write snippets to sshd_config.d/.
+
+- name: Enable SSH service (start on boot)
+  become: true
+  systemd:
+    name: ssh
+    enabled: true
+  # Ubuntu uses "ssh", not "sshd". While "sshd" works as an alias on releases
+  # older than 24.04, it fails on Noble (24.04) and later. Using "ssh" is correct
+  # for all Ubuntu versions. Reference: https://wiki.ubuntu.com/SystemdForUpstartUsers
+
+- name: Generate SSH host keys if missing
+  become: true
+  command: ssh-keygen -A
+  when: not ansible_check_mode
+
+- name: Start SSH service
+  become: true
+  systemd:
+    name: ssh
+    state: started
+
+# -----------------------------------------------------------------------------
+# Optional: additional SSH utilities
+# -----------------------------------------------------------------------------
+- name: Install optional SSH utilities (Ubuntu)
+  become: true
+  apt:
+    name:
+      - sshpass # INSECURE – only for isolated environments
+      - mosh # Mobile shell over UDP
+      - sshfs # FUSE‑based filesystem over SSH
+      - rsync # Efficient file transfer
+    state: present
+  when: install_ssh_utils | default(false)
+
+# -----------------------------------------------------------------------------
+# Optional: per‑user SSH client configuration
+# -----------------------------------------------------------------------------
+- name: Ensure .ssh directory exists for the target user
+  file:
+    path: "{{ ansible_env.HOME }}/.ssh"
+    state: directory
+    mode: "0700"
+  when: configure_client | default(false)
+
+- name: Create control master directory for SSH multiplexing
+  file:
+    path: "{{ ansible_env.HOME }}/.ssh/controlmasters"
+    state: directory
+    mode: "0700"
+  when: configure_client | default(false)
+
+- name: Deploy SSH client configuration (~/.ssh/config)
+  template:
+    src: ssh_client_config.j2
+    dest: "{{ ansible_env.HOME }}/.ssh/config"
+    mode: "0600"
+  when: configure_client | default(false)
+
+# -----------------------------------------------------------------------------
+# Optional: fail2ban integration for SSH hardening
+# -----------------------------------------------------------------------------
+- name: Install fail2ban (Ubuntu)
+  become: true
+  apt:
+    name: fail2ban
+    state: present
+  when: ssh_fail2ban | default(false)
+
+- name: Configure fail2ban for SSH
+  become: true
+  copy:
+    content: |
+      [sshd]
+      enabled = true
+      maxretry = 3
+      bantime = 1h
+      findtime = 10m
+    dest: /etc/fail2ban/jail.local
+    # Ubuntu's fail2ban documentation recommends using /etc/fail2ban/jail.local
+    # for local overrides, rather than jail.d/sshd.conf. See:
+    # https://linuxconfig.org/how-to-install-and-configure-fail2ban-on-ubuntu-26-04
+  when: ssh_fail2ban | default(false)
+  notify: Restart fail2ban
+
+- name: Enable and start fail2ban service
+  become: true
+  systemd:
+    name: fail2ban
+    enabled: true
+    state: started
+  when: ssh_fail2ban | default(false)

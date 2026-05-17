@@ -1,6 +1,143 @@
-- name: Install SSH
+# -----------------------------------------------------------------------------
+# SSH Role for Debian (and Debian‑based systems)
+# -----------------------------------------------------------------------------
+# This file configures OpenSSH server and client on Debian.
+# It is meant to be included conditionally by a main playbook/task file.
+#
+# Variables that can be overridden (set in group_vars/host_vars or as role params):
+#   - install_ssh_utils   (default: false) → install extra packages (sshpass, mosh, sshfs, rsync)
+#   - configure_client    (default: false) → deploy ~/.ssh/config from template
+#   - ssh_fail2ban        (default: false) → install and configure fail2ban for SSH
+#   - ssh_port            (default: 22)    → port sshd listens on
+#   - ssh_password_auth   (default: false) → enable password authentication (not recommended)
+#   - ssh_allowed_users   (default: [])    → list of usernames allowed to log in via SSH
+#
+# -----------------------------------------------------------------------------
+
+# Debian uses APT. Always update cache before installing/updating packages.
+- name: Update apt cache (idempotent)
+  become: true
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600 # avoids hitting the cache every run
+  changed_when: false
+
+- name: Install OpenSSH server and client
+  become: true
   apt:
     name:
-      - openssh
-      - sshpass
+      - openssh-server
+      - openssh-client
     state: present
+    # No need to update_cache again – done above.
+
+- name: Ensure SSH directory exists
+  become: true
+  file:
+    path: /etc/ssh
+    state: directory
+    mode: "0755"
+
+- name: Configure sshd_config (secure defaults)
+  become: true
+  template:
+    src: sshd_config.j2
+    dest: /etc/ssh/sshd_config
+    owner: root
+    group: root
+    mode: "0600"
+  notify: Restart SSH
+  # The template uses variables like ssh_port, ssh_password_auth, ssh_allowed_users.
+
+- name: Enable SSH service (start on boot)
+  become: true
+  systemd:
+    name: sshd
+    enabled: true
+    # On Debian, the service is called 'ssh' in older versions, but 'sshd' is standard now.
+    # The openssh-server package installs a systemd unit named 'ssh.service' and 'sshd.service' (alias).
+    # Using 'sshd' works consistently across Debian 10+.
+    # Fallback: you can use 'ssh' if needed. We'll stick with 'sshd'.
+
+- name: Generate SSH host keys if missing
+  become: true
+  command: ssh-keygen -A
+  # ssh-keygen -A generates all default host key types (rsa, ecdsa, ed25519).
+  # It is idempotent – does not overwrite existing keys.
+  when: not ansible_check_mode
+
+- name: Start SSH service
+  become: true
+  systemd:
+    name: sshd
+    state: started
+  # This ensures the daemon is running after installation/key generation.
+
+# -----------------------------------------------------------------------------
+# Optional: additional SSH utilities
+# -----------------------------------------------------------------------------
+- name: Install optional SSH utilities (Debian)
+  become: true
+  apt:
+    name:
+      - sshpass # INSECURE – stores passwords in plain text. Use only in isolated environments.
+      - mosh # Mobile shell over UDP (better for high‑latency connections)
+      - sshfs # FUSE‑based filesystem over SSH
+      - rsync # Efficient file transfer and sync
+    state: present
+  when: install_ssh_utils | default(false)
+
+# -----------------------------------------------------------------------------
+# Optional: per‑user SSH client configuration
+# -----------------------------------------------------------------------------
+- name: Ensure .ssh directory exists for the target user
+  file:
+    path: "{{ ansible_env.HOME }}/.ssh"
+    state: directory
+    mode: "0700"
+  when: configure_client | default(false)
+
+- name: Create control master directory for SSH multiplexing
+  file:
+    path: "{{ ansible_env.HOME }}/.ssh/controlmasters"
+    state: directory
+    mode: "0700"
+  when: configure_client | default(false)
+
+- name: Deploy SSH client configuration (~/.ssh/config)
+  template:
+    src: ssh_client_config.j2
+    dest: "{{ ansible_env.HOME }}/.ssh/config"
+    mode: "0600"
+  when: configure_client | default(false)
+
+# -----------------------------------------------------------------------------
+# Optional: fail2ban integration for SSH hardening
+# -----------------------------------------------------------------------------
+- name: Install fail2ban (Debian)
+  become: true
+  apt:
+    name: fail2ban
+    state: present
+  when: ssh_fail2ban | default(false)
+
+- name: Configure fail2ban for SSH
+  become: true
+  copy:
+    content: |
+      [sshd]
+      enabled = true
+      maxretry = 3
+      bantime = 1h
+      findtime = 10m
+    dest: /etc/fail2ban/jail.d/sshd.conf
+  when: ssh_fail2ban | default(false)
+  notify: Restart fail2ban
+
+- name: Enable and start fail2ban service
+  become: true
+  systemd:
+    name: fail2ban
+    enabled: true
+    state: started
+  when: ssh_fail2ban | default(false)

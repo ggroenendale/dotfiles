@@ -1,0 +1,131 @@
+# -----------------------------------------------------------------------------
+# SSH Role for openSUSE (Leap and Tumbleweed)
+# -----------------------------------------------------------------------------
+# This file configures OpenSSH server and client on openSUSE.
+# openSUSE uses the `zypper` package manager and `systemd`.
+#
+# Variables (override in group_vars/host_vars or as role parameters):
+#   - install_ssh_utils   (default: false) → install extra packages (sshpass, mosh, sshfs, rsync)
+#   - configure_client    (default: false) → deploy ~/.ssh/config from template
+#   - ssh_fail2ban        (default: false) → install and configure fail2ban for SSH
+#   - ssh_port            (default: 22)    → port sshd listens on
+#   - ssh_password_auth   (default: false) → enable password authentication
+#   - ssh_allowed_users   (default: [])    → list of usernames allowed to log in via SSH
+# -----------------------------------------------------------------------------
+
+# openSUSE packages: openssh (server+client together)
+- name: Install OpenSSH (server and client)
+  become: true
+  zypper:
+    name: openssh
+    state: present
+    # `update_cache` is not used by default; zypper refreshes repos automatically if needed.
+    # On very old versions, you can set `update_cache: yes`, but it's rarely required.
+
+- name: Ensure SSH directory exists
+  become: true
+  file:
+    path: /etc/ssh
+    state: directory
+    mode: "0755"
+
+- name: Configure sshd_config (secure defaults)
+  become: true
+  template:
+    src: sshd_config.j2
+    dest: /etc/ssh/sshd_config
+    owner: root
+    group: root
+    mode: "0600"
+  notify: Restart SSH
+
+- name: Enable SSH service (start on boot)
+  become: true
+  systemd:
+    name: sshd
+    enabled: true
+    # On openSUSE, the service is called 'sshd' (not 'ssh').
+    # The package installs /usr/lib/systemd/system/sshd.service.
+
+- name: Generate SSH host keys if missing
+  become: true
+  command: ssh-keygen -A
+  # ssh-keygen -A generates all default host key types (rsa, ecdsa, ed25519).
+  # It is idempotent and does not overwrite existing keys.
+  when: not ansible_check_mode
+
+- name: Start SSH service
+  become: true
+  systemd:
+    name: sshd
+    state: started
+
+# -----------------------------------------------------------------------------
+# Optional: additional SSH utilities
+# -----------------------------------------------------------------------------
+# openSUSE repositories provide these packages under the same names.
+- name: Install optional SSH utilities (openSUSE)
+  become: true
+  zypper:
+    name:
+      - sshpass # INSECURE – only for isolated environments
+      - mosh # Mobile shell over UDP
+      - sshfs # FUSE-based SSH filesystem
+      - rsync # Efficient file sync
+    state: present
+  when: install_ssh_utils | default(false)
+
+# -----------------------------------------------------------------------------
+# Optional: per‑user SSH client configuration
+# -----------------------------------------------------------------------------
+- name: Ensure .ssh directory exists for the target user
+  file:
+    path: "{{ ansible_env.HOME }}/.ssh"
+    state: directory
+    mode: "0700"
+  when: configure_client | default(false)
+
+- name: Create control master directory for SSH multiplexing
+  file:
+    path: "{{ ansible_env.HOME }}/.ssh/controlmasters"
+    state: directory
+    mode: "0700"
+  when: configure_client | default(false)
+
+- name: Deploy SSH client configuration (~/.ssh/config)
+  template:
+    src: ssh_client_config.j2
+    dest: "{{ ansible_env.HOME }}/.ssh/config"
+    mode: "0600"
+  when: configure_client | default(false)
+
+# -----------------------------------------------------------------------------
+# Optional: fail2ban integration for SSH hardening
+# -----------------------------------------------------------------------------
+- name: Install fail2ban (openSUSE)
+  become: true
+  zypper:
+    name: fail2ban
+    state: present
+  when: ssh_fail2ban | default(false)
+
+- name: Configure fail2ban for SSH (openSUSE)
+  become: true
+  copy:
+    content: |
+      [sshd]
+      enabled = true
+      maxretry = 3
+      bantime = 1h
+      findtime = 10m
+    dest: /etc/fail2ban/jail.d/sshd.conf
+  when: ssh_fail2ban | default(false)
+  notify: Restart fail2ban
+
+- name: Enable and start fail2ban service
+  become: true
+  systemd:
+    name: fail2ban
+    enabled: true
+    state: started
+  when: ssh_fail2ban | default(false)
