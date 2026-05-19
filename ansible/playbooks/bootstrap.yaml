@@ -12,6 +12,8 @@
     # GitHub connectivity check
     github_url: "https://github.com"
     github_timeout_seconds: 10
+  vars_files:
+    - {{ ansible_facts.env.HOME }}/.dotfiles/ansible/group_vars/all/vault_encrypted.yaml
 
   tasks:
     - name: Display bootstrap start
@@ -136,7 +138,7 @@
     # ── Package Manager Setup (OS-specific) ───────────────────────
     - name: Include package management role (Arch Linux — Paru AUR helper)
       ansible.builtin.include_role:
-        name: core/package_management
+        name: system/package_management
       when: ansible_facts.distribution == "Archlinux"
 
     - name: Verify package manager availability (Debian/Ubuntu)
