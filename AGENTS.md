@@ -1314,4 +1314,63 @@ ssh-list json         # JSON output
 - Check config has valid Host entries
 - Ensure config file is readable
 
+---
+
+## Task: System Users Role Documentation and Requirements
+**Date**: 2026-05-18
+**Agent**: Claude
+**Task Description**: Fill out the system users role README with comprehensive documentation and define requirements for future implementation
+
+### Operations Performed
+
+#### 1. Current State Analysis
+- Explored the full users role structure: tasks, vars, meta, and README
+- Found that only Arch Linux has real user creation logic (`tasks/arch.yaml`)
+- Debian, Ubuntu, and openSUSE task files are placeholders (debug messages or empty)
+- `vars/user_uncry.yaml` defines `arch_users` with one user (geoff) including password hash, shell, home, groups, and SSH key generation flag
+- `vars/user_encr.yaml` contains Ansible Vault-encrypted variables
+- `meta/main.yaml` lists all 4 platforms but has empty dependencies
+- The README was empty (no content)
+
+#### 2. Requirements Definition
+Defined 10 comprehensive requirements for the users role:
+1. **Cross-Distribution User Variables** — Each distro needs its own user variable (`arch_users`, `debian_users`, `ubuntu_users`, `opensuse_users`) with a standardized schema
+2. **OS-Specific Group Handling** — Different distros use different group names (e.g., `wheel` vs `sudo` for admin access)
+3. **Sudoers Configuration** — Drop-in snippets in `/etc/sudoers.d/` with passwordless sudo support
+4. **User Shell Management** — Default shell per distro with per-user overrides
+5. **SSH Key Management** — Key generation, authorized_keys deployment, stale key removal
+6. **Home Directory Management** — Permissions, skeleton files, custom skeleton directories
+7. **User Cleanup and Deprovisioning** — Remove stale users with optional home directory archiving
+8. **System User Management** — Service accounts with no login shell, system UIDs
+9. **User Groups Management** — Supplementary groups with GID and member configuration
+10. **Password Policy Integration** — Password aging, expiration, force change on first login
+
+#### 3. Documentation Creation
+- Wrote comprehensive README.md with:
+  - Overview and current state table (what works per distro)
+  - Current user configuration documentation
+  - Task flow diagram
+  - 10 defined requirements with proposed variable structures and YAML examples
+  - Complete role variables reference table
+  - OS detection flags documentation
+  - Directory structure
+  - Usage examples (basic usage, defining users, adding a new distribution)
+  - Dependencies and related roles
+  - Troubleshooting guide (common issues with solutions)
+  - Development guide (adding features, testing)
+
+### Files Modified
+1. `ansible/roles/system/users/README.md` - Complete rewrite with comprehensive documentation
+2. `AGENTS.md` - Added this task entry
+
+### Key Documentation Sections
+- **Current State**: Clear table showing what works per distribution
+- **Requirements**: 10 defined requirements with proposed variable schemas and YAML examples
+- **Role Variables**: Complete reference table for all variables
+- **Troubleshooting**: Common issues with solutions (UID conflicts, password hashing, SSH keys, missing groups)
+- **Development Guide**: Instructions for adding features and testing
+
+### Outcome
+Successfully transformed the empty README into a comprehensive documentation file that serves both as reference documentation and a roadmap for future development. The requirements section provides clear guidance for implementing the remaining features across all supported distributions.
+
 
