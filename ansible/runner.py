@@ -1,6 +1,8 @@
 from pprint import pprint
 import argparse
 import getpass
+import sys
+from pathlib import Path
 from ansible.module_utils.common.collections import ImmutableDict
 
 from pathlib import Path
@@ -12,11 +14,14 @@ from ansible.utils.vars import load_extra_vars, load_options_vars
 from ansible.utils.display import Display
 from ansible.plugins.loader import init_plugin_loader
 from ansible.cli.playbook import PlaybookCLI
+from ansible.vars.secret import VaultSecret
 
 from ansible import context
 from ansible.module_utils.ansible_release import __version__ as ansible_version
 
-# Custom arguments to get custom playbook url
+# -----------------------------------------------------------------------------
+# Custom argument parsing
+# -----------------------------------------------------------------------------
 parser = argparse.ArgumentParser(
     prog="Ansible Pull Runner",
     description="Runs ansible pull with python API instead of CLI",
@@ -29,12 +34,40 @@ parser.add_argument("filename")
 # Retrieve the args
 args = parser.parse_args()
 
+
+# -----------------------------------------------------------------------------
+# Set up the vault secret (password)
+# -----------------------------------------------------------------------------
+def get_vault_secret(password_file=None):
+    """Return a VaultSecret object."""
+    if password_file:
+        try:
+            with open(password_file, "rb") as f:
+                password = f.read().strip()
+        except Exception as e:
+            print(f"Error reading vault password file: {e}", file=sys.stderr)
+            sys.exit(1)
+    else:
+        password = getpass.getpass("Vault password: ").encode("utf-8")
+    return VaultSecret(password)
+
+
+vault_secret = get_vault_secret(args.vault_password_file)
+
+# -----------------------------------------------------------------------------
+# DataLoader with vault secret
+# -----------------------------------------------------------------------------
+loader = DataLoader()
+loader.set_vault_secrets([vault_secret])  # <-- CRITICAL for decrypting vault
+
+# -----------------------------------------------------------------------------
+# Remainder of setup (playbook path, CLI args, context)
+# -----------------------------------------------------------------------------
+
 # Retrieve the playbook filename
 filename = args.filename
 
-passwords = {
-    "become_pass": getpass.getpass("Sudo password: ")
-}
+passwords = {"become_pass": getpass.getpass("Please enter Sudo password: ")}
 
 playbook_path = Path(__file__).parent.joinpath("playbooks", filename)
 
@@ -42,8 +75,6 @@ cli = PlaybookCLI(
     [
         "ansible-playbook",
         str(playbook_path),
-        "--extra-vars",
-        f"ansible_version={ansible_version}",
     ]
 )
 cli.parse()
@@ -79,7 +110,24 @@ variable_manager = VariableManager(
 )
 
 # Extra vars needs more testing
-extra_vars = {"extra_version_info": ansible_version, "extra_test": "is_extra"}
+extra_vars = {
+    "extra_version_info": ansible_version,
+    "extra_test": "is_extra",
+    "servers": [
+        {
+            "server_hostname": "aconcagua",
+            "local_ipaddress": "192.168.1.xxx",
+            "server_password": "password123",
+            "server_user": "geoff",
+        },
+        {
+            "server_hostname": "aconcagua2",
+            "local_ipaddress": "192.168.1.xxx",
+            "server_password": "password123",
+            "server_user": "geoff",
+        },
+    ],
+}
 
 # extra_vars = load_extra_vars(loader=loader)
 variable_manager._extra_vars = extra_vars
