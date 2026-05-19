@@ -57,5 +57,15 @@ return {
 		) -- toggle file explorer
 		keymap.set("n", "<leader>ec", "<cmd>NvimTreeCollapse<CR>", { desc = "Collapse file explorer" }) -- collapse file explorer
 		keymap.set("n", "<leader>er", "<cmd>NvimTreeRefresh<CR>", { desc = "Refresh file explorer" }) -- refresh file explorer
+
+		-- Auto-open nvim-tree when opening a new tab
+		vim.api.nvim_create_autocmd("TabNewEntered", {
+			group = vim.api.nvim_create_augroup("NvimTreeTabNew", {
+				clear = true,
+			}),
+			callback = function()
+				vim.cmd("NvimTreeOpen")
+			end,
+		})
 	end,
 }
