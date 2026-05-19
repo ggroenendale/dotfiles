@@ -22,3 +22,7 @@ lazy-lock.json
 
 # Ignore ansible vault password
 .vault_pass.txt
+
+
+# Ignore any unencrypted files so they are not publicy seen.
+*_unencrypted.yaml
