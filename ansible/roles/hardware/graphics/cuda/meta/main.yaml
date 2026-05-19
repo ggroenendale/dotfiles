@@ -1,3 +1,4 @@
+---
 galaxy_info:
   role_name: hardware/graphics/cuda
   description: Install Cuda package for desktop applications
