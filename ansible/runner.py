@@ -14,7 +14,7 @@ from ansible.utils.vars import load_extra_vars, load_options_vars
 from ansible.utils.display import Display
 from ansible.plugins.loader import init_plugin_loader
 from ansible.cli.playbook import PlaybookCLI
-from ansible.vars.secret import VaultSecret
+from ansible.parsing.vault import VaultSecret
 
 from ansible import context
 from ansible.module_utils.ansible_release import __version__ as ansible_version
@@ -38,6 +38,11 @@ args = parser.parse_args()
 # -----------------------------------------------------------------------------
 # Set up the vault secret (password)
 # -----------------------------------------------------------------------------
+
+vault_password_file = ".vault_pass.txt"
+
+vault_path = Path(__file__).parent.joinpath(vault_password_file)
+
 def get_vault_secret(password_file=None):
     """Return a VaultSecret object."""
     if password_file:
@@ -52,13 +57,13 @@ def get_vault_secret(password_file=None):
     return VaultSecret(password)
 
 
-vault_secret = get_vault_secret(args.vault_password_file)
+vault_secret = get_vault_secret(vault_path)
 
 # -----------------------------------------------------------------------------
 # DataLoader with vault secret
 # -----------------------------------------------------------------------------
 loader = DataLoader()
-loader.set_vault_secrets([vault_secret])  # <-- CRITICAL for decrypting vault
+loader.set_vault_secrets([("default", vault_secret)])  # <-- CRITICAL for decrypting vault
 
 # -----------------------------------------------------------------------------
 # Remainder of setup (playbook path, CLI args, context)
@@ -70,6 +75,7 @@ filename = args.filename
 passwords = {"become_pass": getpass.getpass("Please enter Sudo password: ")}
 
 playbook_path = Path(__file__).parent.joinpath("playbooks", filename)
+
 
 cli = PlaybookCLI(
     [
@@ -91,7 +97,7 @@ context.CLIARGS = ImmutableDict(**cliargs)
 init_plugin_loader()
 
 # Define playbook stuff
-loader = DataLoader()
+# loader = DataLoader()
 
 # Define a basic inventory for localhost
 inventory = InventoryManager(loader=loader, sources=["localhost,"])
