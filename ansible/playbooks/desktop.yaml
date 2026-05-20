@@ -72,4 +72,5 @@
       ansible.builtin.include_role:
         name: "{{ role_item }}"
       loop: "{{ system_roles_to_apply }}"
-      loop_control: role_item
+      loop_control:
+        loop_var: role_item
