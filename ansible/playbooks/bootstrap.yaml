@@ -13,7 +13,7 @@
     github_url: "https://github.com"
     github_timeout_seconds: 10
     vars_files:
-      - {{ ansible_facts.env.HOME }}/.dotfiles/ansible/group_vars/all/vault_encrypted.yaml
+      - group_vars/all/vault_encrypted.yaml
   # vars_files is intentionally omitted here because:
   # 1. Jinja2 templates ({{ }}) in vars_files cause YAML parser errors
   # 2. vars_files is evaluated before facts are gathered, so ansible_facts is unavailable
