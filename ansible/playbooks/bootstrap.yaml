@@ -12,8 +12,14 @@
     # GitHub connectivity check
     github_url: "https://github.com"
     github_timeout_seconds: 10
-  vars_files:
-    - {{ ansible_facts.env.HOME }}/.dotfiles/ansible/group_vars/all/vault_encrypted.yaml
+  # vars_files is intentionally omitted here because:
+  # 1. Jinja2 templates ({{ }}) in vars_files cause YAML parser errors
+  # 2. vars_files is evaluated before facts are gathered, so ansible_facts is unavailable
+  # Vault variables are loaded via include_vars in a task below (after gather_facts)
+  # The vault_encrypted.yaml file is created by encrypting vault_unencrypted.yaml:
+  #   ansible-vault encrypt --vault-password-file ansible/.vault_pass.txt \
+  #     ansible/group_vars/all/vault_unencrypted.yaml \
+  #     --output ansible/group_vars/all/vault_encrypted.yaml
 
   tasks:
     - name: Display bootstrap start
@@ -37,6 +43,16 @@
       ansible.builtin.set_fact:
         os_family: "{{ ansible_facts.os_family }}"
         os_distribution: "{{ ansible_facts.distribution }}"
+
+    # ── Vault Variables ───────────────────────────────────────────
+    # Loaded via include_vars (not vars_files) because:
+    # 1. Jinja2 templates in vars_files cause YAML parser errors
+    # 2. vars_files is evaluated before gather_facts, so ansible_facts is unavailable
+    - name: Load vault variables
+      ansible.builtin.include_vars:
+        file: "{{ ansible_facts.user_dir }}/.dotfiles/ansible/group_vars/all/vault_encrypted.yaml"
+      ignore_errors: true
+      tags: always
 
     # ── Environment Validation ────────────────────────────────────
     - name: Check Python version
