@@ -18,13 +18,14 @@
     is_arch: "{{ 'Arch' in ansible_facts.distribution }}"
     # List roles to include and apply to the playbook, use
     system_roles_to_apply:
-      - system/bootloader
-      - system/file_system
-      - system/networking/firewall
-      - system/networking/networkmanager
-      - system/networking/vpn
-      - system/networking/wifi
-      - system/networking/dns
+      #- system/bootloader
+      #- system/file_system
+      #- system/networking/firewall
+      #- system/networking/networkmanager
+      #- system/networking/vpn
+      #- system/networking/wifi
+      #- system/networking/dns
+      - system/networking/tools
     hardware_roles_to_apply:
       - hardware/audio
       - hardware/bluetooth
