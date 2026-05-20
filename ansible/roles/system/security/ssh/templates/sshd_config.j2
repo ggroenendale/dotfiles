@@ -4,5 +4,7 @@ PermitRootLogin prohibit-password
 PubkeyAuthentication yes
 PasswordAuthentication {{ 'yes' if ssh_password_auth else 'no' }}
 ChallengeResponseAuthentication no
+{% if ssh_allowed_users | length > 0 %}
 AllowUsers {{ ssh_allowed_users | join(' ') }}
+{% endif %}
 Subsystem sftp /usr/lib/ssh/sftp-server

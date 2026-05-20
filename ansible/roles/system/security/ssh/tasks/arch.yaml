@@ -35,7 +35,7 @@
     owner: root
     group: root
     mode: "0600"
-  notify: Restart SSH
+  notify: Validate and restart SSH
 
 - name: Enable SSH service (but don't start yet)
   become: true
@@ -51,11 +51,21 @@
   # No 'creates' parameter needed.
   when: not ansible_check_mode
 
+- name: Validate sshd_config syntax
+  become: true
+  command: sshd -t
+  changed_when: false
+  # Fail early if the config has syntax errors, before attempting to start/restart
+
 - name: Start SSH service (final step)
   become: true
   systemd:
     name: sshd
     state: started
+  # Note: 'state: started' is idempotent — if sshd is already running, it won't
+  # reload the config. Config changes are picked up by the handler below, which
+  # runs 'state: restarted'. The sshd -t validation above ensures the config is
+  # valid before the handler attempts a restart.
 
 # -----------------------------------------------------------------------------
 # Optional SSH utilities

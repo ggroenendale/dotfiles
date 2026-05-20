@@ -37,7 +37,7 @@
     owner: root
     group: root
     mode: "0600"
-  notify: Restart SSH
+  notify: Validate and restart SSH
 
 - name: Enable SSH service (start on boot)
   become: true
@@ -54,11 +54,21 @@
   # It is idempotent and does not overwrite existing keys.
   when: not ansible_check_mode
 
+- name: Validate sshd_config syntax
+  become: true
+  command: sshd -t
+  changed_when: false
+  # Fail early if the config has syntax errors, before attempting to start/restart
+
 - name: Start SSH service
   become: true
   systemd:
     name: sshd
     state: started
+  # Note: 'state: started' is idempotent — if sshd is already running, it won't
+  # reload the config. Config changes are picked up by the handler above, which
+  # runs 'state: restarted'. The sshd -t validation ensures the config is valid
+  # before the handler attempts a restart.
 
 # -----------------------------------------------------------------------------
 # Optional: additional SSH utilities
