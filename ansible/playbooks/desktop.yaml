@@ -1,5 +1,5 @@
 ---
-- name: Laptop — Complete Configuration
+- name: Desktop — Complete Configuration
   hosts: localhost
   connection: local
   become: false
@@ -72,4 +72,4 @@
       ansible.builtin.include_role:
         name: "{{ role_item }}"
       loop: "{{ system_roles_to_apply }}"
-      loop_control:
+      loop_control: role_item
