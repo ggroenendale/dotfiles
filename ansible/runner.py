@@ -43,6 +43,7 @@ vault_password_file = ".vault_pass.txt"
 
 vault_path = Path(__file__).parent.joinpath(vault_password_file)
 
+
 def get_vault_secret(password_file=None):
     """Return a VaultSecret object."""
     if password_file:
@@ -63,7 +64,9 @@ vault_secret = get_vault_secret(vault_path)
 # DataLoader with vault secret
 # -----------------------------------------------------------------------------
 loader = DataLoader()
-loader.set_vault_secrets([("default", vault_secret)])  # <-- CRITICAL for decrypting vault
+loader.set_vault_secrets(
+    [("default", vault_secret)]
+)  # <-- CRITICAL for decrypting vault
 
 # -----------------------------------------------------------------------------
 # Remainder of setup (playbook path, CLI args, context)
