@@ -24,7 +24,97 @@
 #   3. Run ansible-pull
 # =============================================================================
 
+# ==============================================================
+#   Colors and Formatting                               
+# ==============================================================
+
+
+# Catppuccin Mocha color codes
+NC='\033[0m'
+BOLD='\033[1m'
+
+# Catppuccin Mocha colors
+CAT_ROSEWATER='\033[38;2;245;224;220m'
+CAT_FLAMINGO='\033[38;2;242;205;205m'
+CAT_PINK='\033[38;2;245;194;231m'
+CAT_MAUVE='\033[38;2;203;166;247m'
+CAT_RED='\033[38;2;243;139;168m'
+CAT_MAROON='\033[38;2;235;160;172m'
+CAT_PEACH='\033[38;2;250;179;135m'
+CAT_YELLOW='\033[38;2;249;226;175m'
+CAT_GREEN='\033[38;2;166;227;161m'
+CAT_TEAL='\033[38;2;148;226;213m'
+CAT_SKY='\033[38;2;137;220;235m'
+CAT_SAPPHIRE='\033[38;2;116;199;236m'
+CAT_BLUE='\033[38;2;137;180;250m'
+CAT_LAVENDER='\033[38;2;180;190;254m'
+CAT_TEXT='\033[38;2;205;214;244m'
+CAT_SUBTEXT1='\033[38;2;186;194;222m'
+CAT_SUBTEXT0='\033[38;2;166;173;200m'
+CAT_OVERLAY2='\033[38;2;147;153;178m'
+CAT_OVERLAY1='\033[38;2;127;132;156m'
+CAT_OVERLAY0='\033[38;2;108;112;134m'
+CAT_SURFACE2='\033[38;2;88;91;112m'
+CAT_SURFACE1='\033[38;2;69;71;90m'
+CAT_SURFACE0='\033[38;2;49;50;68m'
+CAT_BASE='\033[38;2;30;30;46m'
+CAT_MANTLE='\033[38;2;24;24;37m'
+CAT_CRUST='\033[38;2;17;17;27m'
+
+
+# Legacy mappings for easier use
+RED="$CAT_RED"
+GREEN="$CAT_GREEN"
+YELLOW="$CAT_YELLOW"
+BLUE="$CAT_BLUE"
+PURPLE="$CAT_MAUVE"
+CYAN="$CAT_TEAL"
+WHITE="$CAT_TEXT"
+ORANGE="$CAT_PEACH"
+LBLACK="$CAT_SURFACE0"
+LRED="$CAT_RED"
+LGREEN="$CAT_GREEN"
+LYELLOW="$CAT_YELLOW"
+LBLUE="$CAT_BLUE"
+LPURPLE="$CAT_MAUVE"
+LCYAN="$CAT_TEAL"
+
+# Special
+SEA="$CAT_SAPPHIRE"
+OVERWRITE='\e[1A\e[K'
+
+#emoji codes
+CHECK_MARK="${GREEN}\xE2\x9C\x94${NC}"
+X_MARK="${RED}\xE2\x9C\x96${NC}"
+PIN="${RED}\xF0\x9F\x93\x8C${NC}"
+CLOCK="${GREEN}\xE2\x8C\x9B${NC}"
+ARROW="${SEA}\xE2\x96\xB6${NC}"
+BOOK="${RED}\xF0\x9F\x93\x8B${NC}"
+HOT="${ORANGE}\xF0\x9F\x94\xA5${NC}"
+WARNING="${RED}\xF0\x9F\x9A\xA8${NC}"
+RIGHT_ANGLE="${GREEN}\xE2\x88\x9F${NC}"
+
 set -e
+
+# Check for tput (required for cursor control)
+if ! command -v tput &> /dev/null; then
+  echo -e "${CAT_RED}Error: 'tput' is required but not found.${NC}"
+  echo -e "${CAT_SUBTEXT1}Please install ncurses (Ubuntu: apt install ncurses-bin, Arch: pacman -S ncurses)${NC}"
+  exit 1
+fi
+
+# Early check for help/version flags (before setup)
+for arg in "$@"; do
+  case $arg in
+    -h|--help)
+      SHOW_HELP=true
+      ;;
+    --version)
+      SHOW_VERSION=true
+      ;;
+  esac
+done
+
 
 # ==============================================================
 #   Variables                               
@@ -37,6 +127,12 @@ OP_AUTHENTICATED=false
 DOTFILES_LOG="$HOME/.dotfiles.log"
 DOTFILES_DIR="$HOME/.dotfiles"
 IS_FIRST_RUN="$HOME/.dotfiles_run"
+
+# Logging vars
+PUSH_LOGS=false
+LOG_DIR="$DOTFILES_DIR/logs"
+mkdir -p "$LOG_DIR"
+LOG_FILE="$LOG_DIR/install-$(basename "$0" .sh)-$(date +%Y-%m-%dT%H-%M-%S).log"
 
 # Spinner PID tracking
 SPINNER_PID=""
@@ -81,9 +177,39 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
+
+# Log system info
+# {
+#     echo "=== System Info ==="
+#     uname -a
+#     cat /etc/os-release 2>/dev/null
+#     echo
+# } | tee -a "$LOG_FILE"
+
 # ==============================================================
 #   Helper Functions
 # ==============================================================
+
+# ---------------------------------------------------------
+# cleanup()
+# ---------------------------------------------------------
+# Cleanup function for exit
+# 
+# Inputs:
+#   $1 - task description string
+#  
+# ---------------------------------------------------------
+#
+cleanup() {
+  # Kill spinner if running
+  if [[ $SPINNER_PID != "" ]]; then
+    kill $SPINNER_PID 2>/dev/null
+    wait $SPINNER_PID 2>/dev/null
+  fi
+  # Show cursor
+  tput cnorm
+}
+
 
 # ---------------------------------------------------------
 # _spinner()
@@ -147,7 +273,8 @@ __task() {
 # ---------------------------------------------------------
 # _cmd()
 # ---------------------------------------------------------
-#   Performs commands with error checking
+#   Performs commands with error checking but hides output
+#   while command executes
 #
 #   Inputs:
 #       $1 - the command to run
@@ -163,6 +290,54 @@ _cmd() {
 
   # hide stdout, on error we print and exit
   if eval "$1" 1> /dev/null 2> $DOTFILES_LOG; then
+    return 0 # success
+  else
+    # Kill spinner if running
+    if [[ $SPINNER_PID != "" ]]; then
+      kill $SPINNER_PID 2>/dev/null
+      wait $SPINNER_PID 2>/dev/null
+      SPINNER_PID=""
+    fi
+
+    # Show cursor again
+    tput cnorm
+
+    # Clear the line and show error
+    printf "\r\033[K${CAT_RED} [✗]  ${CAT_TEXT}${TASK}${NC}\n"
+
+    # Show error details
+    local line
+    while read -r line; do
+      printf "      ${CAT_MAROON}%s${NC}\n" "$line"
+    done < "$DOTFILES_LOG"
+    printf "\n"
+
+    # remove log file
+    rm $DOTFILES_LOG
+    # exit installation
+    exit 1
+  fi
+}
+
+# ---------------------------------------------------------
+# _cmd_show()
+# ---------------------------------------------------------
+#   Performs commands with error checking and shows output
+#
+#   Inputs:
+#       $1 - the command to run
+#  
+# ---------------------------------------------------------
+_cmd_show() {
+  #create log if it doesn't exist
+  if ! [[ -f $DOTFILES_LOG ]]; then
+    touch $DOTFILES_LOG
+  fi
+  # empty conduro.log
+  > $DOTFILES_LOG
+
+  # hide stdout, on error we print and exit
+  if eval "$1" 2>&1 | tee "$DOTFILES_LOG"; test ${PIPESTATUS[0]} -eq 0; then
     return 0 # success
   else
     # Kill spinner if running
@@ -310,15 +485,15 @@ arch_setup() {
     fi
 
     # Install gopass 
-    if ! [ -x "$(command -v gopass)" ]; then
-        __task "Installing gopass"
-        _cmd "sudo pacman -S gopass gnupg"
-        if ! [ -x "$(gpg --list-secret-keys)" ]; then
-            _cmd "gpg --full-generate-key"
-        fi
-        # Initialize gopass
-        _cmd "gopass init"
-    fi
+    #if ! [ -x "$(command -v gopass)" ]; then
+    #    __task "Installing gopass"
+    #    _cmd "sudo pacman -S gopass gnupg"
+    #    if ! [ -x "$(gpg --list-secret-keys)" ]; then
+    #        _cmd "gpg --full-generate-key"
+    #    fi
+    #    # Initialize gopass
+    #    _cmd "gopass init"
+    #fi
 
     # Install Ansible Python dependencies
     __task "Installing Ansible Python dependencies"
@@ -535,14 +710,26 @@ else
 fi
 
 # Phase 1: Bootstrap — environment validation and prerequisites
-__task "Running bootstrap playbook"
-_cmd "ansible-pull -U \"$REPO_URL\" -C \"$BRANCH\" -i 127.0.0.1, --limit=all --clean \"$ANSIBLE_PLAYBOOKS_DIR/bootstrap.yaml\""
-_task_done
+printf "${CAT_OVERLAY1} [..] Running bootstrap playbook\n${NC}"
+_cmd_show "python3 \"$DOTFILES_DIR/ansible/runner.py\" bootstrap.yaml"
+#_cmd_show "ansible-pull -U \"$REPO_URL\" -C \"$BRANCH\" -i 127.0.0.1, --limit=all --clean \"$ANSIBLE_PLAYBOOKS_DIR/bootstrap.yaml\""
+printf "${CAT_GREEN} [✓] Running bootstrap playbook\n${NC}"
+
 
 # Phase 2: System-specific provisioning
-__task "Running $SYSTEM_PLAYBOOK playbook"
-_cmd "ansible-pull -U \"$REPO_URL\" -C \"$BRANCH\" -i 127.0.0.1, --limit=all --clean \"$ANSIBLE_PLAYBOOKS_DIR/$SYSTEM_PLAYBOOK\""
-_task_done
+printf "${CAT_OVERLAY1} [..] Running $SYSTEM_PLAYBOOK playbook\n${NC}"
+_cmd_show "python3 \"$DOTFILES_DIR/ansible/runner.py\" $SYSTEM_PLAYBOOK"
+#_cmd_show "ansible-pull -U \"$REPO_URL\" -C \"$BRANCH\" -i 127.0.0.1, --limit=all --clean \"$ANSIBLE_PLAYBOOKS_DIR/$SYSTEM_PLAYBOOK\""
+printf "${CAT_GREEN} [✓] Running $SYSTEM_PLAYBOOK playbook\n${NC}"
+
+
+# Push logs 
+if [ "$PUSH_LOGS" = true ] && git remote -v 2>/dev/null | grep -q origin; then
+    git add "$LOG_FILE"
+    git commit -m "logs: install run $(date +%Y-%m-%d)"
+    git push
+fi
+
 
 # Completion message
 echo ""

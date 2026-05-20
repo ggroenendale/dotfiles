@@ -114,6 +114,8 @@ for arg in "$@"; do
       ;;
   esac
 done
+
+
 # ==============================================================
 #   Variables                               
 # ==============================================================
@@ -207,6 +209,7 @@ cleanup() {
   # Show cursor
   tput cnorm
 }
+
 
 # ---------------------------------------------------------
 # _spinner()
@@ -363,6 +366,7 @@ _cmd_show() {
     exit 1
   fi
 }
+
 # ---------------------------------------------------------
 # _clear_task()
 # ---------------------------------------------------------
@@ -725,6 +729,7 @@ if [ "$PUSH_LOGS" = true ] && git remote -v 2>/dev/null | grep -q origin; then
     git commit -m "logs: install run $(date +%Y-%m-%d)"
     git push
 fi
+
 
 # Completion message
 echo ""
