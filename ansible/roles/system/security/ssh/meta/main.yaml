@@ -22,6 +22,5 @@ galaxy_info:
       versions:
         - all
 
-dependencies:
+dependencies: []
   # No dependencies for the moment
-  - role:
